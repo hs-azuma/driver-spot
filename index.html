@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>DRIVER SPOT Ver.0.2</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;background:#f4f7fb;color:#172033}
+header{background:white;border-bottom:1px solid #dbe3ef;padding:20px max(18px,calc((100% - 920px)/2));font-size:24px;font-weight:800;color:#1769d2}
+header small{font-size:13px;color:#68758b}
+.wrap{max-width:920px;margin:auto;padding:20px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+button{font:inherit}.tab,.primary,.secondary{border-radius:12px;padding:14px;border:1px solid #cbd7e8;font-weight:700;cursor:pointer}
+.tab.active,.primary{background:#1769d2;color:#fff;border-color:#1769d2}.tab:not(.active),.secondary{background:white;color:#1769d2}
+.card{background:white;border:1px solid #dbe3ef;border-radius:16px;padding:18px;margin:12px 0;box-shadow:0 2px 8px #16233a0d}
+h2{margin:4px 0 14px}.jobtop{display:flex;justify-content:space-between;gap:12px}.pay{font-size:24px;font-weight:850;color:#e64728}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#edf4ff;color:#1769d2;font-size:12px;font-weight:700;margin:3px}
+.urgent{background:#fff0e8;color:#df531c}.muted{color:#68758b}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:13px;font-weight:700}input,select,textarea{width:100%;margin-top:6px;padding:12px;border:1px solid #cbd7e8;border-radius:10px;font:inherit;background:white}
+.full{grid-column:1/-1}.hidden{display:none!important}.notice{background:#eaf7ef;color:#177642;border-radius:12px;padding:12px;margin:12px 0;font-weight:700}
+.step{font-size:13px;color:#68758b;margin-bottom:10px}.candidate{display:flex;justify-content:space-between;align-items:center;gap:15px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.jobtop,.candidate{display:block}.candidate button{margin-top:10px;width:100%}}
+</style>
+</head>
+<body>
+<header>DRIVER SPOT <small>Ver.0.2 interactive prototype</small></header>
+<div class="wrap">
+  <div class="step">テスト手順：①企業で募集 → ②ドライバーで応募 → ③企業で採用 → ④ドライバーで勤務予定確認</div>
+  <div class="tabs">
+    <button id="driverTab" class="tab active" onclick="showMode('driver')">🚚 ドライバー</button>
+    <button id="companyTab" class="tab" onclick="showMode('company')">🏢 企業</button>
+  </div>
+
+  <section id="driverView">
+    <h2>募集中の仕事</h2>
+    <div id="driverNotice"></div>
+    <div id="jobList"></div>
+    <h2 style="margin-top:28px">勤務予定</h2>
+    <div id="schedule"><div class="card muted">採用された仕事はここに表示されます。</div></div>
+  </section>
+
+  <section id="companyView" class="hidden">
+    <h2>仕事を募集する</h2>
+    <div class="card">
+      <div class="grid">
+        <div><label>勤務日<input id="date" type="date" value="2026-10-03"></label></div>
+        <div><label>勤務時間<input id="time" value="06:00〜15:00"></label></div>
+        <div><label>勤務地<input id="location" value="大阪市"></label></div>
+        <div><label>配送先方面<input id="destination" value="神戸方面"></label></div>
+        <div><label>車格<select id="truck"><option>2t</option><option selected>4t</option><option>10t</option><option>トレーラー</option></select></label></div>
+        <div><label>必要免許<select id="license"><option>準中型免許</option><option selected>中型免許</option><option>大型免許</option><option>牽引免許</option></select></label></div>
+        <div><label>報酬タイプ<select id="paytype" onchange="updatePayLabel()"><option selected>時給</option><option>日給</option><option>案件固定</option></select></label></div>
+        <div><label id="payLabel">時給<input id="pay" type="number" value="2000"></label></div>
+        <div><label>交通費<input id="transport" type="number" value="1000"></label></div>
+        <div><label>募集人数<input id="people" type="number" min="1" value="1"></label></div>
+        <div class="full"><label>仕事内容<textarea id="description">アパレル店舗配送（カゴ台車中心）</textarea></label></div>
+        <div><label>必要経験<input id="experience" value="4t経験1年以上"></label></div>
+        <div><label>急募<select id="urgent"><option value="yes" selected>急募</option><option value="no">通常募集</option></select></label></div>
+      </div>
+      <button class="primary" style="width:100%;margin-top:16px" onclick="createJob()">この内容で募集する</button>
+    </div>
+    <div id="companyNotice"></div>
+    <h2 style="margin-top:28px">応募者</h2>
+    <div id="applicants"><div class="card muted">まだ応募者はいません。</div></div>
+  </section>
+</div>
+<script>
+let jobs=[{id:1,date:"2026-10-03",time:"05:00〜14:00",location:"大阪市北区",destination:"神戸方面",truck:"4t",license:"中型免許",paytype:"時給",pay:2200,transport:1000,people:1,description:"アパレル店舗配送",experience:"4t経験1年以上",urgent:true,status:"open",applied:false,hired:false}];
+let nextId=2;
+function yen(n){return Number(n).toLocaleString("ja-JP")+"円"}
+function showMode(mode){
+ document.getElementById("driverView").classList.toggle("hidden",mode!=="driver");
+ document.getElementById("companyView").classList.toggle("hidden",mode!=="company");
+ document.getElementById("driverTab").classList.toggle("active",mode==="driver");
+ document.getElementById("companyTab").classList.toggle("active",mode==="company");
+ render();
+}
+function updatePayLabel(){document.getElementById("payLabel").childNodes[0].nodeValue=document.getElementById("paytype").value}
+function createJob(){
+ const j={id:nextId++,date:date.value,time:time.value,location:location.value,destination:destination.value,truck:truck.value,license:license.value,paytype:paytype.value,pay:+pay.value,transport:+transport.value,people:+people.value,description:description.value,experience:experience.value,urgent:urgent.value==="yes",status:"open",applied:false,hired:false};
+ jobs.unshift(j); companyNotice.innerHTML='<div class="notice">✓ 募集を公開しました。上の「ドライバー」を押して確認してください。</div>'; render();
+}
+function apply(id){let j=jobs.find(x=>x.id===id);j.applied=true;driverNotice.innerHTML='<div class="notice">✓ 応募しました。次に「企業」を押して応募者を確認してください。</div>';render()}
+function hire(id){let j=jobs.find(x=>x.id===id);j.hired=true;j.status="hired";companyNotice.innerHTML='<div class="notice">✓ 山田 太郎さんを採用しました。ドライバー側の「勤務予定」に反映されます。</div>';render()}
+function render(){
+ jobList.innerHTML=jobs.filter(j=>j.status==="open").map(j=>`<div class="card"><div class="jobtop"><div><b>${j.date}　${j.time}</b><br><span class="muted">${j.description}｜${j.truck}</span></div><div class="pay">${j.paytype} ${yen(j.pay)}</div></div><p>${j.location} → ${j.destination}</p><span class="badge">${j.license}</span><span class="badge">${j.experience}</span>${j.urgent?'<span class="badge urgent">🔥 急募</span>':''}<p class="muted">交通費 ${yen(j.transport)}／募集 ${j.people}名</p><button class="primary" style="width:100%" onclick="apply(${j.id})" ${j.applied?'disabled':''}>${j.applied?'応募済み':'この仕事に応募する'}</button></div>`).join("") || '<div class="card muted">現在、募集中の仕事はありません。</div>';
+ let hired=jobs.filter(j=>j.hired);
+ schedule.innerHTML=hired.length?hired.map(j=>`<div class="card"><b>勤務確定 ✓</b><div class="pay" style="font-size:20px;margin-top:8px">${j.date} ${j.time}</div><p>${j.description}｜${j.truck}<br>${j.location} → ${j.destination}</p></div>`).join(""):'<div class="card muted">採用された仕事はここに表示されます。</div>';
+ let apps=jobs.filter(j=>j.applied&&!j.hired);
+ applicants.innerHTML=apps.length?apps.map(j=>`<div class="card candidate"><div><b>山田 太郎　35歳　★4.8</b><br><span class="muted">${j.license}／${j.experience}／案件：${j.description}</span></div><button class="primary" onclick="hire(${j.id})">採用する</button></div>`).join(""):'<div class="card muted">まだ応募者はいません。</div>';
+}
+render();
+</script>
+</body></html>
