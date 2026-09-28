@@ -231,23 +231,82 @@ async function loadJobs() {
 
     `).join("");
 }
-
 function showDriver() {
-
   document.getElementById("content").innerHTML = `
-
     <div class="card">
-
       <h2>ドライバー登録</h2>
 
-      <p>
-        次の工程で、氏名・免許・経験・希望条件などを
-        登録できるようにします。
-      </p>
+      <p>氏名</p>
+      <input id="driverName" type="text" placeholder="例：山田 太郎">
 
+      <p>電話番号</p>
+      <input id="driverPhone" type="tel" placeholder="例：090-1234-5678">
+
+      <p>メールアドレス</p>
+      <input id="driverEmail" type="email" placeholder="例：sample@example.com">
+
+      <p>住所</p>
+      <input id="driverAddress" type="text" placeholder="例：大阪府大阪市">
+
+      <p>免許種類</p>
+      <select id="driverLicense">
+        <option value="">選択してください</option>
+        <option value="普通">普通免許</option>
+        <option value="準中型">準中型免許</option>
+        <option value="中型">中型免許</option>
+        <option value="大型">大型免許</option>
+        <option value="けん引">けん引免許</option>
+      </select>
+
+      <p>ドライバー経験</p>
+      <input id="driverExperience" type="text" placeholder="例：大型トラック10年">
+
+      <br><br>
+
+      <button onclick="registerDriver()">登録する</button>
+
+      <p id="driverMessage"></p>
     </div>
-
   `;
+}
+
+async function registerDriver() {
+  const message = document.getElementById("driverMessage");
+
+  const name = document.getElementById("driverName").value.trim();
+  const phone = document.getElementById("driverPhone").value.trim();
+  const email = document.getElementById("driverEmail").value.trim();
+  const address = document.getElementById("driverAddress").value.trim();
+  const license_type = document.getElementById("driverLicense").value;
+  const experience = document.getElementById("driverExperience").value.trim();
+
+  if (!name) {
+    message.textContent = "氏名を入力してください。";
+    return;
+  }
+
+  message.textContent = "登録中...";
+
+  const { error } = await supabaseClient
+    .from("drivers")
+    .insert([
+      {
+        name,
+        phone,
+        email,
+        address,
+        license_type,
+        experience
+      }
+    ]);
+
+  if (error) {
+    console.error(error);
+    message.textContent = "登録エラー：" + error.message;
+    return;
+  }
+
+  message.textContent = "登録が完了しました！";
 }
 
 function showCompany() {
