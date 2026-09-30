@@ -1,0 +1,29 @@
+name: Apply Spodora branding
+on:
+  push:
+    paths:
+      - '.github/workflows/rebrand-spodora.yml'
+permissions:
+  contents: write
+jobs:
+  rebrand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Replace visible brand text
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          for p in Path('.').glob('*.html'):
+              s=p.read_text(encoding='utf-8')
+              s=s.replace('DRIVER SPOT','スポドラ')
+              p.write_text(s,encoding='utf-8')
+          PY
+      - name: Commit branding
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add '*.html'
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Rebrand visible site text to スポドラ"
+          git push
