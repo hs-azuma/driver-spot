@@ -10,13 +10,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Replace visible brand text
+      - name: Unify Spodora branding and logo
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+
+          LOGO = '<a class="spodora-brand" href="./"><img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ"></a>'
+          STYLE = '''<style id="spodora-brand-style">
+          .spodora-brand{display:block;width:300px;max-width:72vw;text-decoration:none;margin:0 0 12px}
+          .spodora-brand img{display:block;width:100%;height:auto}
+          @media(max-width:650px){.spodora-brand{width:240px;max-width:72vw}}
+          </style>'''
+
           for p in Path('.').glob('*.html'):
               s=p.read_text(encoding='utf-8')
               s=s.replace('DRIVER SPOT','スポドラ')
+              # Replace existing logo image links (final png or legacy svg).
+              s=re.sub(r'<a[^>]*href=["\']\./["\'][^>]*>\s*<img[^>]*supodora-logo(?:-final)?\.(?:png|svg)[^>]*>\s*</a>', LOGO, s, flags=re.I)
+              # Replace a standalone existing logo image.
+              s=re.sub(r'<img[^>]*supodora-logo(?:-final)?\.(?:png|svg)[^>]*>', '<img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ">', s, flags=re.I)
+              # Replace legacy visible text brand used as a header/link.
+              s=re.sub(r'<a([^>]*)class=["\'][^"\']*(?:brandFallback|brand)[^"\']*["\']([^>]*)>\s*スポドラ\s*</a>', LOGO, s, flags=re.I)
+              s=re.sub(r'<(?:h1|div)([^>]*)class=["\'][^"\']*(?:brandFallback|brand)[^"\']*["\']([^>]*)>\s*スポドラ\s*</(?:h1|div)>', LOGO, s, flags=re.I)
+              # If a page has no logo yet, add the same logo at the start of header.
+              if 'supodora-logo-final.png?v=20261001b' not in s:
+                  if re.search(r'<header[^>]*>', s, flags=re.I):
+                      s=re.sub(r'(<header[^>]*>)', r'\1'+LOGO, s, count=1, flags=re.I)
+                  elif re.search(r'<body[^>]*>', s, flags=re.I):
+                      s=re.sub(r'(<body[^>]*>)', r'\1<header>'+LOGO+'</header>', s, count=1, flags=re.I)
+              if 'id="spodora-brand-style"' not in s:
+                  s=s.replace('</head>', STYLE+'</head>')
               p.write_text(s,encoding='utf-8')
           PY
       - name: Commit branding
@@ -25,5 +49,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add '*.html'
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Rebrand visible site text to スポドラ"
+          git commit -m "Use final Spodora logo on every page"
           git push
