@@ -10,44 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Unify Spodora branding and logo
+      - name: Connect driver profile editor
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re
-
-          LOGO = '<a class="spodora-brand" href="./"><img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ"></a>'
-          STYLE = '''<style id="spodora-brand-style">
-          .spodora-brand{display:block;width:300px;max-width:72vw;text-decoration:none;margin:0 0 12px}
-          .spodora-brand img{display:block;width:100%;height:auto}
-          @media(max-width:650px){.spodora-brand{width:240px;max-width:72vw}}
-          </style>'''
-
-          for p in Path('.').glob('*.html'):
-              s=p.read_text(encoding='utf-8')
-              s=s.replace('DRIVER SPOT','スポドラ')
-              # Replace existing logo image links (final png or legacy svg).
-              s=re.sub(r'<a[^>]*href=["\']\./["\'][^>]*>\s*<img[^>]*supodora-logo(?:-final)?\.(?:png|svg)[^>]*>\s*</a>', LOGO, s, flags=re.I)
-              # Replace a standalone existing logo image.
-              s=re.sub(r'<img[^>]*supodora-logo(?:-final)?\.(?:png|svg)[^>]*>', '<img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ">', s, flags=re.I)
-              # Replace legacy visible text brand used as a header/link.
-              s=re.sub(r'<a([^>]*)class=["\'][^"\']*(?:brandFallback|brand)[^"\']*["\']([^>]*)>\s*スポドラ\s*</a>', LOGO, s, flags=re.I)
-              s=re.sub(r'<(?:h1|div)([^>]*)class=["\'][^"\']*(?:brandFallback|brand)[^"\']*["\']([^>]*)>\s*スポドラ\s*</(?:h1|div)>', LOGO, s, flags=re.I)
-              # If a page has no logo yet, add the same logo at the start of header.
-              if 'supodora-logo-final.png?v=20261001b' not in s:
-                  if re.search(r'<header[^>]*>', s, flags=re.I):
-                      s=re.sub(r'(<header[^>]*>)', r'\1'+LOGO, s, count=1, flags=re.I)
-                  elif re.search(r'<body[^>]*>', s, flags=re.I):
-                      s=re.sub(r'(<body[^>]*>)', r'\1<header>'+LOGO+'</header>', s, count=1, flags=re.I)
-              if 'id="spodora-brand-style"' not in s:
-                  s=s.replace('</head>', STYLE+'</head>')
-              p.write_text(s,encoding='utf-8')
+          p=Path('driver.html')
+          s=p.read_text(encoding='utf-8')
+          old="""$('content').innerHTML=`<div class=\"card\"><h2>プロフィール</h2><p><b>氏名</b> ${e(currentDriver.name)}</p><p><b>電話</b> ${e(currentDriver.phone||'')}</p><p><b>希望エリア</b> ${e(currentDriver.preferred_area||'')}</p><p><b>免許</b> ${e(currentDriver.license_type||'')}</p><p><b>経験</b> ${e(currentDriver.experience||'')}</p></div>`"""
+          new="""$('content').innerHTML=`<div class=\"card\"><h2>プロフィール</h2><p><b>氏名</b> ${e(currentDriver.name)}</p><p><b>電話</b> ${e(currentDriver.phone||'')}</p><p><b>希望エリア</b> ${e(currentDriver.preferred_area||'')}</p><p><b>免許</b> ${e(currentDriver.license_type||'')}</p><p><b>経験</b> ${e(currentDriver.experience||'')}</p><p style=\"margin-top:20px\"><button class=\"primary\" onclick=\"location.href='./driver-profile-setup.html'\">プロフィール情報を変更</button></p></div>`"""
+          if old not in s:
+              raise SystemExit('profile block not found')
+          p.write_text(s.replace(old,new,1),encoding='utf-8')
           PY
-      - name: Commit branding
+      - name: Commit change
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add '*.html'
+          git add driver.html
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Use final Spodora logo on every page"
+          git commit -m "Add driver profile edit button"
           git push
