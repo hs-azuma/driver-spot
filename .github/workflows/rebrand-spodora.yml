@@ -1,4 +1,4 @@
-name: Apply Spodora branding
+name: Apply driver application confirmation
 on:
   push:
     paths:
@@ -6,11 +6,11 @@ on:
 permissions:
   contents: write
 jobs:
-  rebrand:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Connect driver profile editor
+      - name: Add profile edit link and application confirmation
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -18,9 +18,9 @@ jobs:
           s=p.read_text(encoding='utf-8')
           old="""$('content').innerHTML=`<div class=\"card\"><h2>プロフィール</h2><p><b>氏名</b> ${e(currentDriver.name)}</p><p><b>電話</b> ${e(currentDriver.phone||'')}</p><p><b>希望エリア</b> ${e(currentDriver.preferred_area||'')}</p><p><b>免許</b> ${e(currentDriver.license_type||'')}</p><p><b>経験</b> ${e(currentDriver.experience||'')}</p></div>`"""
           new="""$('content').innerHTML=`<div class=\"card\"><h2>プロフィール</h2><p><b>氏名</b> ${e(currentDriver.name)}</p><p><b>電話</b> ${e(currentDriver.phone||'')}</p><p><b>希望エリア</b> ${e(currentDriver.preferred_area||'')}</p><p><b>免許</b> ${e(currentDriver.license_type||'')}</p><p><b>経験</b> ${e(currentDriver.experience||'')}</p><p style=\"margin-top:20px\"><button class=\"primary\" onclick=\"location.href='./driver-profile-setup.html'\">プロフィール情報を変更</button></p></div>`"""
-          if old not in s:
-              raise SystemExit('profile block not found')
-          p.write_text(s.replace(old,new,1),encoding='utf-8')
+          if old in s:s=s.replace(old,new,1)
+          s=s.replace('onclick="apply(${j.id})"','onclick="location.href=\'./apply-confirm.html?job=${j.id}\'"')
+          p.write_text(s,encoding='utf-8')
           PY
       - name: Commit change
         run: |
@@ -28,5 +28,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add driver.html
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Add driver profile edit button"
+          git commit -m "Require confirmation before driver application"
           git push
