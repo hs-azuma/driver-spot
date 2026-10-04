@@ -23,9 +23,10 @@ check(preflight.status,204);
 check(preflight.headers.get('Access-Control-Allow-Origin'),'*');
 for(const header of ['authorization','apikey','content-type','x-client-info','x-supabase-client-platform'])check(preflight.headers.get('Access-Control-Allow-Headers').split(', ').includes(header),true);
 let calls=[];const uid='00000000-0000-4000-8000-000000000001';
-globalThis.fetch=async(url,options={})=>{calls.push({url,body:options.body});if(url.endsWith('/auth/v1/user'))return Response.json({id:uid});if(url.includes('/drivers?'))return Response.json([{id:1}]);if(url.includes('/companies?'))return Response.json([]);if(url.includes('/line_connections?'))return Response.json([]);if(url.endsWith('/rpc/begin_line_link'))return Response.json('test-link-token');return Response.json({});};
+globalThis.fetch=async(url,options={})=>{calls.push({url,body:options.body,headers:options.headers});if(url.endsWith('/auth/v1/user'))return Response.json({id:uid});if(url.includes('/drivers?'))return Response.json([{id:1}]);if(url.includes('/companies?'))return Response.json([]);if(url.includes('/line_connections?'))return Response.json([]);if(url.endsWith('/rpc/begin_line_link'))return Response.json('test-link-token');return Response.json({});};
 const request=body=>new Request('https://example.test',{method:'POST',headers:{Authorization:'Bearer test-only-user'},body:JSON.stringify(body)});
 check(await (await account(request({action:'status'}))).json(),{linked:false,active:false,configured:true});
+for(const call of calls.filter(x=>x.url.includes('/drivers?')||x.url.includes('/companies?'))){check(call.headers.Authorization,'Bearer test-only-user');check(call.headers.apikey,env.SUPABASE_ANON_KEY);}
 check((await account(request({action:'begin',ticket:'bad'}))).status,400);
 const result=await (await account(request({action:'begin',ticket:'a'.repeat(64)}))).json();const link=new URL(result.url);
 check(link.origin,'https://access.line.me');check(link.searchParams.get('linkToken'),'test-link-token');check(link.searchParams.get('nonce').length,64);

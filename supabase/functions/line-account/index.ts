@@ -14,7 +14,7 @@ export async function handle(req) {
     if (!response.ok) return out({error:'ログインし直してください。'},401);
     const user = await response.json();
     if (!user.id) return out({error:'ログインしてください。'},401);
-    const [drivers, companies] = await Promise.all(['drivers','companies'].map(table => rest(table + '?select=id&user_id=eq.' + encodeURIComponent(user.id))));
+    const [drivers, companies] = await Promise.all(['drivers','companies'].map(table => rest(table + '?select=id&user_id=eq.' + encodeURIComponent(user.id), {headers:{apikey:Deno.env.get('SUPABASE_ANON_KEY'), Authorization:auth}})));
     if (!drivers.length && !companies.length) return out({error:'スポドラの登録を完了してください。'},403);
     const body = await req.json();
     if (body.action === 'status') {
