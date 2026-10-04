@@ -61,7 +61,9 @@ Deno.serve(async req=>{
  try{
  const {data:d,error:pe}=await admin.from('drivers').select('*').eq('id',inv.driver_id).maybeSingle();
  if(pe)throw pe;
- if(d&&d.match_email_enabled===true&&matchesJobPreferences(d,j)){
+ const {data:blockNow,error:blockReadError}=await admin.from('company_driver_blocks').select('driver_id').eq('company_id',c.id).eq('driver_id',inv.driver_id).maybeSingle();
+ if(blockReadError)throw blockReadError;
+ if(!blockNow&&d&&d.match_email_enabled===true&&matchesJobPreferences(d,j)){
   if(!key)throw new Error('email not configured');
   const {data:u,error:ue}=await admin.auth.admin.getUserById(d.user_id);if(ue)throw ue;
   const to=u?.user?.email;
