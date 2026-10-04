@@ -7,8 +7,8 @@
   if(!a.checked_in_at||!a.checked_out_at)return {pending:true};
   const start=Date.parse(a.checked_in_at),end=Date.parse(a.checked_out_at);
   if(!Number.isFinite(start)||!Number.isFinite(end)||end<start)return {error:'打刻時刻を確認してください。'};
-  const elapsed=(end-start)/1000,rest=Number(j.break_minutes);
-  if(j.break_minutes==null||!Number.isFinite(rest)||rest<0)return {elapsed,error:'休憩時間が未設定のため、実働・報酬は要確認です。'};
+  const elapsed=(end-start)/1000,rest=Number(a.actual_break_minutes??j.break_minutes);
+  if(a.actual_break_minutes==null&&j.break_minutes==null||!Number.isFinite(rest)||rest<0)return {elapsed,error:'休憩時間が未設定のため、実働・報酬は要確認です。'};
   if(rest*60>elapsed)return {elapsed,rest,error:'休憩予定が打刻間の時間を超えています。実際の休憩・打刻を確認してください。'};
   const worked=elapsed-rest*60,rate=Number(j.pay_amount);
   let amount=null;
@@ -18,6 +18,8 @@
 
  function policyLabel(value){return value===true?'募集時間分の基本給与を保証':value===false?'実働時間で計算（募集時間分の保証なし）':'給与保証の条件：未設定'}
  function calculate(a,j){
+  const approved=a.approved_request;
+  if(approved&&Date.parse(approved.requested_in)===Date.parse(a.checked_in_at)&&Date.parse(approved.requested_out)===Date.parse(a.checked_out_at))return {elapsed:(Date.parse(a.checked_out_at)-Date.parse(a.checked_in_at))/1000,rest:approved.break_minutes,worked:Number(approved.approved_work_seconds),amount:Number(approved.approved_basic_amount),policy:approved.effective_pay_guarantee,approved:true};
   const c=basicCalculate(a,j),policy=Object.prototype.hasOwnProperty.call(a,'pay_guarantee_snapshot')?a.pay_guarantee_snapshot:j.pay_guarantee;
   c.policy=policy;
   if(c.pending||c.error)return c;
@@ -41,10 +43,10 @@
   if(c.pending)return out+'<div>'+ (a.checked_in_at?'出勤中：退勤後に実働・報酬目安を表示します。':'未出勤：出退勤の打刻後に表示します。')+'</div></div>';
   if(c.elapsed!=null)out+='<div>打刻間 '+duration(c.elapsed)+'</div>';
   if(c.error)return out+'<div style="color:#8a5b00"><strong>要確認</strong>：'+esc(c.error)+'</div></div>';
-  out+='<div>休憩（求人の予定） '+c.rest+'分</div><div><strong>実働（仮） '+duration(c.worked)+'</strong></div><div><strong>基本報酬目安 '+(c.amount==null?'要確認':c.amount.toLocaleString('ja-JP')+'円')+'</strong></div>';
+  out+='<div>休憩（'+(c.approved?'企業承認済み':a.actual_break_minutes!=null?'実際':'求人の予定')+'） '+c.rest+'分</div><div><strong>実働'+(c.approved?'（企業承認済み）':'（仮）')+' '+duration(c.worked)+'</strong></div><div><strong>'+(c.approved?'承認済み基本報酬':'基本報酬目安')+' '+(c.amount==null?'要確認':c.amount.toLocaleString('ja-JP')+'円')+'</strong></div>';
   if(c.guaranteedMinimum!=null)out+='<div>保証される基本給与の下限 '+c.guaranteedMinimum.toLocaleString('ja-JP')+'円</div>';
   if(c.policyError)out+='<div style="color:#8a5b00">'+esc(c.policyError)+'</div>';
-  out+='<div style="color:#68758b;font-size:12px">実打刻と休憩予定からの参考額です。実際の休憩・勤務内容の確認前は確定額ではありません。交通費・割増等は含みません。'+(c.policy==null?'給与保証の条件が未設定のため、支払額は企業に確認してください。':j.pay_type==='日給'?'日給の実働分は募集の実働時間に対する割合で計算しています。':'')+'</div></div>';
+  out+='<div style="color:#68758b;font-size:12px">'+(c.approved?'企業が勤怠と基本報酬を承認しました。振込は行っていません。':'実打刻と休憩予定からの参考額です。実際の休憩・勤務内容の確認前は確定額ではありません。')+'交通費・割増等は含みません。'+(c.policy==null?'給与保証の条件が未設定のため、支払額は企業に確認してください。':j.pay_type==='日給'?'日給の実働分は募集の実働時間に対する割合で計算しています。':'')+'</div></div>';
   return out;
  }
 
