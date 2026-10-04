@@ -38,8 +38,9 @@
   const c=plannedCalculate(j);
   let out='<div style="background:#edf4ff;border-radius:10px;padding:14px;margin:12px 0;line-height:1.8"><strong>この仕事の勤務・報酬目安</strong>';
   if(c.error)return out+'<div>予定実働・基本報酬目安：要確認</div></div>';
-  out+='<div>予定実働 <strong>'+duration(c.worked)+'</strong>（休憩 '+c.rest+'分を除く）</div><div>基本報酬目安 <strong>'+(c.amount==null?'要確認':c.amount.toLocaleString('ja-JP')+'円')+'</strong></div>';
-  return out+'<div style="font-size:12px;color:#68758b">求人の予定時間・休憩からの参考額です。交通費は別表示、割増等は含みません。実際の勤務により変わる場合があります。</div></div>';
+  const fee=Number(j.transportation_fee),knownFee=j.transportation_fee!=null&&Number.isFinite(fee)&&fee>=0,total=c.amount!=null&&knownFee?c.amount+fee:null;
+  out+='<div>予定実働 <strong>'+duration(c.worked)+'</strong>（休憩 '+c.rest+'分を除く）</div><div style="display:flex;flex-wrap:wrap;gap:4px 12px"><span>基本報酬目安 <strong>'+(c.amount==null?'要確認':c.amount.toLocaleString('ja-JP')+'円')+'</strong></span><span>＋ 交通費 <strong>'+(knownFee?fee.toLocaleString('ja-JP')+'円':'未設定')+'</strong></span></div><div style="font-size:20px;margin-top:4px"><strong>合計目安 '+(total==null?'要確認':total.toLocaleString('ja-JP')+'円')+'</strong><span style="font-size:12px">（交通費込み）</span></div>';
+  return out+'<div style="font-size:12px;color:#68758b">求人の予定時間・休憩からの参考額です。合計には交通費を含み、割増等は含みません。実際の勤務により変わる場合があります。</div></div>';
  }
  window.SpodoraAttendance={calculate,html,duration,clock,plannedCalculate,plannedHtml};
 })();
