@@ -19,7 +19,7 @@
  function policyLabel(value){return value===true?'募集時間分の基本給与を保証':value===false?'実働時間で計算（募集時間分の保証なし）':'給与保証の条件：未設定'}
  function calculate(a,j){
   const approved=a.approved_request;
-  if(approved&&Date.parse(approved.requested_in)===Date.parse(a.checked_in_at)&&Date.parse(approved.requested_out)===Date.parse(a.checked_out_at))return {elapsed:(Date.parse(a.checked_out_at)-Date.parse(a.checked_in_at))/1000,rest:approved.break_minutes,worked:Number(approved.approved_work_seconds),amount:Number(approved.approved_basic_amount),policy:approved.effective_pay_guarantee,approved:true};
+  if(approved&&Date.parse(approved.requested_in)===Date.parse(a.checked_in_at)&&Date.parse(approved.requested_out)===Date.parse(a.checked_out_at))return {elapsed:(Date.parse(a.checked_out_at)-Date.parse(a.checked_in_at))/1000,rest:approved.break_minutes,worked:Number(approved.approved_work_seconds),amount:Number(approved.approved_basic_amount),fee:approved.approved_transportation_fee==null?null:Number(approved.approved_transportation_fee),total:approved.approved_total_amount==null?null:Number(approved.approved_total_amount),policy:approved.effective_pay_guarantee,approved:true};
   const c=basicCalculate(a,j),policy=Object.prototype.hasOwnProperty.call(a,'pay_guarantee_snapshot')?a.pay_guarantee_snapshot:j.pay_guarantee;
   c.policy=policy;
   if(c.pending||c.error)return c;
@@ -46,7 +46,9 @@
   out+='<div>休憩（'+(c.approved?'企業承認済み':a.actual_break_minutes!=null?'実際':'求人の予定')+'） '+c.rest+'分</div><div><strong>実働'+(c.approved?'（企業承認済み）':'（仮）')+' '+duration(c.worked)+'</strong></div><div><strong>'+(c.approved?'承認済み基本報酬':'基本報酬目安')+' '+(c.amount==null?'要確認':c.amount.toLocaleString('ja-JP')+'円')+'</strong></div>';
   if(c.guaranteedMinimum!=null)out+='<div>保証される基本給与の下限 '+c.guaranteedMinimum.toLocaleString('ja-JP')+'円</div>';
   if(c.policyError)out+='<div style="color:#8a5b00">'+esc(c.policyError)+'</div>';
-  out+='<div style="color:#68758b;font-size:12px">'+(c.approved?'企業が勤怠と基本報酬を承認しました。振込は行っていません。':'実打刻と休憩予定からの参考額です。実際の休憩・勤務内容の確認前は確定額ではありません。')+'交通費・割増等は含みません。'+(c.policy==null?'給与保証の条件が未設定のため、支払額は企業に確認してください。':j.pay_type==='日給'?'日給の実働分は募集の実働時間に対する割合で計算しています。':'')+'</div></div>';
+  const pay=payment(a,j);
+  if(c.approved&&c.total!=null)out+='<div>承認済み交通費 '+c.fee.toLocaleString('ja-JP')+'円</div><div><strong>'+(pay.confirmed?'確認合計':'前回承認合計')+' '+c.total.toLocaleString('ja-JP')+'円（交通費込み）</strong></div><div>'+esc(pay.label)+'</div>';
+  out+='<div style="color:#68758b;font-size:12px">'+(c.approved?(c.total!=null?'勤怠・基本報酬・交通費を企業が承認しました。':'基本報酬のみ承認済みです。交通費を含む合計は再申請して確認してください。')+'振込は行っていません。割増・税等は別途確認してください。':'実打刻と休憩予定からの参考額です。実際の休憩・勤務内容の確認前は確定額ではありません。交通費・割増等は含みません。')+(c.policy==null?'給与保証の条件が未設定のため、支払額は企業に確認してください。':j.pay_type==='日給'?'日給の実働分は募集の実働時間に対する割合で計算しています。':'')+'</div></div>';
   return out;
  }
 
@@ -66,5 +68,10 @@
   out+='<div><strong>'+esc(policyLabel(j.pay_guarantee))+'</strong></div><div style="font-size:12px;color:#68758b">'+(j.pay_guarantee===true?'早く終了しても上記の基本報酬を下限とします。実働分が上回る場合は実働分を使います。':j.pay_guarantee===false?'早く終了した場合は実働分で計算します。日給は募集の実働時間に対する割合です。':'応募前に企業へ給与保証の条件を確認してください。')+'</div>';
   return out+'<div style="font-size:12px;color:#68758b">求人の予定時間・休憩からの参考額です。合計には交通費を含み、割増等は含みません。実際の勤務により変わる場合があります。</div></div>';
  }
- window.SpodoraAttendance={calculate,html,duration,clock,plannedCalculate,plannedHtml,policyLabel};
+ function payment(a,j){
+  const c=calculate(a,j),latest=a.attendance_review_requests?.[0];
+  const confirmed=c.approved&&c.total!=null&&c.fee!=null&&Number.isFinite(c.total)&&c.total>=0&&c.total===c.amount+c.fee&&!!a.approved_request?.driver_confirmed_at&&latest?.status!=='pending';
+  return {confirmed:!!confirmed,total:confirmed?c.total:null,fee:confirmed?c.fee:null,amount:confirmed?c.amount:null,worked:confirmed?c.worked:null,label:latest?.status==='pending'?(c.approved?'再申請確認待ち':'企業確認待ち'):confirmed?'金額確認済み':latest?.status==='rejected'?'差し戻し':c.approved?'基本報酬のみ承認':'未確認'};
+ }
+ window.SpodoraAttendance={calculate,html,duration,clock,plannedCalculate,plannedHtml,policyLabel,payment};
 })();
