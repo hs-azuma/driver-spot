@@ -1,8 +1,11 @@
 import {hash, randomToken, rest, site} from './common.ts';
-const cors = {'Access-Control-Allow-Origin':site, 'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info', 'Access-Control-Allow-Methods':'POST, OPTIONS', 'Cache-Control':'no-store'};
+const cors = {'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info, x-region, x-retry-count, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, traceparent, tracestate, baggage', 'Access-Control-Allow-Methods':'POST, OPTIONS', 'Cache-Control':'no-store'};
 const out = (body, status=200) => new Response(JSON.stringify(body), {status, headers:{...cors, 'Content-Type':'application/json'}});
 export async function handle(req) {
-  if (req.method === 'OPTIONS') return new Response(null, {status:204, headers:cors});
+  if (req.method === 'OPTIONS') {
+    console.info('LINE account preflight', JSON.stringify({origin:req.headers.get('origin'), headers:req.headers.get('access-control-request-headers')}));
+    return new Response(null, {status:204, headers:cors});
+  }
   if (req.method !== 'POST') return out({error:'Method not allowed'},405);
   const auth = req.headers.get('Authorization') || '';
   if (!/^Bearer .+/.test(auth)) return out({error:'ログインしてください。'},401);
