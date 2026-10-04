@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 globalThis.Deno={env:{get:name=>env[name]},serve:()=>{}};
 let env={LINE_CHANNEL_SECRET:'test-only-secret',LINE_CHANNEL_ACCESS_TOKEN:'test-only-token',SUPABASE_URL:'https://example.test',SUPABASE_SERVICE_ROLE_KEY:'test-only-service',SUPABASE_ANON_KEY:'test-only-anon'};
-const {hash,verifySignature}=await import('../functions/line-webhook/common.ts');
+const {hash,verifySignature,rest}=await import('../functions/line-webhook/common.ts');
 const {handle:webhook}=await import('../functions/line-webhook/index.ts');
 const {handle:account}=await import('../functions/line-account/index.ts');
 let checks=0;const check=(actual,expected)=>{assert.deepEqual(actual,expected);checks++;};
@@ -27,6 +27,21 @@ check((await account(request({action:'begin',ticket:'bad'}))).status,400);
 const result=await (await account(request({action:'begin',ticket:'a'.repeat(64)}))).json();const link=new URL(result.url);
 check(link.origin,'https://access.line.me');check(link.searchParams.get('linkToken'),'test-link-token');check(link.searchParams.get('nonce').length,64);
 const rpcCall=calls.find(x=>x.url.endsWith('/rpc/begin_line_link'));const payload=JSON.parse(rpcCall.body);check(payload.p_user_id,uid);check(payload.p_nonce_hash,await hash(link.searchParams.get('nonce')));check(payload.p_ticket_hash,await hash('a'.repeat(64)));
+globalThis.fetch=async()=>new Response(null,{status:201});
+check(await rest('line_link_requests',{method:'POST'}),null);
+let reply;
+globalThis.fetch=async(url,options={})=>{
+ if(url.endsWith('/linkToken'))return Response.json({linkToken:'test-only-link'});
+ if(url.endsWith('/message/reply')){reply=JSON.parse(options.body);return new Response('',{status:200});}
+ if(options.method==='DELETE')return new Response(null,{status:204});
+ if(options.method==='POST')return new Response(null,{status:201});
+ throw new Error('Unexpected fetch');
+};
+const message=JSON.stringify({events:[{type:'message',source:{type:'user',userId:'U'+'1'.repeat(32)},replyToken:'test-only-reply',message:{type:'text',text:'連携'}}]});
+check((await webhook(new Request('https://example.test',{method:'POST',body:message,headers:{'x-line-signature':await sign(message)}}))).status,200);
+check(reply.replyToken,'test-only-reply');
+check(reply.messages[0].text.includes('https://spodora.com/line-link.html?ticket='),true);
+check(reply.messages[0].text.includes('\nhttps://'),true);
 globalThis.fetch=async()=>new Response('',{status:401});
 check((await account(request({action:'status'}))).status,401);
 console.log(checks+' checks passed; only mocked LINE/network calls used.');

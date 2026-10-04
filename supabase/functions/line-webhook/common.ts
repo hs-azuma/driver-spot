@@ -17,7 +17,8 @@ export async function rest(path, options = {}) {
     ...options, headers: {apikey:key, Authorization:'Bearer ' + key, 'Content-Type':'application/json', ...options.headers}, signal:AbortSignal.timeout(10000)
   });
   if (!response.ok) throw new Error('database request failed');
-  return response.status === 204 ? null : response.json();
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
 export async function line(path, body) {
   const response = await fetch('https://api.line.me/v2/bot/' + path, {
@@ -25,5 +26,6 @@ export async function line(path, body) {
     body:body === undefined ? undefined : JSON.stringify(body), signal:AbortSignal.timeout(10000)
   });
   if (!response.ok) throw new Error('LINE request failed');
-  return response.json();
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
 }
