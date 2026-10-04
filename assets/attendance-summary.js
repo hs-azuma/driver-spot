@@ -26,5 +26,20 @@
   out+='<div style="color:#68758b;font-size:12px">実打刻と休憩予定からの参考額です。実際の休憩・勤務内容の確認前は確定額ではありません。交通費・割増等は含みません。'+(j.pay_type==='日給'?'日給は求人記載額を表示しています。':'')+'</div></div>';
   return out;
  }
- window.SpodoraAttendance={calculate,html,duration,clock};
+
+ function plannedCalculate(j){
+  const parse=x=>{const m=/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec(String(x||''));if(!m||+m[1]>23||+m[2]>59||+(m[3]||0)>59)return null;return +m[1]*3600+ +m[2]*60+ +(m[3]||0)};
+  const start=parse(j.start_time),end=parse(j.end_time);
+  if(start==null||end==null||start===end)return {error:'勤務予定時間を確認してください。'};
+  const elapsed=end>start?end-start:end+86400-start;
+  return calculate({checked_in_at:new Date(start*1000).toISOString(),checked_out_at:new Date((start+elapsed)*1000).toISOString()},j);
+ }
+ function plannedHtml(j){
+  const c=plannedCalculate(j);
+  let out='<div style="background:#edf4ff;border-radius:10px;padding:14px;margin:12px 0;line-height:1.8"><strong>この仕事の勤務・報酬目安</strong>';
+  if(c.error)return out+'<div>予定実働・基本報酬目安：要確認</div></div>';
+  out+='<div>予定実働 <strong>'+duration(c.worked)+'</strong>（休憩 '+c.rest+'分を除く）</div><div>基本報酬目安 <strong>'+(c.amount==null?'要確認':c.amount.toLocaleString('ja-JP')+'円')+'</strong></div>';
+  return out+'<div style="font-size:12px;color:#68758b">求人の予定時間・休憩からの参考額です。交通費は別表示、割増等は含みません。実際の勤務により変わる場合があります。</div></div>';
+ }
+ window.SpodoraAttendance={calculate,html,duration,clock,plannedCalculate,plannedHtml};
 })();
