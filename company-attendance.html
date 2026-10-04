@@ -3,11 +3,36 @@
 .spodora-brand img{display:block;width:100%;height:auto}
 @media(max-width:650px){.spodora-brand{width:240px;max-width:72vw}}
 </style></head><body><header><h1><a class="spodora-brand" href="./"><img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ"></a></h1><p>会社端末・QR打刻</p></header><main><div class="card"><h2>ドライバーQRを読み取る</h2><p>ドライバー本人の携帯で「出勤」または「退勤」を選び、表示されたQRを会社端末にかざしてください。</p><button onclick="location.href='./company.html'">企業マイページへ戻る</button><div id="native" class="camera" style="display:none"><video id="video" playsinline muted></video><div class="guide"></div></div><div id="reader" class="fallback"></div><div id="msg"><p class="info">カメラを準備しています…</p></div></div></main><script>
-const db=supabase.createClient('https://wyxuekjikvflpcmlliwn.supabase.co','sb_publishable_YCin6s4LUf-5Xk44OmU6zQ_gDk9ThSC');let busy=false,stream=null,detector=null,raf=null,scanner=null;const msg=document.getElementById('msg'),video=document.getElementById('video');const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+const db=supabase.createClient('https://wyxuekjikvflpcmlliwn.supabase.co','sb_publishable_YCin6s4LUf-5Xk44OmU6zQ_gDk9ThSC');let busy=false,stream=null,detector=null,raf=null,scanner=null,lastScan='',lastScanAt=0;const recordedScans=new Set();const msg=document.getElementById('msg'),video=document.getElementById('video');const esc=s=>String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 function parse(text){text=String(text||'').trim();if(text.startsWith('DRIVERSPOT:')){let p=text.split(':');return{token:p[1]||'',action:p[2]||''}}try{let u=new URL(text);return{token:u.searchParams.get('driver')||'',action:u.searchParams.get('action')||''}}catch(e){return{token:'',action:''}}}
-async function accept(text){if(busy)return;let x=parse(text);if(!x.token||!['in','out'].includes(x.action))return;busy=true;msg.innerHTML='<p class="info">QRを認識しました。記録中…</p>';let r=await db.rpc('scan_driver_attendance',{p_token:x.token,p_action:x.action});if(r.error)msg.innerHTML='<p class="err">'+esc(r.error.message)+'</p>';else msg.innerHTML='<p class="ok">✓ '+(x.action==='in'?'出勤':'退勤')+'を記録しました<br>'+esc(r.data||'')+'</p>';setTimeout(()=>{busy=false;msg.innerHTML='<p class="info">次のQRを読み取れます。</p>'},2500)}
-async function nativeLoop(){if(!detector||video.readyState<2){raf=requestAnimationFrame(nativeLoop);return}try{let codes=await detector.detect(video);if(codes&&codes.length)await accept(codes[0].rawValue)}catch(e){}raf=requestAnimationFrame(nativeLoop)}
+async function accept(text){
+ if(busy)return;
+ let x=parse(text);
+ if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(x.token)||!['in','out'].includes(x.action))return;
+ let key=x.token+':'+x.action+':'+new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Tokyo'}),now=Date.now();
+ if(recordedScans.has(key)||(lastScan===key&&now-lastScanAt<10000))return;
+ busy=true;lastScan=key;lastScanAt=now;
+ msg.innerHTML='<p class="info">QRを認識しました。記録中…</p>';
+ try{
+  let r=await db.rpc('scan_driver_attendance',{p_token:x.token,p_action:x.action});
+  if(r.error)msg.innerHTML='<p class="err">'+esc(r.error.message)+'</p>';
+  else {recordedScans.add(key);msg.innerHTML='<p class="ok">✓ '+(x.action==='in'?'出勤':'退勤')+'を記録しました<br>'+esc(r.data||'')+'</p><p>次の方のQRをかざしてください。</p>'}
+ }catch(err){msg.innerHTML='<p class="err">通信できませんでした。接続を確認し、10秒後にもう一度QRをかざしてください。</p>'}
+ finally{busy=false}
+}
+async function nativeLoop(){if(stopped)return;if(!detector||video.readyState<2){raf=requestAnimationFrame(nativeLoop);return}try{let codes=await detector.detect(video);if(codes&&codes.length)await accept(codes[0].rawValue)}catch(e){}raf=requestAnimationFrame(nativeLoop)}
 async function startNative(){if(!('BarcodeDetector' in window))throw new Error('BarcodeDetector unavailable');let formats=await BarcodeDetector.getSupportedFormats();if(!formats.includes('qr_code'))throw new Error('QR unsupported');detector=new BarcodeDetector({formats:['qr_code']});stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});video.srcObject=stream;await video.play();document.getElementById('native').style.display='block';msg.innerHTML='<p class="info">QRコードを枠内にかざしてください。</p>';nativeLoop()}
-function startFallback(){document.getElementById('reader').style.display='block';msg.innerHTML='<p class="info">QRコードを枠内にかざしてください。</p>';scanner=new Html5QrcodeScanner('reader',{fps:25,qrbox:(w,h)=>{let s=Math.floor(Math.min(w,h)*.82);return{width:s,height:s}},rememberLastUsedCamera:true,supportedScanTypes:[Html5QrcodeScanType.SCAN_TYPE_CAMERA]},false);scanner.render(accept,()=>{})}
-async function init(){let u=(await db.auth.getUser()).data.user;if(!u){msg.innerHTML='<p class="err">企業アカウントでログインしてください。</p>';return}try{await startNative()}catch(err){startFallback()}}window.addEventListener('pagehide',()=>{if(raf)cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop())});init();
+function stopNative(){if(raf)cancelAnimationFrame(raf);raf=null;if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;video.srcObject=null;document.getElementById('native').style.display='none'}
+function startFallback(){if(typeof Html5QrcodeScanner==='undefined'){msg.innerHTML='<p class="err">QR読み取り機能を読み込めませんでした。通信を確認してページを開き直してください。</p>';return}document.getElementById('reader').style.display='block';msg.innerHTML='<p class="info">QRコードを枠内にかざしてください。</p>';scanner=new Html5QrcodeScanner('reader',{fps:25,qrbox:(w,h)=>{let s=Math.floor(Math.min(w,h)*.82);return{width:s,height:s}},rememberLastUsedCamera:true,supportedScanTypes:[Html5QrcodeScanType.SCAN_TYPE_CAMERA]},false);scanner.render(accept,()=>{})}
+let stopped=false;
+async function init(){
+ let u=(await db.auth.getUser()).data.user;
+ if(!u){msg.innerHTML='<p class="err">企業アカウントでログインしてください。</p>';return}
+ let c=await db.from('companies').select('id').eq('user_id',u.id).maybeSingle();
+ if(c.error||!c.data){msg.innerHTML='<p class="err">企業アカウントを確認できませんでした。企業マイページから開き直してください。</p>';return}
+ try{await startNative()}catch(err){stopNative();if(!stopped)startFallback()}
+}
+window.addEventListener('pagehide',()=>{stopped=true;stopNative();if(scanner)scanner.clear().catch(()=>{})});
+window.addEventListener('pageshow',event=>{if(event.persisted)location.reload()});
+init();
 </script></body></html>
