@@ -25,7 +25,7 @@ async function toggleJobFavorite(id){
  if(!currentDriver)return showLogin();
  id=Number(id);if(!Number.isSafeInteger(id)||driverFavoriteBusy.has(id))return;
  const driverId=currentDriver.id,remove=driverJobFavorites.has(id);
- driverFavoriteBusy.add(id);const button=$('favorite-'+id);if(button){button.disabled=true;button.textContent='保存中…'}
+ driverFavoriteBusy.add(id);document.querySelectorAll('[data-job-favorite="'+id+'"]').forEach(button=>{button.disabled=true;button.textContent='保存中…'})
  try{
   const q=db.from('driver_job_favorites');
   const r=remove?await q.delete().eq('driver_id',driverId).eq('job_id',id):await q.insert({driver_id:driverId,job_id:id});
@@ -34,7 +34,7 @@ async function toggleJobFavorite(id){
   if(remove)driverJobFavorites.delete(id);else driverJobFavorites.set(id,new Date().toISOString());
   if($('jobFavoriteMessage')){driverJobDetailId==null?renderDriverJobs():renderDriverJobDetails(driverJobDetailId);$('jobFavoriteMessage').textContent=remove?'お気に入りから外しました。':'お気に入りに保存しました。'}
  }catch(err){if(currentDriver?.id===driverId&&$('jobFavoriteMessage'))$('jobFavoriteMessage').textContent='保存できませんでした。もう一度お試しください。'}
- finally{driverFavoriteBusy.delete(id);const btn=$('favorite-'+id);if(btn){btn.disabled=false;btn.textContent=driverJobFavorites.has(id)?'★ 保存済み（解除）':'☆ お気に入りに保存'}}
+ finally{driverFavoriteBusy.delete(id);document.querySelectorAll('[data-job-favorite="'+id+'"]').forEach(btn=>{btn.disabled=false;btn.textContent=driverJobFavorites.has(id)?'★ 保存済み（解除）':'☆ お気に入りに保存';btn.setAttribute('aria-pressed',String(driverJobFavorites.has(id)))})}
 }
 function renderDriverJobs(){
  driverJobDetailId=null;
@@ -47,15 +47,21 @@ function renderDriverJobs(){
  '<div class="row" style="margin-top:14px" aria-label="勤務日の絞り込み">'+Object.entries({all:'日付指定なし',today:'今日',tomorrow:'明日',week:'今週'}).map(([key,label])=>'<button class="'+(driverJobPeriod===key?'primary':'')+'" aria-pressed="'+(driverJobPeriod===key)+'" onclick="setDriverJobPeriod(\''+key+'\')">'+label+'</button>').join('')+'</div><p style="color:#68758b;font-size:13px">応募できる求人を勤務日・開始時刻が近い順に表示します。今週は月曜日〜日曜日です。募集終了・募集充足の求人は除いています。応募済みの仕事は「応募・仕事管理」で確認できます。</p>')+'<p id="jobFavoriteMessage" role="status" aria-live="polite"></p></div>';
  const cards=jobs.map(j=>{
   const id=Number(j.id),a=apps.get(id),need=Number(j.required_headcount||1),remain=Math.max(0,need-Number(j.hired_count||0)),open=SpodoraJobBrowse.open(j,now);
-  return '<article class="card job-list-card">'+(!open?'<span class="decision '+(j.status==='キャンセル'?'red':'')+'">'+driverJobEndedLabel(j)+'</span>':'')+(j.urgent?'<span class="badge urgent">緊急募集</span>':'')+'<h2><button class="job-title-button" onclick="showDriverJobDetails('+id+')">'+e(j.job_description||'ドライバー求人')+'</button></h2><p class="job-list-date">'+e(wd(j.work_date||''))+'　'+tm(j.start_time)+'〜'+tm(j.end_time)+'</p><p class="job-list-location">'+e(j.location||[j.work_prefecture,j.work_municipality].filter(Boolean).join('')||'勤務地は詳細をご確認ください')+'</p>'+jobCardEstimate(j)+'<div class="row job-list-badges">'+(j.vehicle_type?'<span class="badge">'+e(j.vehicle_type)+'</span>':'')+'<span class="badge">残り '+remain+'人</span>'+(a?state(a.status):'')+'</div><div class="row job-list-actions"><button class="primary" onclick="showDriverJobDetails('+id+')">詳細を見る</button>'+driverJobSaveButton(j)+'</div></article>';
+  return '<article class="card job-list-card">'+(!open?'<span class="decision '+(j.status==='キャンセル'?'red':'')+'">'+driverJobEndedLabel(j)+'</span>':'')+(j.urgent?'<span class="badge urgent">緊急募集</span>':'')+'<h2><button class="job-title-button" onclick="showDriverJobDetails('+id+')">'+e(j.job_description||'ドライバー求人')+'</button></h2><p class="job-list-date">'+e(wd(j.work_date||''))+'　'+tm(j.start_time)+'〜'+tm(j.end_time)+'</p><p class="job-list-location">'+e(j.location||[j.work_prefecture,j.work_municipality].filter(Boolean).join('')||'勤務地は詳細をご確認ください')+'</p>'+jobCardEstimate(j)+'<div class="row job-list-badges">'+(j.vehicle_type?'<span class="badge">'+e(j.vehicle_type)+'</span>':'')+'<span class="badge">残り '+remain+'人</span>'+(a?state(a.status):'')+'</div><div class="row job-list-actions"><button class="primary" onclick="showDriverJobDetails('+id+')">詳細を見る</button>'+driverJobApplyButton(j)+driverJobSaveButton(j)+'</div></article>';
  }).join('');
  $('content').innerHTML=controls+(cards||'<div class="card">'+(savedView?'お気に入りはまだありません。求人の「☆ お気に入りに保存」を押すと、ここから見返せます。':driverJobView==='matches'?'選んだ日付・希望条件に合う求人は現在ありません。「すべての求人」や別の日付も確認できます。':'選んだ日付で応募できる求人は現在ありません。')+'</div>');
 }
 function driverJobEndedLabel(j){return j.status==='キャンセル'?'求人取消済み':Number(j.hired_count||0)>=Number(j.required_headcount||1)?'募集終了（募集充足）':'募集終了'}
-function driverJobSaveButton(j){
+function openDriverJobApplication(id){location.href='./apply-confirm.html?job='+Number(id)}
+function driverJobApplyButton(j,label='応募する'){
+ const id=Number(j.id);
+ if(driverJobApplications.has(id)||!SpodoraJobBrowse.open(j))return '';
+ return '<button class="primary" onclick="openDriverJobApplication('+id+')">'+label+'</button>';
+}
+function driverJobSaveButton(j,position=''){
  if(!currentDriver)return '';
  const id=Number(j.id),saved=driverJobFavorites.has(id);
- return '<button id="favorite-'+id+'" aria-pressed="'+saved+'" '+(driverFavoriteBusy.has(id)?'disabled':'')+' onclick="toggleJobFavorite('+id+')">'+(saved?'★ 保存済み（解除）':'☆ お気に入りに保存')+'</button>';
+ return '<button id="favorite-'+id+position+'" data-job-favorite="'+id+'" aria-pressed="'+saved+'" '+(driverFavoriteBusy.has(id)?'disabled':'')+' onclick="toggleJobFavorite('+id+')">'+(saved?'★ 保存済み（解除）':'☆ お気に入りに保存')+'</button>';
 }
 function jobCardEstimate(j){
  const c=SpodoraAttendance.plannedCalculate(j),fee=Number(j.transportation_fee),knownFee=j.transportation_fee!=null&&Number.isFinite(fee)&&fee>=0;
@@ -72,8 +78,8 @@ function renderDriverJobDetails(id){
  if(!j){renderDriverJobs();return}
  driverJobDetailId=id;
  const a=driverJobApplications.get(id),open=SpodoraJobBrowse.open(j),need=Number(j.required_headcount||1),remain=Math.max(0,need-Number(j.hired_count||0));
- const action=a?state(a.status)+(a.status==='応募中'||a.status==='採用候補'?' <button class="danger" onclick="cancelApp('+Number(a.id)+')">応募をキャンセル</button>':''):open?'<button class="primary" onclick="location.href=\'./apply-confirm.html?job='+id+'\'">この求人に応募する</button>':'';
- $('content').innerHTML='<div class="row" style="margin-bottom:16px"><button onclick="returnDriverJobList()">← 求人一覧へ戻る</button></div><article class="card job-detail-card">'+(!open?'<span class="decision '+(j.status==='キャンセル'?'red':'')+'">'+driverJobEndedLabel(j)+'</span>':'')+(j.urgent?'<span class="badge urgent">緊急募集</span>':'')+'<h2 tabindex="-1">'+e(j.job_description||'ドライバー求人')+'</h2><p><b>'+e(wd(j.work_date||''))+'　'+tm(j.start_time)+'〜'+tm(j.end_time)+'</b></p><p>'+e(j.location||'')+(j.destination?' → '+e(j.destination):'')+'</p><div class="salary">'+e(j.pay_type||'')+' '+Number(j.pay_amount||0).toLocaleString()+'円</div><div class="row" style="margin-top:12px"><span class="badge">必要 '+need+'人</span><span class="badge">残り '+remain+'人</span></div>'+jobDetail(j)+'<div class="row" style="margin-top:16px">'+action+driverJobSaveButton(j)+'</div><p id="jobFavoriteMessage" role="status" aria-live="polite"></p></article><button onclick="returnDriverJobList()">← 求人一覧へ戻る</button>';
+ const action=a?state(a.status)+(a.status==='応募中'||a.status==='採用候補'?' <button class="danger" onclick="cancelApp('+Number(a.id)+')">応募をキャンセル</button>':'') :driverJobApplyButton(j,'この求人に応募する');
+ $('content').innerHTML='<div class="row" style="margin-bottom:16px"><button onclick="returnDriverJobList()">← 求人一覧へ戻る</button></div><article class="card job-detail-card">'+(!open?'<span class="decision '+(j.status==='キャンセル'?'red':'')+'">'+driverJobEndedLabel(j)+'</span>':'')+(j.urgent?'<span class="badge urgent">緊急募集</span>':'')+'<h2 tabindex="-1">'+e(j.job_description||'ドライバー求人')+'</h2><div class="row job-detail-top-actions" style="margin:16px 0">'+action+driverJobSaveButton(j,'-top')+'</div><p><b>'+e(wd(j.work_date||''))+'　'+tm(j.start_time)+'〜'+tm(j.end_time)+'</b></p><p>'+e(j.location||'')+(j.destination?' → '+e(j.destination):'')+'</p><div class="salary">'+e(j.pay_type||'')+' '+Number(j.pay_amount||0).toLocaleString()+'円</div><div class="row" style="margin-top:12px"><span class="badge">必要 '+need+'人</span><span class="badge">残り '+remain+'人</span></div>'+jobDetail(j)+'<div class="row" style="margin-top:16px">'+action+driverJobSaveButton(j)+'</div><p id="jobFavoriteMessage" role="status" aria-live="polite"></p></article><button onclick="returnDriverJobList()">← 求人一覧へ戻る</button>';
 }
 
 async function showJobInvitations(){
