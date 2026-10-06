@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -28,14 +29,19 @@ def request_config(token, method="GET", payload=None):
     req = urllib.request.Request(ENDPOINT, data=data, method=method,
                                  headers={"Authorization": f"Bearer {token}",
                                           "Content-Type": "application/json"})
-    try:
-        with urllib.request.build_opener(NoRedirect).open(req, timeout=45) as response:
-            return json.load(response)
-    except urllib.error.HTTPError as error:
-        # Do not expose the response body, request headers, or SMTP credentials.
-        raise ConfigurationError(f"Supabase Auth API failed (HTTP {error.code}).") from None
-    except (urllib.error.URLError, ValueError, TimeoutError):
-        raise ConfigurationError("Supabase Auth API connection or response failed.") from None
+    attempts = 3 if method == "GET" else 1
+    for attempt in range(attempts):
+        try:
+            with urllib.request.build_opener(NoRedirect).open(req, timeout=45) as response:
+                return json.load(response)
+        except urllib.error.HTTPError as error:
+            if method == "GET" and error.code in {429, 500, 502, 503, 504} and attempt + 1 < attempts:
+                time.sleep(2 * (attempt + 1))
+                continue
+            # Do not expose the response body, request headers, or SMTP credentials.
+            raise ConfigurationError(f"Supabase Auth {method} API failed (HTTP {error.code}).") from None
+        except (urllib.error.URLError, ValueError, TimeoutError):
+            raise ConfigurationError(f"Supabase Auth {method} API connection or response failed.") from None
 
 
 def apply(template, env, api=request_config):

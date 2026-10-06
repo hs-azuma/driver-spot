@@ -9,6 +9,8 @@
         url.searchParams.getAll('type').length !== 1 ||
         url.searchParams.get('type') !== 'signup') return null;
     const token = url.searchParams.get('token') || url.searchParams.get('token_hash');
+    if (url.searchParams.getAll('token').length + url.searchParams.getAll('token_hash').length !== 1 ||
+        url.searchParams.getAll('redirect_to').length > 1) return null;
     if (!token || !/^[A-Za-z0-9_-]{20,256}$/.test(token)) return null;
     const target = url.searchParams.get('redirect_to');
     if (target) {

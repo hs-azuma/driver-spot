@@ -6,6 +6,8 @@ const base = 'https://wyxuekjikvflpcmlliwn.supabase.co/auth/v1/verify';
 const token = 'a'.repeat(64);
 const good = `${base}?token=${token}&type=signup&redirect_to=${encodeURIComponent('https://spodora.com/driver.html')}`;
 assert.equal(confirmationUrl('#' + good), good);
+assert.equal(confirmationUrl(good + '&redirect_to=https://attacker.example'), null);
+assert.equal(confirmationUrl(good + '&token=' + token), null);
 assert.ok(confirmationUrl(`${base}?token=${token}&type=signup&redirect_to=${encodeURIComponent('https://hs-azuma.github.io/driver-spot/company-register.html')}`));
 for (const bad of ['', '#javascript:alert(1)', good.replace('https:', 'http:'), good.replace('wyxuekjikvflpcmlliwn.supabase.co', 'attacker.example'), good.replace('type=signup', 'type=recovery'), good.replace('type=signup', 'type=signup&type=recovery'), good.replace(token, 'short'), good + '#unexpected', `${base}?token=${token}&type=signup&redirect_to=https://attacker.example`]) assert.equal(confirmationUrl(bad), null);
 let clicks, navigated, cleared;
