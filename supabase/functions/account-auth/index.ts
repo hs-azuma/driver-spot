@@ -8,6 +8,7 @@ const digest=async(s:string)=>Array.from(new Uint8Array(await crypto.subtle.dige
 const newCode=()=>Array.from(crypto.getRandomValues(new Uint8Array(24)),x=>x.toString(16).padStart(2,'0')).join('');
 const normalize=(s:unknown)=>typeof s==='string'?s.trim().toLowerCase():'';
 const internalEmail=(email:string)=>email.endsWith('@accounts.spodora.invalid');
+function signupError(error:{code?:string,status?:number}|null){const code=error?.code;if(code==='email_exists'||code==='user_already_exists')return 'email_in_use';if(code==='weak_password')return 'weak_password';if(code==='email_address_invalid'||code==='validation_failed')return 'invalid_email';if(code==='over_request_rate_limit'||code==='over_email_send_rate_limit')return 'rate_limited';return 'registration_unavailable'}
 async function allow(key:string,limit:number,seconds=600){const r=await admin.rpc('account_auth_allow',{p_key:key,p_limit:limit,p_seconds:seconds});return !r.error&&r.data===true}
 Deno.serve(async req=>{
  const origin=req.headers.get('Origin')||'';
@@ -42,7 +43,7 @@ Deno.serve(async req=>{
    if(action==='email'){
     const email=normalize(body.email);if(!email||email.length>254||! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||internalEmail(email))return out({error:'invalid_email'},400);
     const updated=await admin.auth.admin.updateUserById(user.id,{email,email_confirm:true});
-    if(updated.error)return out({error:'signup_failed'},400);
+    if(updated.error)return out({error:signupError(updated.error)},400);
     await admin.from('drivers').update({email}).eq('user_id',user.id);
     await admin.from('companies').update({email}).eq('user_id',user.id);
     return out({email});
@@ -72,7 +73,7 @@ Deno.serve(async req=>{
    const address=email||crypto.randomUUID()+'@accounts.spodora.invalid';
    // Reserved non-deliverable address is solely an internal auth identifier, never a notification address.
    const made=await admin.auth.admin.createUser({email:address,password,email_confirm:true,user_metadata:profile});
-   if(made.error||!made.data.user){await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:'signup_failed'},400)}
+   if(made.error||!made.data.user){await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:signupError(made.error)},400)}
    const code=newCode(),hash=await digest(loginId+':'+code);
    const linked=await admin.from('account_login_ids').update({user_id:made.data.user.id,recovery_hash:hash}).eq('login_id',loginId).is('user_id',null).select('user_id');
    if(linked.error||linked.data?.length!==1){await admin.auth.admin.deleteUser(made.data.user.id);await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:'unavailable'},503)}
