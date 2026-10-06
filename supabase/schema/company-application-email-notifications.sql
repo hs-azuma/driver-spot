@@ -30,7 +30,7 @@ begin
  select company_name,user_id,email into c from public.companies where id=j.company_id;
  if c.user_id is null then return new; end if;
  select coalesce(nullif(trim(c.email),''),u.email) into recipient_email from auth.users u where u.id=c.user_id;
- if recipient_email is null or trim(recipient_email)='' then return new;end if;
+ if recipient_email is null or trim(recipient_email)='' or recipient_email like '%@accounts.spodora.invalid' then return new;end if;
  select name into driver_name from public.drivers where id=new.driver_id;
  insert into public.company_application_email_queue(company_id,application_id,job_id,recipient,subject,message)
  values(j.company_id,new.id,j.id,recipient_email,
@@ -72,3 +72,4 @@ language sql security invoker set search_path='' as $$select * from spodora_priv
 revoke all on function public.claim_company_application_emails() from public,anon,authenticated;
 grant execute on function public.claim_company_application_emails() to service_role;
 notify pgrst,'reload schema';
+

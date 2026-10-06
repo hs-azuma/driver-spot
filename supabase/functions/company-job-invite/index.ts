@@ -67,7 +67,7 @@ Deno.serve(async req=>{
   if(!key)throw new Error('email not configured');
   const {data:u,error:ue}=await admin.auth.admin.getUserById(d.user_id);if(ue)throw ue;
   const to=u?.user?.email;
-  if(to){
+  if(to&&!to.endsWith('@accounts.spodora.invalid')){
    const links=unsubscribeLinks(await unsubscribeToken(d.user_id,secret));
    const fee=j.transportation_fee==null?'要確認':Number(j.transportation_fee).toLocaleString()+'円';
    const text=[(d.name||'')+' 様','',''+(c.company_name||'企業')+'から求人の案内が届きました。','採用確定ではありません。内容を確認し、希望する場合は応募してください。','','仕事内容：'+(j.job_description||'ドライバー求人'),'勤務日：'+(j.work_date||''),'勤務時間：'+String(j.start_time||'').slice(0,5)+'〜'+String(j.end_time||'').slice(0,5),'勤務地：'+(j.location||''),'給与：'+(j.pay_type||'')+' '+Number(j.pay_amount||0).toLocaleString()+'円','交通費：'+fee,'給与保証：'+(j.pay_guarantee===true?'募集時間分の基本給与を保証':j.pay_guarantee===false?'実働時間で計算':'未設定'),'','求人の詳細・応募：https://spodora.com/driver.html?invites=1','','求人メールの配信停止（ログイン不要）：',links.page,'採用・選考結果など、利用に必要なメールは継続します。','','スポドラ'].join('\n');
@@ -82,3 +82,4 @@ Deno.serve(async req=>{
  return out({ok:true,created:(created||[]).length,email_sent:sent,email_failed:failed,skipped:ids.length-(created||[]).length});
  }catch(err){return out({error:'invitation processing failed'},500)}
 });
+
