@@ -7,6 +7,9 @@ on:
       - supabase/templates/confirm-signup-ja.json
       - scripts/apply-auth-email.py
       - tests/test_auth_email.py
+      - tests/test-auth-confirm.js
+      - assets/auth-confirm.js
+      - auth-confirm.html
       - .github/workflows/apply-auth-email.yml
 permissions:
   contents: read
@@ -24,6 +27,8 @@ jobs:
           persist-credentials: false
       - name: Test permitted changes and verification
         run: python3 -m unittest discover -s tests -p test_auth_email.py
+      - name: Test confirmation page destination and explicit click
+        run: node tests/test-auth-confirm.js
       - name: Apply and verify signup email settings
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
