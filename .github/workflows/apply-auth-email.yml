@@ -1,0 +1,31 @@
+name: Apply Japanese signup email
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - supabase/templates/confirm-signup-ja.json
+      - scripts/apply-auth-email.py
+      - tests/test_auth_email.py
+      - .github/workflows/apply-auth-email.yml
+permissions:
+  contents: read
+concurrency:
+  group: production-auth-email
+  cancel-in-progress: false
+jobs:
+  apply:
+    if: github.repository == 'hs-azuma/driver-spot' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Test permitted changes and verification
+        run: python3 -m unittest discover -s tests -p test_auth_email.py
+      - name: Apply and verify signup email settings
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          RESEND_AUTH_API_KEY: ${{ secrets.RESEND_AUTH_API_KEY }}
+        run: python3 scripts/apply-auth-email.py

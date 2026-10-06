@@ -1,25 +1,46 @@
-# 登録確認メールの日本語テンプレート
+# 新規登録の確認メール（日本語）
 
-## 反映状態
-2026-10-06：準備済み。本番のSupabase Auth設定には未反映。
-GitHub Pagesへの公開だけではAuthメール設定は変更されない。
+## 状態
 
-## 適用対象
-Supabaseプロジェクト wyxuekjikvflpcmlliwn の Confirm sign up テンプレート。
-件名：【スポドラ】メールアドレスの確認
-本文：confirm-signup-ja.html
-Management APIの変更内容：confirm-signup-ja.json（上記2項目のみ）。
+日本語テンプレートと適用・照合処理を保存済み。本番への適用・受信確認はまだ完了していません。
+GitHub Actions の成功は設定値の照合を意味し、メールの受信確認とは区別します。
 
-## 適用と確認
-既存の正規管理アクセスを確認し、DashboardのEmail Templatesから件名と本文を保存、
-または公式Management APIのconfig/authにJSONをPATCHする。
-認証・SMTP・確認メールの有効/無効・リダイレクト設定は変更しない。
-ConfirmationURLのプレースホルダーを保持する。
-保存後に設定を読み直し、件名・本文が一致することを確認する。
-確認メールの実送信では日本語件名・本文・リンク表示と正常なメール確認を確認する。
+## 一度だけ必要な接続設定
 
-## ユーザーのアクセスに関する指示
-既存の接続と過去に成功した方法を先に確認し、同じログイン・許可要求を繰り返さない。
-実行を確認できていない設定変更を完了と報告しない。
+リポジトリ hs-azuma/driver-spot の Settings → Secrets and variables → Actions に登録します。
+鍵をチャット、ソース、ログに貼らないでください。
 
-公式仕様：https://supabase.com/docs/guides/auth/auth-email-templates
+- `SUPABASE_ACCESS_TOKEN`: この本番プロジェクトの Auth 設定読み取り・更新を許可する管理トークン。利用できる場合は対象プロジェクトを限定した fine-grained token を使用します。必要権限は公式の GET/PATCH Auth config API を確認してください。
+- `RESEND_AUTH_API_KEY`: 送信元 spodora.com に限定した Sending access の Resend キー。custom SMTP が未設定の場合だけ使用します。既に SMTP が設定されていれば不要です。
+
+spodora.com は 2026-10-06 に Resend の verified / sending enabled を確認済み。
+初回登録後、Actions の「Apply Japanese signup email」を再実行します。
+以後、main に確認メールの JSON を更新すると自動適用し、取得し直して照合します。
+管理トークンの失効・権限不足などは実行結果で確認できます。
+
+## 処理の範囲
+
+`scripts/apply-auth-email.py` は固定した本番プロジェクト wyxuekjikvflpcmlliwn にのみアクセスします。
+変更は確認メールの件名と本文の2項目です。custom SMTP が未設定の場合は、Resend SMTP と
+送信元「スポドラ <noreply@spodora.com>」も設定します。既存 SMTP は変更しません。
+メール認証、登録可否、リダイレクト URL、他のメールテンプレートは変更しません。
+設定取得結果・トークン・SMTP パスワードはログに出しません。API のリダイレクトも許可しません。
+
+## 完了確認
+
+1. Actions の適用と読み戻し照合が成功していること。
+2. テスト登録で届いたメールの件名・本文・確認リンクが日本語であること。
+3. 確認リンクから登録が完了すること。
+
+## 継続作業の方針
+
+既存コネクターと自動処理の結果を先に確認し、画面の案内・スクリーンショット依頼を繰り返さない。
+コードの準備、実設定への適用、実際の受信確認を分けて記録し、未確認の作業を完了と報告しない。
+この自動処理は Auth 確認メール用です。他の管理作業も同じ権限でできるとは判断しません。
+
+## 公式資料
+
+- https://supabase.com/docs/guides/auth/auth-email-templates
+- https://supabase.com/docs/guides/auth/auth-smtp
+- https://supabase.com/docs/reference/api/v1-update-auth-service-config
+- https://resend.com/docs/send-with-supabase-smtp
