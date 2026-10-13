@@ -66,7 +66,10 @@ Deno.serve(async req=>{
    // Only profile values are accepted. Authorization remains based on user_id and existing RLS.
    const permitted=['driver_name','driver_name_kana','driver_phone','driver_area','driver_prefecture','driver_municipality','driver_prefecture_2','driver_municipality_2','driver_prefecture_3','driver_municipality_3','driver_license','driver_experience','company_name','contact_name','company_phone','company_address','match_line_enabled','match_email_enabled',...Array.from({length:3},(_,i)=>['preferred_email_enabled_'+(i+1),'preferred_line_enabled_'+(i+1)]).flat(),'acquisition_source','acquisition_medium','acquisition_campaign','acquisition_content','acquisition_ref'];
    const profile:Record<string,unknown>={};for(const key of permitted){const v=meta[key];if(typeof v==='boolean'||v===null||typeof v==='string'&&v.length<=500)profile[key]=v}
-   if(!(typeof profile.company_name==='string'&&profile.company_name.trim())&&(!(typeof profile.driver_name==='string'&&profile.driver_name.trim())||!(typeof profile.driver_phone==='string'&&profile.driver_phone.trim())||typeof profile.driver_name_kana!=='string'||! /^[ァ-ヶー\s・]+$/.test(profile.driver_name_kana)))return out({error:'invalid_profile'},400);
+   const companySignup=typeof profile.company_name==='string'&&!!profile.company_name.trim();
+   if(companySignup&&Object.keys(meta).some(key=>key.startsWith('driver_')))return out({error:'separate_account_required'},400);
+   if(!companySignup&&Object.keys(meta).some(key=>['company_name','contact_name','company_phone','company_address'].includes(key)))return out({error:'separate_account_required'},400);
+   if(!companySignup&&(!(typeof profile.driver_name==='string'&&profile.driver_name.trim())||!(typeof profile.driver_phone==='string'&&profile.driver_phone.trim())||typeof profile.driver_name_kana!=='string'||! /^[ァ-ヶー\s・]+$/.test(profile.driver_name_kana)))return out({error:'invalid_profile'},400);
    if(!email)profile.match_email_enabled=false;
    const reserved=await admin.from('account_login_ids').insert({login_id:loginId});
    if(reserved.error)return out({error:reserved.error.code==='23505'?'login_id_unavailable':'unavailable'},reserved.error.code==='23505'?409:503);
@@ -74,6 +77,10 @@ Deno.serve(async req=>{
    // Reserved non-deliverable address is solely an internal auth identifier, never a notification address.
    const made=await admin.auth.admin.createUser({email:address,password,email_confirm:true,user_metadata:profile});
    if(made.error||!made.data.user){await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:signupError(made.error)},400)}
+   if(companySignup){
+    const company=await admin.from('companies').insert({user_id:made.data.user.id,company_name:String(profile.company_name).trim(),contact_name:profile.contact_name||null,phone:profile.company_phone||null,address:profile.company_address||null,email:email||null,acquisition_source:profile.acquisition_source||null,acquisition_medium:profile.acquisition_medium||null,acquisition_campaign:profile.acquisition_campaign||null,acquisition_content:profile.acquisition_content||null,acquisition_ref:profile.acquisition_ref||null});
+    if(company.error){await admin.auth.admin.deleteUser(made.data.user.id);await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:'registration_unavailable'},503)}
+   }
    const code=newCode(),hash=await digest(loginId+':'+code);
    const linked=await admin.from('account_login_ids').update({user_id:made.data.user.id,recovery_hash:hash}).eq('login_id',loginId).is('user_id',null).select('user_id');
    if(linked.error||linked.data?.length!==1){await admin.auth.admin.deleteUser(made.data.user.id);await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:'unavailable'},503)}
