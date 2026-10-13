@@ -23,10 +23,19 @@ Deno.serve(async req=>{
  try{
   const raw=await req.text();if(raw.length>16384)return out({error:'bad_request'},400);
   const body=JSON.parse(raw),action=body.action;
-  if(!['signup','login','recover','recovery-code','account-info','email'].includes(action))return out({error:'bad_request'},400);
+  if(!['signup','login','recover','recovery-code','account-info','email','resend-company'].includes(action))return out({error:'bad_request'},400);
   const ip=req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||'unknown';
   const ipHash=await digest('ip:'+SERVICE+':'+ip);
   if(!await allow('global',500,60)||!await allow('ip:'+ipHash,60,600))return out({error:'rate_limited'},429);
+  if(action==='resend-company'){
+   const email=normalize(body.email);
+   if(!email||internalEmail(email)||! /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return out({error:'invalid_email'},400);
+   if(!await allow('company-resend:'+await digest(email),3,3600))return out({error:'rate_limited'},429);
+   const client=createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+   const sent=await client.auth.resend({type:'signup',email,options:{emailRedirectTo:'https://spodora.com/company-register.html'}});
+   if(sent.error)return out({error:signupError(sent.error)},400);
+   return out({confirmation_required:true,email});
+  }
   if(action==='account-info'||action==='recovery-code'||action==='email'){
    const token=(req.headers.get('Authorization')||'').replace(/^Bearer /i,'');
    const {data,error}=await admin.auth.getUser(token);if(error||!data.user)return out({error:'unauthorized'},401);
@@ -67,6 +76,7 @@ Deno.serve(async req=>{
    const permitted=['driver_name','driver_name_kana','driver_phone','driver_area','driver_prefecture','driver_municipality','driver_prefecture_2','driver_municipality_2','driver_prefecture_3','driver_municipality_3','driver_license','driver_experience','company_name','contact_name','company_phone','company_address','match_line_enabled','match_email_enabled',...Array.from({length:3},(_,i)=>['preferred_email_enabled_'+(i+1),'preferred_line_enabled_'+(i+1)]).flat(),'acquisition_source','acquisition_medium','acquisition_campaign','acquisition_content','acquisition_ref'];
    const profile:Record<string,unknown>={};for(const key of permitted){const v=meta[key];if(typeof v==='boolean'||v===null||typeof v==='string'&&v.length<=500)profile[key]=v}
    const companySignup=typeof profile.company_name==='string'&&!!profile.company_name.trim();
+   if(companySignup&&!email)return out({error:'company_email_required'},400);
    if(companySignup&&Object.keys(meta).some(key=>key.startsWith('driver_')))return out({error:'separate_account_required'},400);
    if(!companySignup&&Object.keys(meta).some(key=>['company_name','contact_name','company_phone','company_address'].includes(key)))return out({error:'separate_account_required'},400);
    if(!companySignup&&(!(typeof profile.driver_name==='string'&&profile.driver_name.trim())||!(typeof profile.driver_phone==='string'&&profile.driver_phone.trim())||typeof profile.driver_name_kana!=='string'||! /^[ァ-ヶー\s・]+$/.test(profile.driver_name_kana)))return out({error:'invalid_profile'},400);
@@ -75,16 +85,20 @@ Deno.serve(async req=>{
    if(reserved.error)return out({error:reserved.error.code==='23505'?'login_id_unavailable':'unavailable'},reserved.error.code==='23505'?409:503);
    const address=email||crypto.randomUUID()+'@accounts.spodora.invalid';
    // Reserved non-deliverable address is solely an internal auth identifier, never a notification address.
-   const made=await admin.auth.admin.createUser({email:address,password,email_confirm:true,user_metadata:profile});
+   const made=await admin.auth.admin.createUser({email:address,password,email_confirm:!companySignup,user_metadata:profile});
    if(made.error||!made.data.user){await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:signupError(made.error)},400)}
    if(companySignup){
-    const company=await admin.from('companies').insert({user_id:made.data.user.id,company_name:String(profile.company_name).trim(),contact_name:profile.contact_name||null,phone:profile.company_phone||null,address:profile.company_address||null,email:email||null,acquisition_source:profile.acquisition_source||null,acquisition_medium:profile.acquisition_medium||null,acquisition_campaign:profile.acquisition_campaign||null,acquisition_content:profile.acquisition_content||null,acquisition_ref:profile.acquisition_ref||null});
-    if(company.error){await admin.auth.admin.deleteUser(made.data.user.id);await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:'registration_unavailable'},503)}
+    const pending=await admin.from('pending_company_registrations').insert({user_id:made.data.user.id,profile});
+    if(pending.error){await admin.auth.admin.deleteUser(made.data.user.id);await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:'registration_unavailable'},503)}
    }
    const code=newCode(),hash=await digest(loginId+':'+code);
    const linked=await admin.from('account_login_ids').update({user_id:made.data.user.id,recovery_hash:hash}).eq('login_id',loginId).is('user_id',null).select('user_id');
    if(linked.error||linked.data?.length!==1){await admin.auth.admin.deleteUser(made.data.user.id);await admin.from('account_login_ids').delete().eq('login_id',loginId).is('user_id',null);return out({error:'unavailable'},503)}
    const client=createClient(URL,KEY,{auth:{persistSession:false,autoRefreshToken:false}});
+   if(companySignup){
+    const sent=await client.auth.resend({type:'signup',email,options:{emailRedirectTo:'https://spodora.com/company-register.html'}});
+    return out({confirmation_required:true,email,recovery_code:code,email_sent:!sent.error});
+   }
    const signed=await client.auth.signInWithPassword({email:address,password});
    if(signed.error)return out({error:'registered_login_required',recovery_code:code},503);
    return out({session:signed.data.session,user:signed.data.user,recovery_code:code});
@@ -94,6 +108,7 @@ Deno.serve(async req=>{
   if(!row?.user_id)return out({error:'invalid_credentials'},401);
   const {data:u,error:ue}=await admin.auth.admin.getUserById(row.user_id);
   if(ue||!u.user?.email)return out({error:'invalid_credentials'},401);
+  if(!u.user.email_confirmed_at)return out({error:'email_confirmation_required'},403);
   if(action==='recover'){
    const code=normalize(body.recovery_code).replace(/[\s-]/g,'');
    if(!/^[a-f0-9]{48}$/.test(code)||await digest(loginId+':'+code)!==row.recovery_hash)return out({error:'invalid_credentials'},401);
