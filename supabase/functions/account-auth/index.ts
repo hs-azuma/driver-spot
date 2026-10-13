@@ -76,6 +76,7 @@ Deno.serve(async req=>{
    const permitted=['driver_name','driver_name_kana','driver_phone','driver_area','driver_prefecture','driver_municipality','driver_prefecture_2','driver_municipality_2','driver_prefecture_3','driver_municipality_3','driver_license','driver_experience','company_name','contact_name','company_phone','company_address','match_line_enabled','match_email_enabled',...Array.from({length:3},(_,i)=>['preferred_email_enabled_'+(i+1),'preferred_line_enabled_'+(i+1)]).flat(),'acquisition_source','acquisition_medium','acquisition_campaign','acquisition_content','acquisition_ref'];
    const profile:Record<string,unknown>={};for(const key of permitted){const v=meta[key];if(typeof v==='boolean'||v===null||typeof v==='string'&&v.length<=500)profile[key]=v}
    const companySignup=typeof profile.company_name==='string'&&!!profile.company_name.trim();
+   if(companySignup&&!(typeof profile.company_phone==='string'&&profile.company_phone.trim()))return out({error:'company_phone_required'},400);
    if(companySignup&&!email)return out({error:'company_email_required'},400);
    if(companySignup&&Object.keys(meta).some(key=>key.startsWith('driver_')))return out({error:'separate_account_required'},400);
    if(!companySignup&&Object.keys(meta).some(key=>['company_name','contact_name','company_phone','company_address'].includes(key)))return out({error:'separate_account_required'},400);
