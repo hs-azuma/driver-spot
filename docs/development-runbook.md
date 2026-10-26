@@ -26,3 +26,9 @@ mainを更新するとGitHub Pagesの公開処理が動く。
 Actionsの公開成功と対象画面を確認。ログイン、求人、応募、打刻、通知を変更範囲に応じて確認する。
 通知を伴う本番テストは送信先・内容を明示して実施する。実ユーザーで無断検証しない。
 障害時はrecovery-runbook.mdに従う。
+
+## 自動検証CI
+.github/workflows/offline-checks.ymlはmain更新・Pull Request・手動起動時にnpm testを実行する。
+権限はcontents:readのみ、checkoutの認証情報は保持せず、Secretsは渡さない。
+DB操作・通知送信・デプロイは行わない。既存のPages公開と独立して動くため、テスト失敗による公開停止はまだ保証しない。
+テストを公開の必須条件にする設定は、ブランチ保護・公開方法の変更案を確認後に実施する。
