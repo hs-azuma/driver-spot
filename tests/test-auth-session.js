@@ -21,14 +21,16 @@ const auth=require('../assets/auth-session.js');
   await assert.rejects(auth.ready({auth:{getSession:async()=>response}},info),/確認リンク/);
  }
  await assert.rejects(auth.ready({auth:{getSession:async()=>({data:{session},error:null})}},auth.callbackInfo('#error=access_denied')),/確認リンク/);
- assert.deepEqual(auth.options.auth,{flowType:'implicit',detectSessionInUrl:true,persistSession:true,autoRefreshToken:true});
+ assert.deepEqual(auth.options.auth,{flowType:'implicit',detectSessionInUrl:true,persistSession:true,autoRefreshToken:true,experimental:{passkey:true}});
  for(const path of ['driver.html','driver-register.html','company-register.html','index.html']){
   const html=fs.readFileSync(require('node:path').join(__dirname,'..',path),'utf8');
   for(const [,script] of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g))new vm.Script(script,{filename:path});
   assert.match(html,/auth-session\.js/);
  }
  const company=fs.readFileSync(require('node:path').join(__dirname,'..','company-register.html'),'utf8');
- assert.match(company,/emailRedirectTo:new URL\('\.\/company-register\.html',location.href\)\.href/);
- assert.doesNotMatch(company,/emailRedirectTo:'https:\/\/hs-azuma/);
+ // Company confirmation is sent by account-auth; the browser must not own signup redirects.
+ const server=fs.readFileSync(require('node:path').join(__dirname,'..','supabase/functions/account-auth/index.ts'),'utf8');
+ assert.match(server,/emailRedirectTo:'https:\/\/spodora\.com\/company-register\.html'/);
+ assert.doesNotMatch(server,/emailRedirectTo:'https:\/\/hs-azuma/);
  console.log('Auth callback tests passed: delayed session, routing, invalid links, persistence and page syntax.');
 })().catch(e=>{console.error(e);process.exitCode=1});
