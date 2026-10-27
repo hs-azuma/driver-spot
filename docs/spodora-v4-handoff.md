@@ -17,8 +17,10 @@
 - GitHub Pagesの公開成功履歴とCNAMEを確認。main変更により公開が動く。
 - 本番接続先はwyxuekjikvflpcmlliwn.supabase.co。公開画面とソースで確認済み。
 - 現在の管理接続で確認できるAI経営管理用Supabaseはbjzbmmisugnqfuyzmxpu。別の接続先であり、スポドラをこちらへ付け替えてはいけない。
-- スポドラ側の管理APIは権限拒否。所有者・組織・請求・バックアップ・専用性・RLSの現状は未確認。
-- 次にユーザーへ依頼済み: https://supabase.com/dashboard/project/wyxuekjikvflpcmlliwn を開き、管理画面の表示を確認する。
+- 2026-10-27に再接続し、本番スポドラの管理APIアクセスを確認。所属組織はDRIVER SPOT（rvmioimtmmdbmrnodpbd）、plan=free、状態ACTIVE_HEALTHY。
+- ユーザー提供のTeam画面で現在ログイン中アカウントにYOU・Owner表示を確認。画面上1名、MFAは×表示。予備管理者・MFA・復旧手段の整備は未完了。
+- バックアップの取得履歴・保存先・復元テストは未確認。管理API接続ができたこととバックアップ確保は別。
+- publicの22テーブルすべてでRLS有効を確認。ただし各ポリシー・関数内部の認可の安全性、DB専用性は未検証。
 - ドメイン、Resend、LINE、GitHub Secretsの契約・所有・復旧手段は台帳の未確認項目として整理する。
 
 ## 現行機能
@@ -84,7 +86,7 @@ FAQ先頭のアカウント同一性の質問は削除済み。一般的な利�
 - docs/implementation-legal-checklist.md
 
 ## 第4版の優先順位
-1. 本番Supabaseの管理アクセス、所有者・契約・バックアップを確認。ユーザーの画面確認待ち。
+1. 管理アクセス・Owner・組織・無料プランは確認済み。バックアップの取得履歴・保存先・復元可能性、予備管理者・MFAを確認する。
 2. 稼働中Functionsとソースを照合。画面が呼ぶshare-driver-spot-emailのソース未収録を解消。
 3. DB基礎スキーマ・適用順・適用履歴・RLS・関数権限・定期実行を取得。現行SQLだけでゼロから復元できると扱わない。
 4. 本番と分けた検証環境を再現。メール・LINE誤送信を防いで実機/E2E・復旧訓練。
@@ -108,3 +110,37 @@ FAQ先頭のアカウント同一性の質問は削除済み。一般的な利�
 ## 引き継ぎ時の注意
 新しい担当者はこの文書とREADMEを読み、main・CI結果・管理アクセスを再確認してから続行する。
 この文書は2026-10-27時点の状態であり、その後のソース・設定を優先する。
+
+## 第4版 実環境の初回調査（2026-10-27）
+読み取りのみ。本番DB・認証・通知・デプロイ設定は変更していない。個人のレコードや秘密情報は本書に保存しない。
+
+### 確認済みの構成
+- public: 22テーブル、RLSすべて有効、ポリシー40件。
+- public関数32件、うちSECURITY DEFINER 12件。RLS有効だけで安全性確認済みとは扱わない。
+- migrations一覧取得成功。履歴があることと、基礎スキーマを含めて完全復元できることは別。
+- Storageは現在バケット0件・オブジェクト0件。
+- cronはspodora-line-notificationsが有効、毎分実行。復元先では外部送信を止めて検証する。
+- 稼働Functionsは10件: application-result-email / share-driver-spot-email / delete-account / line-webhook / line-account / line-setup-once / line-notifications / email-unsubscribe / company-job-invite / account-auth。
+- GitHubの既存8ディレクトリにないshare-driver-spot-email（v5）・line-setup-once（v4）のソースを管理APIで取得・閲覧した。取得だけでGitHub収録やデプロイ一致検証は完了していない。
+- line-setup-onceは現在HTTP 410を返す無効化済みコード。ACTIVEという一覧表示だけで診断処理が稼働中と判断しない。
+
+### バックアップの扱い
+公式: https://supabase.com/docs/guides/platform/backups
+定期日次バックアップの対象はPro/Team/Enterprise。FreeはCLI等で定期的な外部バックアップを確保する案内。現状の外部保存は未確認であり「バックアップなし」とも「確保済み」とも断定しない。
+- 管理画面確認先: https://supabase.com/dashboard/project/wyxuekjikvflpcmlliwn/database/backups/scheduled
+- 次に取得日時・保管先・暗号化・管理権限・保持期間・復元手順を確認。
+- 本番データのバックアップを公開GitHubへ保存しない。DBバックアップ、Storage実体、Functions、Auth設定、秘密情報の復旧手段は分けて管理。
+- 許容損失時間と復旧時間を決め、通知停止した検証先で復元テストする。DB移行・本番復元は未実施。
+
+### 追加確認が必要な事項
+- share-driver-spot-emailの取得コードでは任意の宛先メールを受け付け、利用者認証・回数制限を確認できなかった。CORSだけで利用者認可は担保できない。既存UIと用途を調べ、送信制限案と検証を用意する。実メール送信による検証はしていない。
+- Security Advisors: anonが実行可能なSECURITY DEFINERが11件、authenticatedが実行可能なもの12件。内部で認可されている可能性があるため警告数を脆弱性件数とは扱わず、定義と権限を個別確認する。
+- set_application_workflow_timestampsのsearch_path未固定警告1件。
+- 漏洩済みパスワード保護が無効という警告1件。プラン・現行認証との適合を確認してから変更案を示す。
+- RLS有効だがポリシーなしの7テーブルは内部キュー等を含む。外部公開目的とは限らないため、一律ポリシー追加はしない。
+- 警告の説明: https://supabase.com/docs/guides/database/database-linter および https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection
+
+### 次の作業
+1. バックアップの実在・復元可能性を確定し、安全な取得方式を整える。
+2. 未収録Functionsのソースを秘密情報検査後に収録し、既存8件も本番と比較。
+3. DB定義・RLS・関数認可を読み取りで照合。変更は影響と切戻し方法を具体化してから行う。
