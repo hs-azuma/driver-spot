@@ -1,0 +1,1 @@
+Deno.serve(()=>new Response('Diagnostics completed; endpoint disabled',{status:410}));
