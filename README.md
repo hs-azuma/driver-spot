@@ -5,6 +5,8 @@
 
 ## 開発・保守の入口
 
+- [第4版・仕様と開発方針](docs/spodora-v4-handoff.md)
+- [第三者への引き継ぎ受け入れ手順](docs/handover-acceptance.md)
 - [構成・管理台帳](docs/system-inventory.md)
 - [開発・検証・公開手順](docs/development-runbook.md)
 - [障害・バックアップ・復旧手順](docs/recovery-runbook.md)
