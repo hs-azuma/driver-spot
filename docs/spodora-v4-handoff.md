@@ -148,3 +148,6 @@ FAQ先頭のアカウント同一性の質問は削除済み。一般的な利�
 ## バックアップ画面の確認（2026-10-27 13:36 日本時間）
 ユーザー提供のdriver-spot / Database Backups / Scheduled backups画面に「Free Plan does not include project backups」「Pro Plan for up to 7 days of scheduled backups」と表示。現在のプランにSupabase提供の定期バックアップは含まれないことを確認した。外部・手動バックアップの有無は別途未確認。上記のバックアップ未確認という記述は、この点について本節を優先する。
 次の対策候補は既存組織・既存プロジェクトを維持したProへの変更、または暗号化した外部定期バックアップ。契約変更・課金・DB移行・本番復元は実施していない。Proに変更しても最初の取得成功・保持期間・復元可能性の確認が必要。Functions、Auth設定、秘密情報等の復旧手順も別途整備する。
+
+## Functions照合・未収録ソース収録完了（2026-10-27）
+本番10件を取得し、既存8件の処理内容一致を確認。未収録share-driver-spot-emailおよび無効化済みline-setup-onceのindex.tsを本番取得内容のままGitHubへ収録した。以前の「未収録」「比較未完了」は本節を優先する。詳細: [照合結果](edge-functions-audit-20261027.md)。本番再デプロイ・DB変更・通知送信はしていない。共有メールの認証・回数制限、DB認可監査、バックアップ整備は未完了。
