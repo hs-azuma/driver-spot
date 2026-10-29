@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-10-29T10:33:12.069738+00:00",
+  "started_at": "2026-10-29T10:38:14.225787+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.478,
-      "output_sha256": "6dd3694e854f59a4a430da32cf07fa2265370c0351760a8da624630abb408643"
+      "seconds": 0.465,
+      "output_sha256": "72cf493b936552c725646c69f842854b553fd92680630ecca722bdaac9d49a14"
     },
     {
       "name": "offline_regression",
@@ -27,8 +27,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 1.564,
-      "output_sha256": "2bfa847ac9225866fb69c0a430a36bca61b38ff6e4e83541528665bc47af3b54",
+      "seconds": 1.563,
+      "output_sha256": "43606ab2f4e51059dc4f4db14a36e9b58da722202469b8ad64e597aee427fb95",
       "node_tests": 118,
       "python_suites": [
         6,
@@ -44,7 +44,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 3.666,
+      "seconds": 3.687,
       "output_sha256": "128bf19a3c60a9166f3359b852932debf308eb38de7ada396385785648ce2d73"
     }
   ],
@@ -58,9 +58,9 @@
     "node": "v24.22.1",
     "npm": "11.9.0"
   },
-  "source_files": 212,
-  "source_sha256": "c396197bd7b043ba243e96914bd6661b57567406d1a25fc59d3b91d3b93eaf76",
-  "base_commit": "09ad2731ef1dad66cc120b10ea2da2956dc28c1d",
+  "source_files": 214,
+  "source_sha256": "28263dffd17354ca24181f06d7f42ea7d8c1b693225b3b919acf92701673b6e4",
+  "base_commit": "b9409dbf572d5e14f05fca979fecfaf1e6d06086",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
@@ -71,7 +71,7 @@
     "real_data_used": false,
     "known_findings": 6
   },
-  "completed_at": "2026-10-29T10:33:17.918088+00:00",
+  "completed_at": "2026-10-29T10:38:20.100331+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",
