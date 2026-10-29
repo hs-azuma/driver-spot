@@ -1,5 +1,10 @@
 # 引き継ぎ整備の進捗
 
+最新: [暗号化復元と引き継ぎ再現](v4-encrypted-backup-handover-20261029.md)。
+暗号化した架空DBの復号/復元まで260項目を検証。Node87件・Python22件が成功。
+ソースのみを別フォルダへコピーする再現スクリプトを追加。結果はhandover-cleanroom-20261029.json。
+実バックアップの保管先・鍵管理等はbackup-recovery-plan.jsonで未定を明示。本番未変更。
+
 最新: [退会・日またぎ・通知競合](v4-retention-overnight-concurrency-20261029.md)。
 隔離DB254項目とNode77件・Python22件が成功。退会の記録保持/途中失敗、夜間の重複、通知の遅延応答を検証。
 退会DB/画面/Functionsと夜間判定は修正案のみ。本番未適用。複数DB接続と実Authの結合試験は残る。

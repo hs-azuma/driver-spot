@@ -4,7 +4,8 @@ import assert from 'node:assert/strict';
 import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve, dirname} from 'node:path';
-import {createHash} from 'node:crypto';
+import {createHash,randomBytes} from 'node:crypto';
+import {encryptBackup,decryptBackup,packFixture,unpackFixture} from './backup-envelope.mjs';
 import {businessChecks} from './business-checks.mjs';
 import {notificationChecks} from './notification-checks.mjs';
 import {payAndQrChecks} from './pay-and-qr-checks.mjs';
@@ -185,7 +186,26 @@ try {
   const backupJob = await one("INSERT INTO public.jobs(company_id,work_date,location,pay_guarantee) VALUES($1,'2035-03-01','Synthetic Backup Site',false) RETURNING id", [backupCompany.id]);
   await db.exec('COMMIT'); // cannot reach remote: db was constructed with no path or connection URL
   const archive = await db.dumpDataDir('gzip');
-  const clone = new PGlite({loadDataDir: archive});
+  const archiveBytes=Buffer.from(await archive.arrayBuffer());
+  const plaintext=packFixture({
+    'database.pglite.tgz':archiveBytes,
+    'application-review.sql':Buffer.from(candidate),
+    'restore-manifest.json':readFileSync(resolve(root,'docs/database/restore-candidate/manifest.json')),
+    'settings-fixture.json':Buffer.from(JSON.stringify({synthetic_only:true,auth:'MOCK_AUTH_ONLY',storage:'NOT_INCLUDED',secrets:'NOT_INCLUDED'}))
+  });
+  const fixturePassphrase=randomBytes(32).toString('base64'); // transient only; never logged, saved or returned
+  const encrypted=await encryptBackup(plaintext,fixturePassphrase);
+  check('Encrypted bundle does not expose plaintext manifest marker',encrypted.includes(Buffer.from('spodora-synthetic-bundle/1')),false);
+  const decoded=unpackFixture(await decryptBackup(encrypted,fixturePassphrase));
+  check('Decrypted archive SHA256 equals exported synthetic DB',createHash('sha256').update(decoded['database.pglite.tgz']).digest('hex'),createHash('sha256').update(archiveBytes).digest('hex'));
+  check('Decrypted SQL equals current reconstruction candidate',decoded['application-review.sql'].toString(),candidate);
+  check('Decrypted settings are clearly synthetic',JSON.parse(decoded['settings-fixture.json']).synthetic_only,true);
+  await assert.rejects(decryptBackup(encrypted,randomBytes(32).toString('base64')),/authentication_failed/);
+  checks.push('Wrong backup passphrase rejected before database restore');
+  const tampered=Buffer.from(encrypted);tampered[tampered.length-17]^=1;
+  await assert.rejects(decryptBackup(tampered,fixturePassphrase),/authentication_failed/);
+  checks.push('Tampered backup rejected before database restore');
+  const clone = new PGlite({loadDataDir:new Blob([decoded['database.pglite.tgz']],{type:'application/gzip'})});
   try {
     await clone.exec('SET search_path=public,extensions');
     const cloneCatalog = (await clone.query(readFileSync(resolve(root, 'docs/database/read-catalog.sql'), 'utf8'))).rows[0].inventory;
@@ -212,6 +232,9 @@ try {
     candidate_sha256: createHash('sha256').update(candidate).digest('hex'),
     synthetic_archive: {bytes: archive.size, sha256: createHash('sha256').update(new Uint8Array(await archive.arrayBuffer())).digest('hex'),
       format: 'PGlite gzip data-directory; NOT portable pg_dump or production backup', stored: false},
+    encrypted_synthetic_backup: {algorithm:'AES-256-GCM',kdf:'scrypt-N16384-r8-p1',files:4,bytes:encrypted.length,
+      ciphertext_sha256:createHash('sha256').update(encrypted).digest('hex'),key_stored:false,artifact_stored:false,
+      production_data_used:false,restored_after_decryption:true},
     checks, scenario_groups: scenarioGroups, known_findings: findings,
     source_sha256: Object.fromEntries(['tools/restore-lab/verify.mjs', 'tools/restore-lab/business-checks.mjs',
       'tools/restore-lab/notification-checks.mjs', 'tools/restore-lab/pay-and-qr-checks.mjs',
@@ -221,7 +244,8 @@ try {
       'sql/review-v4-application-entry-access.sql','sql/review-v4-application-entry-rollback.sql',
       'tools/restore-lab/withdrawal-checks.mjs','tools/restore-lab/overnight-checks.mjs',
       'sql/review-v4-withdrawal-retention.sql','sql/review-v4-withdrawal-retention-rollback.sql',
-      'sql/review-v4-overnight-overlap.sql','sql/review-v4-overnight-overlap-rollback.sql'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
+      'sql/review-v4-overnight-overlap.sql','sql/review-v4-overnight-overlap-rollback.sql',
+      'tools/restore-lab/backup-envelope.mjs'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
     limitations: ['Auth is mocked; no HTTP login, token verification or password recovery tested',
       'No Supabase extensions, cron, event triggers, service settings or Storage files restored',
       'Synthetic PGlite data-directory export/reload is not encrypted production backup or pg_dump/pg_restore proof',

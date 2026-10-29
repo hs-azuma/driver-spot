@@ -5,8 +5,8 @@
 
 ## 第4版の最新引き継ぎ地点
 
-[2026-10-29 退会・日またぎ・通知競合検証](docs/v4-retention-overnight-concurrency-20261029.md)から再開してください。
-54関数を含むアプリDDLと254項目を無料の隔離ラボで検証済み。
+[2026-10-29 暗号化復元と引き継ぎ再現](docs/v4-encrypted-backup-handover-20261029.md)から再開してください。
+54関数を含むアプリDDLと260項目を無料の隔離ラボで検証済み。
 本番変更・実データバックアップ・Supabase全サービスの復元・第三者受け入れは未完了です。
 [再実行手順](tools/restore-lab/README.md)と[残作業](docs/handoff-backlog.md)を参照してください。
 

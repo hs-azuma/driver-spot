@@ -1,4 +1,8 @@
 # 第三者への引き継ぎ受け入れ手順
+
+2026-10-29追加: [別フォルダ再現・暗号化復元](v4-encrypted-backup-handover-20261029.md)を準備。
+`python3 -B scripts/verify-handover.py`の結果をhandover-cleanroom-20261029.jsonに記録する。
+同一ホストでの自動再現であり、第三者本人・ネイティブSupabase・実データの受け入れは別途必要。
 更新: 2026-10-27
 
 ## 方針

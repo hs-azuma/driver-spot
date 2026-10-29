@@ -85,7 +85,7 @@ Storage等の所有物がある利用者のAuth削除条件も実環境で確認
 実DBの複数接続で同じドライバーの同時応募、advisory lock待ち、再試行、勤務時間変更を確認する。
 通知はモック競合試験だけで本番の一度だけ配信を保証せず、実DBのSKIP LOCKEDと実プロバイダーの条件を別途確認する。
 
-最新版の入口はREADMEと`docs/v4-retention-overnight-concurrency-20261029.md`。
+最新版の入口はREADMEと`docs/v4-encrypted-backup-handover-20261029.md`。
 ソースSHA256付きの`lab-result.json`、固定依存のlockfile、各レビューSQLと元定義を渡す。
 Secretsの値はGitHubに含めず、安全な別経路で移管する。
 チャット履歴なしで再実行・障害切り分け・復旧を第三者が実演するまで、完全引き継ぎ完了としない。

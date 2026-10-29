@@ -1,15 +1,26 @@
 {
   "status": "PASS_APPLICATION_DDL_AND_LIMITED_RLS_TESTS_WITH_KNOWN_FINDINGS",
-  "started_at": "2026-10-29T08:48:33.395Z",
-  "completed_at": "2026-10-29T08:48:36.521Z",
+  "started_at": "2026-10-29T09:05:35.553Z",
+  "completed_at": "2026-10-29T09:05:38.962Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "runtime": "@electric-sql/pglite@0.3.14",
   "candidate_sha256": "cd1708d9d22e8177b58aa502831c1997fa5757152d23c5add6f2d4fe69e8ecd5",
   "synthetic_archive": {
-    "bytes": 4226321,
-    "sha256": "78dedd32b67ee6ccffb1594fa3bf383193bd4a3759bf307d83cc1c8cafe1a26a",
+    "bytes": 4226361,
+    "sha256": "72633748898d7acb1345bc4870fcfd6dc435316c312571abeb7aa29cd8295920",
     "format": "PGlite gzip data-directory; NOT portable pg_dump or production backup",
     "stored": false
+  },
+  "encrypted_synthetic_backup": {
+    "algorithm": "AES-256-GCM",
+    "kdf": "scrypt-N16384-r8-p1",
+    "files": 4,
+    "bytes": 5874092,
+    "ciphertext_sha256": "99e6fd7e10201149f36db63792e2d20c4d23b820335b5b2b6bcab0b5787201cc",
+    "key_stored": false,
+    "artifact_stored": false,
+    "production_data_used": false,
+    "restored_after_decryption": true
   },
   "checks": [
     "All application DDL executes with check_function_bodies=on",
@@ -251,6 +262,12 @@
     "PROPOSAL: company cannot create job for another company",
     "PROPOSAL: company still creates its own job",
     "Application DDL rollback removes application tables",
+    "Encrypted bundle does not expose plaintext manifest marker",
+    "Decrypted archive SHA256 equals exported synthetic DB",
+    "Decrypted SQL equals current reconstruction candidate",
+    "Decrypted settings are clearly synthetic",
+    "Wrong backup passphrase rejected before database restore",
+    "Tampered backup rejected before database restore",
     "Synthetic restore catalog equivalence: tables",
     "Synthetic restore catalog equivalence: columns",
     "Synthetic restore catalog equivalence: constraints",
@@ -306,7 +323,7 @@
     "BASELINE: anonymous INSERT can create a job owned by another company"
   ],
   "source_sha256": {
-    "tools/restore-lab/verify.mjs": "3ac4ee81cba17c21381d96653e751c6ece6d598d2e6eb4288b5cf598fa920a11",
+    "tools/restore-lab/verify.mjs": "22b97d09b178f131cbe67f929882d3e1c3d55b70449805a63cd2fa9748d6243d",
     "tools/restore-lab/business-checks.mjs": "0430b84926d09bc20360df775d79e6921e479d8405735b376a11bb2efe1a40a0",
     "tools/restore-lab/notification-checks.mjs": "cf11ea9fc88b32dce05d6b7738a096885125c6d62e5a526573557b7f09986f2b",
     "tools/restore-lab/pay-and-qr-checks.mjs": "4725b6b9380ac52d982330462cc387d650c2d96d9c2e79933e13bc304f5ae657",
@@ -324,7 +341,8 @@
     "sql/review-v4-withdrawal-retention.sql": "5f8ce9077b39f2f23f6237c7616bc41a3ac15117445b16b037a88106a8315c50",
     "sql/review-v4-withdrawal-retention-rollback.sql": "5c721520986958ee3c53dd120dfd326e93dd6b5c69ace4b4607f36490a6c25a6",
     "sql/review-v4-overnight-overlap.sql": "c306d4fd157cc43699c3a9100a5da470193aa58b4a014c671bd63cc60706baa7",
-    "sql/review-v4-overnight-overlap-rollback.sql": "1fc84ad1a55d9c07d27828824be55676efa28b8f45067ddc3a91b45ad148028c"
+    "sql/review-v4-overnight-overlap-rollback.sql": "1fc84ad1a55d9c07d27828824be55676efa28b8f45067ddc3a91b45ad148028c",
+    "tools/restore-lab/backup-envelope.mjs": "d8de0360cc7f990935ce83dccb8381a8e0badc1ac3b4dadca6b4a9468fb0f374"
   },
   "limitations": [
     "Auth is mocked; no HTTP login, token verification or password recovery tested",

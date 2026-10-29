@@ -1,7 +1,7 @@
 # ローカル再構築・バックアップ復元手順
 
-最新: [退会・日またぎ・通知競合](v4-retention-overnight-concurrency-20261029.md)。
-Docker不要の[補助ラボ](../tools/restore-lab/README.md)で、54関数を含むDDL適用と254項目の検証が成功。
+最新: [暗号化復元と引き継ぎ再現](v4-encrypted-backup-handover-20261029.md)。
+Docker不要の[補助ラボ](../tools/restore-lab/README.md)で、54関数を含むDDL適用と260項目の検証が成功。
 以下の「DB試験未実行」は初回環境確認時点の記録。ネイティブSupabase/本番実データの復元は引き続き未完了。
 
 更新: 2026-10-29 JST。状態: 準備中。完全再構築・実データ復元は未成功。
