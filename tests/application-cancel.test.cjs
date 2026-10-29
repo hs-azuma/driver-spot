@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const html = fs.readFileSync('driver.html','utf8');
-const source = html.match(/async function cancelApp\(id,back=false\)\{[\s\S]*?\}(?=async function showDriver\()/)[0];
+const source = html.match(/async function cancelApp\(id,back=false\)\{[\s\S]*?\}(?=\s*async function showDriver\()/)[0];
 
 async function simulate(result, back=false, confirmed=true) {
   const alerts=[], calls=[], refreshed=[];
@@ -21,7 +21,7 @@ async function simulate(result, back=false, confirmed=true) {
     }}
   };
   vm.createContext(context);
-  vm.runInContext(source,context);
+  vm.runInContext('const applicationActions=new Set();\n'+source,context);
   await context.cancelApp(42,back);
   return {alerts,calls,refreshed};
 }
