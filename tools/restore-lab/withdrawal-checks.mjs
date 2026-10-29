@@ -31,6 +31,17 @@ export async function withdrawalChecks(ctx){
   const emptyUid='00000000-0000-4000-8000-000000000070';
   await db.query("INSERT INTO auth.users(id,email,raw_user_meta_data) VALUES($1,'empty-withdrawal@example.invalid','{\"driver_name\":\"synthetic-empty\"}')",[emptyUid]);
   const emptyDriver=await one('SELECT id FROM public.drivers WHERE user_id=$1',[emptyUid]);
+  await db.exec('CREATE SCHEMA storage; CREATE TABLE storage.objects(owner_id text, owner uuid)');
+  await db.query('INSERT INTO storage.objects(owner_id) VALUES($1)',[emptyUid]);
+  await role('service_role');
+  check('PROPOSAL Storage owner_id requires review',(await one('SELECT public.withdrawal_preflight($1) AS result',[emptyUid])).result.mode,'review_required');
+  await role('postgres');
+  await rejects('PROPOSAL Auth delete cannot remove Storage owner','DELETE FROM auth.users WHERE id=$1',[emptyUid],e=>e.code==='23514');
+  check('PROPOSAL Storage guard retains driver profile',(await one('SELECT count(*)::int n FROM public.drivers WHERE id=$1',[emptyDriver.id])).n,1);
+  await db.query('UPDATE storage.objects SET owner_id=NULL,owner=$1',[emptyUid]);
+  await role('service_role');
+  check('PROPOSAL legacy Storage owner also requires review',(await one('SELECT public.withdrawal_preflight($1) AS result',[emptyUid])).result.mode,'review_required');
+  await role('postgres');await db.exec('DELETE FROM storage.objects');
   await role('service_role');
   check('PROPOSAL empty account is eligible',(await one('SELECT public.withdrawal_preflight($1) AS result',[emptyUid])).result.mode,'ready');
   await role('postgres');

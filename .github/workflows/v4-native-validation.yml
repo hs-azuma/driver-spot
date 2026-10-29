@@ -1,0 +1,52 @@
+name: V4 isolated native Supabase validation
+on:
+  push:
+    branches: [ci/v4-native-validation-20261029]
+    paths:
+      - .github/workflows/v4-native-validation.yml
+      - scripts/ci-native-restore.py
+      - tools/native-runner/**
+permissions:
+  contents: read
+concurrency:
+  group: v4-native-validation
+  cancel-in-progress: false
+jobs:
+  native:
+    if: github.repository == 'hs-azuma/driver-spot' && github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      report_b64: ${{ steps.native.outputs.report_b64 }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version-file: .nvmrc
+      - name: Install fixed local tooling without lifecycle scripts or caches
+        run: |
+          npm ci --prefix tools/native-runner --ignore-scripts --no-audit --no-fund
+          npm ci --prefix tools/sdk-lab --ignore-scripts --no-audit --no-fund
+      - name: Native synthetic Auth Storage RLS and encrypted database restore
+        id: native
+        run: python3 -B scripts/ci-native-restore.py
+  record:
+    if: always() && needs.native.outputs.report_b64 != ''
+    needs: native
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts/publish-native-result.py
+          sparse-checkout-cone-mode: false
+      - name: Record sanitized report in dedicated CI results branch only
+        env:
+          NATIVE_RESULT_B64: ${{ needs.native.outputs.report_b64 }}
+          RESULT_TOKEN: ${{ github.token }}
+        run: python3 -B scripts/publish-native-result.py

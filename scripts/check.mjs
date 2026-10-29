@@ -13,6 +13,7 @@ run(process.execPath,['--test',...tests]);
 run(process.platform==='win32'?'python':'python3',['-B','-m','unittest','discover','-s','tests','-p','test_auth_email.py']);
 run(process.platform==='win32'?'python':'python3',['-B','-m','unittest','discover','-s','tests','-p','test_restore_*.py']);
 run(process.platform==='win32'?'python':'python3',['-B','-m','unittest','discover','-s','tests','-p','test_handover_tools.py']);
+run(process.platform==='win32'?'python':'python3',['-B','-m','unittest','discover','-s','tests','-p','test_native_runner.py']);
 let scripts=0;
 for(const f of readdirSync('.').filter(f=>f.endsWith('.html'))){
  for(const match of readFileSync(f,'utf8').matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)){

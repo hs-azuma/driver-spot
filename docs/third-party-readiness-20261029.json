@@ -1,7 +1,7 @@
 {
   "status": "PASS_PREPARATION_AUDIT_WITH_BLOCKERS",
   "date_jst": "2026-10-29",
-  "checked_at": "2026-10-29T11:53:23.766983+00:00",
+  "checked_at": "2026-10-29T13:09:37.807429+00:00",
   "production_modified": false,
   "production_ready": false,
   "independent_human_acceptance": false,
@@ -11,8 +11,8 @@
       "name": "local_document_links",
       "pass": true,
       "detail": {
-        "files": 36,
-        "links": 98,
+        "files": 40,
+        "links": 113,
         "missing": []
       }
     },
@@ -60,23 +60,45 @@
       "name": "clean_source_reproduction_current",
       "pass": true,
       "detail": null
+    },
+    {
+      "name": "native_synthetic_restore",
+      "pass": true,
+      "detail": {
+        "source_commit": "9bccdcc180f9c7b0dd0fcffa0d756a6bc4d63d13",
+        "checks": 36
+      }
+    },
+    {
+      "name": "native_source_hashes",
+      "pass": true,
+      "detail": null
     }
   ],
   "remaining_gates": [
     {
-      "id": "native_restore",
+      "id": "native_synthetic_database_restore",
+      "complete": true,
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": "full_service_restore",
       "complete": false,
-      "evidence": "docs/native-preflight-20261029.json",
       "blockers": [
-        "native_postgres_nonroot_execution_unavailable",
-        "supabase_cli_missing"
+        "Storage object bytes backup/restore",
+        "Global roles and service configuration restore",
+        "Exact production build and service version provenance",
+        "Native concurrency and Edge Functions"
+      ],
+      "local_host_blockers": [
+        "native_postgres_nonroot_execution_unavailable"
       ]
     },
     {
       "id": "real_backup_custody_and_restore",
       "complete": false,
       "evidence": "docs/backup-recovery-plan.json",
-      "status": "REAL_BACKUP_NOT_CONFIGURED"
+      "status": "PRIVATE_DESTINATION_PREPARED_AWAITING_CUSTODY"
     },
     {
       "id": "ownership_MFA_backup_admin_external_contracts",

@@ -12,7 +12,7 @@ python3 -B scripts/native-preflight.py
 実行ファイルの有無、glibc、非root実行、ユーザー名前空間を読み取り/子プロセスで確認するだけ。
 サービス・コンテナ・ユーザーは作成せず、権限拡張・接続文字列の入力も行わない。
 
-本ホスト: Linux x64、Docker/Podman/psql/CLIなし。UIDマッピングはroot1件のみ。
+本ホスト: Linux x64、Docker/Podman/psqlなし。CLI2.122.0はtools/native-runnerに導入済み。UIDマッピングはroot1件のみ。
 非rootへの切替はEINVAL、ユーザー名前空間作成も失敗。
 
 ## Dockerなしの選択肢も調査済み
@@ -21,7 +21,9 @@ python3 -B scripts/native-preflight.py
 「Dockerがないから必ず不可能」とは扱わない。
 ただしPostgres initdbはrootで動かず、rootの場合は非rootアカウントの実行が必要。
 このホストの制約ではその条件を満たせないため、CLI/サービス本体を大容量取得して強行しない。
-CLI候補2.122.0は公開npmメタデータで確認しただけで、インストール/--help/サービス起動は未実施。
+CLI2.122.0の導入、--versionと実コマンドの--helpを確認済み。
+別の無料標準GitHubランナーで公式nativeサービスとPostgreSQL17.11の起動まで確認した。
+復元の最終結果は[専用手順](../native-runner/README.md)と最新進捗を参照する。
 
 ## 別の対応環境で確認する順序
 
@@ -37,7 +39,7 @@ CLI候補2.122.0は公開npmメタデータで確認しただけで、インス�
 10. 暗号化バックアップ→復号→別の隔離DB復元と、pg_dump/pg_restoreの結果を記録する。
 11. 自分が作った検証スタックだけを停止する。共有スタックを一括停止/破棄しない。
 
-CLIの仕様は実験的で変わるため、未確認の起動スクリプト/設定を実行可能な完成品として置いていない。
+CLIの仕様は実験的。専用CIコントローラーは対象リポジトリ/ブランチ/公開状態を確認してから実行する。
 本番link/push/deploy、実データ輸入、実送信は上記手順に含めない。
 ローカルのsecret/service keysも公開GitHubへ置かず、試験用の非公開一時ファイルで扱う。
 本番の実データバックアップは別の保管/鍵/保持の決定が先。

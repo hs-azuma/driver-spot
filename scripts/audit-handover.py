@@ -32,8 +32,15 @@ def main():
     check('clean_source_reproduction_current',clean['status']=='PASS_SOURCE_REPRODUCTION_ONLY' and fingerprint.hexdigest()==clean['source_sha256'])
     native=json.loads((ROOT/'docs/native-preflight-20261029.json').read_text())
     backup=json.loads((ROOT/'docs/backup-recovery-plan.json').read_text())
+    native_ci=json.loads((ROOT/'docs/native-ci-20261029/result.json').read_text())
+    native_ok=native_ci['status']=='PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE' and native_ci.get('native_auth_storage_api_tested') is True and native_ci.get('production_access') is False and native_ci.get('real_data_used') is False
+    check('native_synthetic_restore',native_ok,{'source_commit':native_ci.get('source_commit'),'checks':len(native_ci.get('checks',[]))})
+    native_current=bool(native_ci.get('source_sha256')) and all(hashlib.sha256((ROOT/path).read_bytes()).hexdigest()==sha for path,sha in native_ci.get('source_sha256',{}).items())
+    check('native_source_hashes',native_current)
+
     result={'status':'PASS_PREPARATION_AUDIT_WITH_BLOCKERS' if all(c['pass'] for c in checks) else 'FAIL_PREPARATION_AUDIT','date_jst':'2026-10-29','checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'production_modified':False,'production_ready':False,'independent_human_acceptance':False,'signed_by':None,'checks':checks,'remaining_gates':[
-      {'id':'native_restore','complete':False,'evidence':'docs/native-preflight-20261029.json','blockers':native['native_blockers']},
+      {'id':'native_synthetic_database_restore','complete':native_ok and native_current,'evidence':'docs/native-ci-20261029/result.json'},
+      {'id':'full_service_restore','complete':False,'blockers':['Storage object bytes backup/restore','Global roles and service configuration restore','Exact production build and service version provenance','Native concurrency and Edge Functions'],'local_host_blockers':native['native_blockers']},
       {'id':'real_backup_custody_and_restore','complete':False,'evidence':'docs/backup-recovery-plan.json','status':backup['status']},
       {'id':'ownership_MFA_backup_admin_external_contracts','complete':False},
       {'id':'retention_anonymization_and_withdrawal_operations','complete':False},

@@ -21,7 +21,8 @@
     "psql": false,
     "supabase": false,
     "tar": true,
-    "unshare": true
+    "unshare": true,
+    "supabase_cli_local": true
   },
   "nonroot_probe": {
     "attempted": true,
@@ -34,12 +35,11 @@
     "exit_code": 1
   },
   "native_blockers": [
-    "native_postgres_nonroot_execution_unavailable",
-    "supabase_cli_missing"
+    "native_postgres_nonroot_execution_unavailable"
   ],
   "docker_cli_present": false,
   "status": "BLOCKED_EXECUTION_ENVIRONMENT",
-  "native_cli_candidate_not_installed": "2.122.0",
+  "local_cli_version": "2.122.0",
   "native_supabase_restore_tested": false,
   "documentation": [
     "https://supabase.com/docs/guides/local-development/docker-and-native-runtimes",
@@ -48,6 +48,6 @@
   "limits": [
     "Docker absence alone does not rule out the experimental native runtime",
     "The current UID capability probe does not replace testing on another host",
-    "CLI and service archives were not downloaded because non-root Postgres is unavailable"
+    "CLI is available locally when recorded; service archives are not started on this root-only host"
   ]
 }

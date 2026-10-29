@@ -1,6 +1,7 @@
 # 隔離再構築ラボ
 
-最新の[暗号化復元・再現検証](../../docs/v4-encrypted-backup-handover-20261029.md)では260項目が成功。
+最新の[実結合・復元検証](../../docs/v4-three-track-progress-20261029.md)では補助ラボ264項目が成功。
+Storage所有者の退会保護4項目を追加。ここでのStorageは最小SQL fixtureであり、実APIは別のnative CIで検証する。
 お気に入り・ブロック・評価・キャンセル保護・通知キュー・給与確認・QRを追加。
 修正案は本番未適用。`lab-result.json`に実行時刻・検査項目・ソースSHA256と既知の問題を記録する。
 
