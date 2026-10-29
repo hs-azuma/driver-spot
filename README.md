@@ -5,8 +5,8 @@
 
 ## 第4版の最新引き継ぎ地点
 
-[2026-10-29 再構築の実行検証](docs/v4-reconstruction-validation-20261029.md)から再開してください。
-54関数を含むアプリDDLと69項目を無料の隔離ラボで検証済み。
+[2026-10-29 業務検証と履歴保護](docs/v4-business-validation-20261029.md)から再開してください。
+54関数を含むアプリDDLと152項目を無料の隔離ラボで検証済み。
 本番変更・実データバックアップ・Supabase全サービスの復元・第三者受け入れは未完了です。
 [再実行手順](tools/restore-lab/README.md)と[残作業](docs/handoff-backlog.md)を参照してください。
 

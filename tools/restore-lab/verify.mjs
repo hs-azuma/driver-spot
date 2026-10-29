@@ -5,11 +5,16 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve, dirname} from 'node:path';
 import {createHash} from 'node:crypto';
+import {businessChecks} from './business-checks.mjs';
+import {notificationChecks} from './notification-checks.mjs';
+import {payAndQrChecks} from './pay-and-qr-checks.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const db = new PGlite(); // no path: volatile memory; no production credentials accepted
 const checks = [];
 const findings = [];
+const scenarioGroups = [];
+const startedAt = new Date().toISOString();
 const check = (name, actual, expected) => { assert.deepEqual(actual, expected, name); checks.push(name); };
 const one = async (sql, params = []) => (await db.query(sql, params)).rows[0];
 const role = async (name, uid = '') => {
@@ -25,6 +30,11 @@ async function rejects(name, sql, params, predicate = e => e.code === '42501') {
   await db.exec('ROLLBACK TO SAVEPOINT denied_action; RELEASE SAVEPOINT denied_action');
   assert(error && predicate(error), name + ': expected authorization rejection');
   checks.push(name);
+}
+async function scenario(name, run) {
+  const before = checks.length;
+  await run();
+  scenarioGroups.push({name, checks: checks.length - before});
 }
 
 try {
@@ -123,6 +133,11 @@ try {
     (await one('SELECT company_name FROM public.companies WHERE user_id=$1', [pendingUid])).company_name, 'Synthetic Pending Company');
   check('Auth confirmation removes consumed pending profile',
     (await one('SELECT count(*)::int n FROM public.pending_company_registrations WHERE user_id=$1', [pendingUid])).n, 0);
+  await scenario('favorites_blocks_reviews_cancellation_and_rollback', () => businessChecks({db, root, check, one, role, rejects, findings, company, otherCompany, driver, otherDriver,
+    companyUid, otherCompanyUid, driverUid, otherDriverUid, job, otherJob, application}));
+  await scenario('notification_queue_and_serial_leases', () => notificationChecks({db, root, check, one, role, rejects, company, driver, otherDriverUid, driverUid, companyUid, job, application}));
+  await scenario('pay_confirmation_and_qr_attendance', () => payAndQrChecks({db, root, check, one, role, rejects, company, otherCompany, driver,
+    companyUid, otherCompanyUid, driverUid, otherDriverUid}));
   await role('anon');
   check('Anonymous visitor can browse jobs', (await db.query('SELECT id FROM public.jobs')).rows.length, 2);
   await rejects('Anonymous driver-profile read denied', 'SELECT * FROM public.drivers', []);
@@ -182,15 +197,21 @@ try {
   } finally { await clone.close(); }
   const summary = {
     status: 'PASS_APPLICATION_DDL_AND_LIMITED_RLS_TESTS_WITH_KNOWN_FINDINGS',
+    started_at: startedAt, completed_at: new Date().toISOString(),
     engine: engine.version, runtime: '@electric-sql/pglite@0.3.14',
     candidate_sha256: createHash('sha256').update(candidate).digest('hex'),
     synthetic_archive: {bytes: archive.size, sha256: createHash('sha256').update(new Uint8Array(await archive.arrayBuffer())).digest('hex'),
       format: 'PGlite gzip data-directory; NOT portable pg_dump or production backup', stored: false},
-    checks, known_findings: findings,
+    checks, scenario_groups: scenarioGroups, known_findings: findings,
+    source_sha256: Object.fromEntries(['tools/restore-lab/verify.mjs', 'tools/restore-lab/business-checks.mjs',
+      'tools/restore-lab/notification-checks.mjs', 'tools/restore-lab/pay-and-qr-checks.mjs',
+      'sql/review-v4-application-delete-guard.sql', 'sql/review-v4-job-insert-hardening.sql',
+      'sql/review-v4-hardening-rollback.sql'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
     limitations: ['Auth is mocked; no HTTP login, token verification or password recovery tested',
       'No Supabase extensions, cron, event triggers, service settings or Storage files restored',
       'Synthetic PGlite data-directory export/reload is not encrypted production backup or pg_dump/pg_restore proof',
       'Known baseline authorization issues are preserved; no production changes',
+      'Lease tests are serial on one connection; concurrent worker races are not tested',
       'PostgreSQL 17.5 WebAssembly differs from production 17.6.1.166'],
     external_notifications: 'No mail/LINE workers or remote network client loaded'
   };
@@ -198,6 +219,9 @@ try {
   writeFileSync(resolve(root, 'docs/database/restore-candidate/lab-result.json'), JSON.stringify(summary, null, 2) + '\n');
   console.log(JSON.stringify({status: summary.status, checks: checks.length, known_findings: findings.length}));
 } catch (error) {
+  const failure = {status: 'FAIL', started_at: startedAt, failed_at: new Date().toISOString(),
+    message: error.message, code: error.code, where: error.where, checks, known_findings: findings};
+  writeFileSync(resolve(root, 'docs/database/restore-candidate/lab-result.json'), JSON.stringify(failure, null, 2) + '\n');
   console.error(JSON.stringify({status: 'FAIL', message: error.message, code: error.code, where: error.where}));
   process.exitCode = 1;
 } finally {
