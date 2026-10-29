@@ -9,7 +9,11 @@ cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js
 
 def run(args,input=None,timeout=90,check=True,env=None):
     r=subprocess.run(args,input=input,capture_output=True,timeout=timeout,cwd=ROOT,env=env)
-    if check and r.returncode:raise RuntimeError('command_failed_exit_'+str(r.returncode))
+    if check and r.returncode:
+        lines=[]
+        for line in re.sub(r'\x1b\[[0-9;]*m','',r.stderr.decode(errors='replace')).splitlines():
+            if re.search(r'error|failed|unhealthy|timeout|fatal',line,re.I) and not re.search(r'secret|token|jwt|key|password|postgres://',line,re.I):lines.append(line[:200])
+        raise RuntimeError('command_failed_exit_'+str(r.returncode)+'; '+' | '.join(lines[-4:]))
     return r.stdout
 
 def check(name,ok):
@@ -73,8 +77,10 @@ try:
     check('Auth and application and Storage metadata rows restored',json.loads(sql(counts))==json.loads(sql(counts,'v4_fixture_restore')))
     report['dump_bytes']=len(dump);report['dump_sha256']=hashlib.sha256(dump).hexdigest();report['status']='PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE';report['native_auth_storage_api_tested']=True
 except Exception as error:
-    report['failed_stage']=stage;report['error_type']=type(error).__name__;report['error']=str(error)[:180]
+    report['failed_stage']=stage;report['error_type']=type(error).__name__;report['error']=str(error)[:900]
 finally:
+    if started and report['status']=='FAIL':
+        report['container_status']=run(['docker','ps','-a','--format','{{.Names}} {{.Status}}'],check=False).decode().splitlines()
     if started and work:
         try:run(cli+['stop','--workdir',str(work),'--project-id',PROJECT,'--no-backup'],timeout=120,env=env)
         except Exception:report['cleanup_failed']=True
