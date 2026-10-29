@@ -30,7 +30,7 @@ def main():
         if report['runtime']['node']!='v'+(ROOT/'.nvmrc').read_text().strip() or sys.version_info[:2]!=(3,12):
             raise RuntimeError('pinned_runtime_mismatch')
         paths=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','-z'],cwd=ROOT).decode().split('\0')
-        paths=sorted(set(p for p in paths if p and p not in OUTPUTS))
+        paths=sorted(set(p for p in paths if p and p not in OUTPUTS and not p.startswith('docs/browser-lab-20261029/')))
         fingerprint=hashlib.sha256()
         with tempfile.TemporaryDirectory(prefix='spodora-handover-') as tmp:
             target=Path(tmp)/'source'
@@ -53,14 +53,18 @@ def main():
             report['existing_node_modules_copied']=False
             npm='npm.cmd' if os.name=='nt' else 'npm'
             commands=[('install_pinned_offline',[npm,'ci','--prefix','tools/restore-lab','--ignore-scripts','--offline','--no-audit','--no-fund']),
-                      ('offline_regression',[npm,'test']),('synthetic_db_encryption_restore',[npm,'--prefix','tools/restore-lab','test'])]
+                      ('install_browser_pinned_offline',[npm,'ci','--prefix','tools/browser-lab','--ignore-scripts','--offline','--no-audit','--no-fund']),
+                      ('offline_regression',[npm,'test']),('synthetic_db_encryption_restore',[npm,'--prefix','tools/restore-lab','test']),
+                      ('chromium_synthetic_ui',[npm,'--prefix','tools/browser-lab','test'])]
             for name,command in commands:
                 started=time.monotonic()
                 result=subprocess.run(command,cwd=target,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
                 step={'name':name,'command':command,'exit_code':result.returncode,'seconds':round(time.monotonic()-started,3),
                       'output_sha256':hashlib.sha256(result.stdout.encode()).hexdigest()}
                 report['steps'].append(step)
-                if result.returncode:raise RuntimeError('cleanroom_step_failed:'+name)
+                if result.returncode:
+                    step['failure_excerpt']=result.stdout[-3000:]
+                    raise RuntimeError('cleanroom_step_failed:'+name)
                 if name=='offline_regression':
                     counts=re.findall(r'(?m)^ℹ tests (\d+)',result.stdout)
                     if counts:step['node_tests']=int(counts[-1])
@@ -72,13 +76,19 @@ def main():
             report['lab']={'status':lab['status'],'checks':len(lab['checks']),
                            'encrypted_fixture_restored':True,'real_data_used':False,
                            'known_findings':len(lab['known_findings'])}
+            browser=json.loads((target/'docs/browser-lab-20261029/result.json').read_text())
+            if browser['status']!='PASS_CHROMIUM_SYNTHETIC_UI_ONLY' or any(t['status']!='PASS' for t in browser['tests']):
+                raise RuntimeError('missing_browser_evidence')
+            report['browser']={'status':browser['status'],'checks':len(browser['tests']),
+                               'version':browser['browser'],'real_sdk':False,'production_access':False}
             report['status']='PASS_SOURCE_REPRODUCTION_ONLY'
     except (subprocess.SubprocessError,OSError,ValueError,KeyError,RuntimeError) as error:
         report['error']=str(error)
     report['completed_at']=datetime.datetime.now(datetime.timezone.utc).isoformat()
     report['limitations']=['Existing npm cache was used; fresh offline machines need a pre-populated cache',
                           'Not an independent human handover or native Supabase/Auth/Storage restore',
-                          'No real backup, keys, external storage or external delivery tested']
+                          'No real backup, keys, external storage or external delivery tested',
+                          'Browser lab uses Linux x64 Chromium and a synthetic SDK, not real device or native Auth integration']
     REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps({'status':report['status'],'lab_checks':report.get('lab',{}).get('checks')}))
     return 0 if report['status'].startswith('PASS_') else 1

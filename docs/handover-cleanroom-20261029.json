@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-10-29T10:43:51.457999+00:00",
+  "started_at": "2026-10-29T10:55:01.610496+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,24 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.441,
-      "output_sha256": "a9220f4f6b27e8261d1456686dcfe03178ad9098a1ec00ba7d958fd62f27defc"
+      "seconds": 0.474,
+      "output_sha256": "798ba878295b449aa7da42731820c2371411749b5b233c73da1348a427ece0eb"
+    },
+    {
+      "name": "install_browser_pinned_offline",
+      "command": [
+        "npm",
+        "ci",
+        "--prefix",
+        "tools/browser-lab",
+        "--ignore-scripts",
+        "--offline",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit_code": 0,
+      "seconds": 1.628,
+      "output_sha256": "9de28642a2f7030e46fe92aa2c04ce90db49412add2c5561f01b797048000950"
     },
     {
       "name": "offline_regression",
@@ -27,9 +43,9 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 1.539,
-      "output_sha256": "88cf4a890bd1d817ff1f8314cd755ffb22ec1fe35eaf6d0ca1b64fd7d31d8918",
-      "node_tests": 155,
+      "seconds": 1.628,
+      "output_sha256": "9a1ee6f20bdf14d52b2a5dfbd87055801417d042ba1567b45d616677c324b176",
+      "node_tests": 160,
       "python_suites": [
         6,
         16
@@ -44,8 +60,20 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 3.322,
+      "seconds": 3.763,
       "output_sha256": "128bf19a3c60a9166f3359b852932debf308eb38de7ada396385785648ce2d73"
+    },
+    {
+      "name": "chromium_synthetic_ui",
+      "command": [
+        "npm",
+        "--prefix",
+        "tools/browser-lab",
+        "test"
+      ],
+      "exit_code": 0,
+      "seconds": 34.65,
+      "output_sha256": "420050d8328bd9e573c5ab270de948510f5393c2952cd2cb1db55d35a199df4d"
     }
   ],
   "runtime": {
@@ -58,9 +86,9 @@
     "node": "v24.22.1",
     "npm": "11.9.0"
   },
-  "source_files": 217,
-  "source_sha256": "9539c9a119800c7317575fdfd7d04fabf43f7f3b38bcd66b3df46f53a88ac703",
-  "base_commit": "7cbac3044e323ffc59c2ab3df1fabd419f0a5858",
+  "source_files": 226,
+  "source_sha256": "ae8e09aa60d2ab88c26f30f6474aa142005eb289818469f9426b597538890961",
+  "base_commit": "8daf956163a00882497443732a4bcf95a8cb13be",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
@@ -71,10 +99,18 @@
     "real_data_used": false,
     "known_findings": 6
   },
-  "completed_at": "2026-10-29T10:43:56.905155+00:00",
+  "browser": {
+    "status": "PASS_CHROMIUM_SYNTHETIC_UI_ONLY",
+    "checks": 38,
+    "version": "153.0.8010.0",
+    "real_sdk": false,
+    "production_access": false
+  },
+  "completed_at": "2026-10-29T10:55:43.955816+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",
-    "No real backup, keys, external storage or external delivery tested"
+    "No real backup, keys, external storage or external delivery tested",
+    "Browser lab uses Linux x64 Chromium and a synthetic SDK, not real device or native Auth integration"
   ]
 }
