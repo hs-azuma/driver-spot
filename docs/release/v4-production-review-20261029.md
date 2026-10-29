@@ -1,5 +1,7 @@
 # スポドラ第4版・本番適用の判断資料
 
+追加記録: [実SDK/架空HTTP33ケース](../v4-sdk-validation-20261029.md)。対象SDKの版固定を追加。実Auth/DB/Edge配備は未完了。
+
 追加記録: [隔離ブラウザー38ケース](../v4-browser-validation-20261029.md)。実SDK・実DB・実機は未完了。
 
 追加記録: [通常の応募確認経路](../v4-confirmation-flow-20261029.md)。以下はb9409db…を対象とした判断資料。

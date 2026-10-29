@@ -5,10 +5,10 @@
 
 ## 第4版の最新引き継ぎ地点
 
-[2026-10-29 実ブラウザーでの隔離画面検証](docs/v4-browser-validation-20261029.md)から再開してください。
+[2026-10-29 実SDKでの認証・応募・退会の接続検証](docs/v4-sdk-validation-20261029.md)から再開してください。
 54関数を含むアプリDDLと260項目を無料の隔離ラボで検証済み。
 通常の応募確認画面37件を含むNode160件、隔離Chromiumで38ケースも成功。
-実SDK・実Auth/DB・iPhone/Android実機の結合確認は未完了です。
+実SDKと架空HTTPの33ケースも成功。実Auth/DB・iPhone/Android実機の結合確認は未完了です。
 8単位の影響・適用順・戻し方・対象ハッシュを整理済み。本番適用の条件は未充足です。
 本番変更・実データバックアップ・Supabase全サービスの復元・第三者受け入れは未完了です。
 [再実行手順](tools/restore-lab/README.md)と[残作業](docs/handoff-backlog.md)を参照してください。

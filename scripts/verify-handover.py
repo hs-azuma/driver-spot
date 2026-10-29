@@ -30,7 +30,7 @@ def main():
         if report['runtime']['node']!='v'+(ROOT/'.nvmrc').read_text().strip() or sys.version_info[:2]!=(3,12):
             raise RuntimeError('pinned_runtime_mismatch')
         paths=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','-z'],cwd=ROOT).decode().split('\0')
-        paths=sorted(set(p for p in paths if p and p not in OUTPUTS and not p.startswith('docs/browser-lab-20261029/')))
+        paths=sorted(set(p for p in paths if p and p not in OUTPUTS and not p.startswith(('docs/browser-lab-20261029/','docs/sdk-lab-20261029/'))))
         fingerprint=hashlib.sha256()
         with tempfile.TemporaryDirectory(prefix='spodora-handover-') as tmp:
             target=Path(tmp)/'source'
@@ -54,8 +54,10 @@ def main():
             npm='npm.cmd' if os.name=='nt' else 'npm'
             commands=[('install_pinned_offline',[npm,'ci','--prefix','tools/restore-lab','--ignore-scripts','--offline','--no-audit','--no-fund']),
                       ('install_browser_pinned_offline',[npm,'ci','--prefix','tools/browser-lab','--ignore-scripts','--offline','--no-audit','--no-fund']),
+                      ('install_sdk_pinned_offline',[npm,'ci','--prefix','tools/sdk-lab','--ignore-scripts','--offline','--no-audit','--no-fund']),
                       ('offline_regression',[npm,'test']),('synthetic_db_encryption_restore',[npm,'--prefix','tools/restore-lab','test']),
-                      ('chromium_synthetic_ui',[npm,'--prefix','tools/browser-lab','test'])]
+                      ('chromium_synthetic_ui',[npm,'--prefix','tools/browser-lab','test']),
+                      ('real_sdk_synthetic_http',[npm,'--prefix','tools/sdk-lab','test'])]
             for name,command in commands:
                 started=time.monotonic()
                 result=subprocess.run(command,cwd=target,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
@@ -81,6 +83,11 @@ def main():
                 raise RuntimeError('missing_browser_evidence')
             report['browser']={'status':browser['status'],'checks':len(browser['tests']),
                                'version':browser['browser'],'real_sdk':False,'production_access':False}
+            sdk=json.loads((target/'docs/sdk-lab-20261029/result.json').read_text())
+            if sdk['status']!='PASS_REAL_SDK_WITH_SYNTHETIC_HTTP_ONLY' or len(sdk['checks'])!=33 or any(c['status']!='PASS' for c in sdk['checks']):
+                raise RuntimeError('missing_real_sdk_evidence')
+            report['sdk']={'status':sdk['status'],'checks':len(sdk['checks']),
+                           'version':sdk['sdk'],'real_http_backend':False,'production_access':False}
             report['status']='PASS_SOURCE_REPRODUCTION_ONLY'
     except (subprocess.SubprocessError,OSError,ValueError,KeyError,RuntimeError) as error:
         report['error']=str(error)
@@ -88,7 +95,7 @@ def main():
     report['limitations']=['Existing npm cache was used; fresh offline machines need a pre-populated cache',
                           'Not an independent human handover or native Supabase/Auth/Storage restore',
                           'No real backup, keys, external storage or external delivery tested',
-                          'Browser lab uses Linux x64 Chromium and a synthetic SDK, not real device or native Auth integration']
+                          'Browser lab uses Linux x64 Chromium; SDK lab uses the real SDK with a synthetic HTTP backend, not native Auth integration']
     REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps({'status':report['status'],'lab_checks':report.get('lab',{}).get('checks')}))
     return 0 if report['status'].startswith('PASS_') else 1

@@ -1,6 +1,6 @@
 {
   "status": "PASS_CHROMIUM_SYNTHETIC_UI_ONLY",
-  "started_at": "2026-10-29T10:54:44.864Z",
+  "started_at": "2026-10-29T11:09:17.860Z",
   "scope": "Real headless Chromium with actual HTML and local assets; SDK, Auth and database are synthetic",
   "production_access": false,
   "real_data_used": false,
@@ -503,9 +503,9 @@
   ],
   "external_requests_aborted": 0,
   "source_sha256": {
-    "apply-confirm.html": "818754ce93aca94397afe917c28422d1ac1568ecdb19ce2ffb363454579c235c",
+    "apply-confirm.html": "8e6ce7a00dc8b3fca8cc489ae4db034906f5cd740455b9975910eef91903163b",
     "driver.html": "4fc3cd30cf4beaf62e745bd4ef496e3884b00a08b2df32f5233f4e4d8f370b7c",
-    "company.html": "452946e9c24c8f1e78903f5aac5d736261ab220146d5c20c9149656ba877d5b8",
+    "company.html": "4cb9bb3b66af7068cb0951348c10e9ba2702a2df9dc9b4a5de1fc8884ee494d3",
     "tools/browser-lab/package-lock.json": "8dee7eb8bc93c57f21b63cc1e99d47f903fe0511d092adbb48020b78c422ebe7",
     "tools/browser-lab/launch.mjs": "8dd2717a1aa3735debd8541b914073642cac44e01136f9ee232c672a4fa0a481",
     "tools/browser-lab/fixture.mjs": "4c2a4caa2aa6114b4735866312fb7a39477e1f9fba4340c3ef930db0cc3c4ebc",
@@ -518,8 +518,8 @@
     "Synthetic requests do not enforce real RLS or multi-session database locks",
     "Test-only CSP and Japanese font are injected; not deployed to production"
   ],
-  "base_commit": "8daf956163a00882497443732a4bcf95a8cb13be",
+  "base_commit": "0bfcae268d3a1df91d2939925a904dda518e8002",
   "includes_working_tree": true,
   "browser": "153.0.8010.0",
-  "completed_at": "2026-10-29T10:55:19.336Z"
+  "completed_at": "2026-10-29T11:09:55.902Z"
 }

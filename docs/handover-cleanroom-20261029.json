@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-10-29T10:55:01.610496+00:00",
+  "started_at": "2026-10-29T11:09:45.275674+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.474,
-      "output_sha256": "798ba878295b449aa7da42731820c2371411749b5b233c73da1348a427ece0eb"
+      "seconds": 0.536,
+      "output_sha256": "7bf5b53f98dbd8adabcb846cba7d7a3a4d8c02928eb5c3cc6f18a3b6b170e3ac"
     },
     {
       "name": "install_browser_pinned_offline",
@@ -33,8 +33,24 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 1.628,
+      "seconds": 1.705,
       "output_sha256": "9de28642a2f7030e46fe92aa2c04ce90db49412add2c5561f01b797048000950"
+    },
+    {
+      "name": "install_sdk_pinned_offline",
+      "command": [
+        "npm",
+        "ci",
+        "--prefix",
+        "tools/sdk-lab",
+        "--ignore-scripts",
+        "--offline",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exit_code": 0,
+      "seconds": 0.493,
+      "output_sha256": "3734bfcbdbb2e4f459619c9dceaa719f42a39a6666988ed91979b7e7bcf57f2b"
     },
     {
       "name": "offline_regression",
@@ -43,8 +59,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 1.628,
-      "output_sha256": "9a1ee6f20bdf14d52b2a5dfbd87055801417d042ba1567b45d616677c324b176",
+      "seconds": 1.748,
+      "output_sha256": "6863544ea3cea71c8a8712d0948e50c93467d8ff6fc045c6894fd7266a6b5d25",
       "node_tests": 160,
       "python_suites": [
         6,
@@ -60,7 +76,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 3.763,
+      "seconds": 4.11,
       "output_sha256": "128bf19a3c60a9166f3359b852932debf308eb38de7ada396385785648ce2d73"
     },
     {
@@ -72,8 +88,20 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 34.65,
+      "seconds": 34.113,
       "output_sha256": "420050d8328bd9e573c5ab270de948510f5393c2952cd2cb1db55d35a199df4d"
+    },
+    {
+      "name": "real_sdk_synthetic_http",
+      "command": [
+        "npm",
+        "--prefix",
+        "tools/sdk-lab",
+        "test"
+      ],
+      "exit_code": 0,
+      "seconds": 7.374,
+      "output_sha256": "0aeb4d1e8b8af1526b78152c0895522dd03541cf00702214c10bb0e10cb389f5"
     }
   ],
   "runtime": {
@@ -86,9 +114,9 @@
     "node": "v24.22.1",
     "npm": "11.9.0"
   },
-  "source_files": 226,
-  "source_sha256": "ae8e09aa60d2ab88c26f30f6474aa142005eb289818469f9426b597538890961",
-  "base_commit": "8daf956163a00882497443732a4bcf95a8cb13be",
+  "source_files": 234,
+  "source_sha256": "7ee202757f3a977e0a508cbc295c49d36f9cf23e1112fdd411d03e7f1021d88d",
+  "base_commit": "0bfcae268d3a1df91d2939925a904dda518e8002",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
@@ -106,11 +134,18 @@
     "real_sdk": false,
     "production_access": false
   },
-  "completed_at": "2026-10-29T10:55:43.955816+00:00",
+  "sdk": {
+    "status": "PASS_REAL_SDK_WITH_SYNTHETIC_HTTP_ONLY",
+    "checks": 33,
+    "version": "2.105.0",
+    "real_http_backend": false,
+    "production_access": false
+  },
+  "completed_at": "2026-10-29T11:10:35.580705+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",
     "No real backup, keys, external storage or external delivery tested",
-    "Browser lab uses Linux x64 Chromium and a synthetic SDK, not real device or native Auth integration"
+    "Browser lab uses Linux x64 Chromium; SDK lab uses the real SDK with a synthetic HTTP backend, not native Auth integration"
   ]
 }
