@@ -1,7 +1,7 @@
 {
   "status": "PASS_PREPARATION_AUDIT_WITH_BLOCKERS",
   "date_jst": "2026-10-29",
-  "checked_at": "2026-10-29T13:09:37.807429+00:00",
+  "checked_at": "2026-10-29T15:24:20.722717+00:00",
   "production_modified": false,
   "production_ready": false,
   "independent_human_acceptance": false,
@@ -11,8 +11,8 @@
       "name": "local_document_links",
       "pass": true,
       "detail": {
-        "files": 40,
-        "links": 113,
+        "files": 41,
+        "links": 120,
         "missing": []
       }
     },
@@ -65,12 +65,17 @@
       "name": "native_synthetic_restore",
       "pass": true,
       "detail": {
-        "source_commit": "9bccdcc180f9c7b0dd0fcffa0d756a6bc4d63d13",
-        "checks": 36
+        "source_commit": "75ea456e7f10fbd62681f0385695b880fd00e888",
+        "checks": 69
       }
     },
     {
       "name": "native_source_hashes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_storage_bytes_restore",
       "pass": true,
       "detail": null
     }
@@ -85,7 +90,7 @@
       "id": "full_service_restore",
       "complete": false,
       "blockers": [
-        "Storage object bytes backup/restore",
+        "Independent-host Storage bytes/configuration/owner mapping restore",
         "Global roles and service configuration restore",
         "Exact production build and service version provenance",
         "Native concurrency and Edge Functions"

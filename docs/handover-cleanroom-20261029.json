@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-10-29T13:08:07.216821+00:00",
+  "started_at": "2026-10-29T15:23:08.037686+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.707,
-      "output_sha256": "12f53eb5188f92fd5a0fe0e60a06088fdcb2479c30024b28088a5a6807202b14"
+      "seconds": 0.733,
+      "output_sha256": "00a4a2763b38108c58cf151ddd50d2f3a70263ab78af68a2951a76b53f3b3974"
     },
     {
       "name": "install_browser_pinned_offline",
@@ -33,8 +33,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 1.709,
-      "output_sha256": "9de28642a2f7030e46fe92aa2c04ce90db49412add2c5561f01b797048000950"
+      "seconds": 2.94,
+      "output_sha256": "7514f897a60e85e40121ef5160fee759851d2e20eee664cc411d03b032be6cd2"
     },
     {
       "name": "install_sdk_pinned_offline",
@@ -49,8 +49,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.476,
-      "output_sha256": "d82d2545f62cefe430163283c9b0469201d6462ff39403287b7350fb55ebdb95"
+      "seconds": 0.61,
+      "output_sha256": "40cb62e9ed9019ccb02f956604d3e993fbecb0b923a1be3c30723a257f49135d"
     },
     {
       "name": "offline_regression",
@@ -59,8 +59,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 1.912,
-      "output_sha256": "d378928a8b60a9b86e4b6a574b7917b70f6ecdad656f12aed339a239ecc84fd6",
+      "seconds": 1.942,
+      "output_sha256": "1a17666dba2f1c6c0a0a0f21e6f2970490349b83acc1ab9745422fc1b59b0ea6",
       "node_tests": 160,
       "python_suites": [
         6,
@@ -78,7 +78,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 4.313,
+      "seconds": 4.229,
       "output_sha256": "b8945e672adb9150c513b0ad1f5ebd557dec249138d1ff6ac1472587efb79294"
     },
     {
@@ -90,7 +90,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 39.402,
+      "seconds": 36.836,
       "output_sha256": "420050d8328bd9e573c5ab270de948510f5393c2952cd2cb1db55d35a199df4d"
     },
     {
@@ -102,8 +102,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 9.195,
-      "output_sha256": "3b19bd00586159bcb1258e4e0885ff9394bef75ca2088020b3917b5684b61fd2"
+      "seconds": 9.524,
+      "output_sha256": "e549f70ac96081657c6752f7516e8c2ec7dfba02241dcbbaf33f60f16c6a03e2"
     },
     {
       "name": "business_actions_and_modal_qr",
@@ -114,7 +114,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 8.504,
+      "seconds": 9.196,
       "output_sha256": "b94f8848948c5073ef1877213839390d52e31bf061eea220947113424fbd6c97"
     }
   ],
@@ -128,9 +128,9 @@
     "node": "v24.22.1",
     "npm": "11.9.0"
   },
-  "source_files": 258,
-  "source_sha256": "7bac4f2397f083758accdfbb0024fe20f7d99b4024c922a2895322b294fbc641",
-  "base_commit": "db6e4e2c187f2f9ab1a3e11ca179a37578a7ad17",
+  "source_files": 260,
+  "source_sha256": "b2b1afbfee8c8199e1e65b214b87faf12871a54b80568a1e51ae58a6aab66902",
+  "base_commit": "354e2190ac254e2c24f81ef36a7d100d111b813d",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
@@ -160,7 +160,7 @@
     "checks": 51,
     "real_backend": false
   },
-  "completed_at": "2026-10-29T13:09:13.683686+00:00",
+  "completed_at": "2026-10-29T15:24:14.316120+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",

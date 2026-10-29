@@ -37,10 +37,12 @@ def main():
     check('native_synthetic_restore',native_ok,{'source_commit':native_ci.get('source_commit'),'checks':len(native_ci.get('checks',[]))})
     native_current=bool(native_ci.get('source_sha256')) and all(hashlib.sha256((ROOT/path).read_bytes()).hexdigest()==sha for path,sha in native_ci.get('source_sha256',{}).items())
     check('native_source_hashes',native_current)
+    storage=native_ci.get('storage_restore',{})
+    check('native_storage_bytes_restore',storage.get('status')=='PASS_SYNTHETIC_STORAGE_BUCKET_RESTORE' and len(storage.get('files',[]))==3 and storage.get('archive_stored') is False and storage.get('key_stored') is False)
 
     result={'status':'PASS_PREPARATION_AUDIT_WITH_BLOCKERS' if all(c['pass'] for c in checks) else 'FAIL_PREPARATION_AUDIT','date_jst':'2026-10-29','checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'production_modified':False,'production_ready':False,'independent_human_acceptance':False,'signed_by':None,'checks':checks,'remaining_gates':[
       {'id':'native_synthetic_database_restore','complete':native_ok and native_current,'evidence':'docs/native-ci-20261029/result.json'},
-      {'id':'full_service_restore','complete':False,'blockers':['Storage object bytes backup/restore','Global roles and service configuration restore','Exact production build and service version provenance','Native concurrency and Edge Functions'],'local_host_blockers':native['native_blockers']},
+      {'id':'full_service_restore','complete':False,'blockers':['Independent-host Storage bytes/configuration/owner mapping restore','Global roles and service configuration restore','Exact production build and service version provenance','Native concurrency and Edge Functions'],'local_host_blockers':native['native_blockers']},
       {'id':'real_backup_custody_and_restore','complete':False,'evidence':'docs/backup-recovery-plan.json','status':backup['status']},
       {'id':'ownership_MFA_backup_admin_external_contracts','complete':False},
       {'id':'retention_anonymization_and_withdrawal_operations','complete':False},

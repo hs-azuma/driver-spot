@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {randomBytes} from 'node:crypto';
+import {storageRoundtrip} from './storage-roundtrip.mjs';
 const {createClient}=createRequire(new URL('../sdk-lab/package.json',import.meta.url))('@supabase/supabase-js');
 let text='';for await(const chunk of process.stdin)text+=chunk;const input=JSON.parse(text);
 const url=new URL(input.url);assert(['127.0.0.1','localhost','[::1]'].includes(url.hostname));assert.equal(process.env.GITHUB_ACTIONS,'true');
@@ -41,6 +42,8 @@ try{
   const ownedDelete=await admin.auth.admin.deleteUser(u.storage.id,false);check('Owned Storage prevents Auth user deletion',!!ownedDelete.error);
   const ownedAfter=await admin.from('drivers').select('id').eq('user_id',u.storage.id);check('Storage ownership refusal retains driver profile',!ownedAfter.error&&ownedAfter.data.length===1);
   const downloaded=await storage.storage.from('v4-synthetic').download('fixture.txt');check('Storage bytes remain readable after refused deletion',!downloaded.error&&(await downloaded.data.text())==='synthetic-native-storage-only');
-  process.stdout.write(JSON.stringify({checks}));
+  const storage_restore=await storageRoundtrip({admin,owner:storage,outsider:other,anon,check});
+  const restoredPreflight=await admin.rpc('withdrawal_preflight',{p_user_id:u.storage.id});check('Restored owned files still block withdrawal',!restoredPreflight.error&&restoredPreflight.data.reason==='storage_objects');
+  process.stdout.write(JSON.stringify({checks,storage_restore}));
  }
 }catch{process.stdout.write(JSON.stringify({checks,error:'Native API contract failed: '+attempted+'; '+diagnostic}));process.exitCode=1}
