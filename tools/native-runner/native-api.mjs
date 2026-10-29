@@ -5,7 +5,7 @@ import {randomBytes} from 'node:crypto';
 const {createClient}=createRequire(new URL('../sdk-lab/package.json',import.meta.url))('@supabase/supabase-js');
 let text='';for await(const chunk of process.stdin)text+=chunk;const input=JSON.parse(text);
 const url=new URL(input.url);assert(['127.0.0.1','localhost','[::1]'].includes(url.hostname));assert.equal(process.env.GITHUB_ACTIONS,'true');
-const checks=[];const check=(name,ok)=>{assert(ok,name);checks.push(name)};
+let attempted='initialization',diagnostic='';const checks=[];const check=(name,ok)=>{attempted=name;assert(ok,name);checks.push(name)};
 const client=token=>createClient(input.url,input.anon,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:'Bearer '+token}}});
 const admin=createClient(input.url,input.service,{auth:{persistSession:false,autoRefreshToken:false}});
 try{
@@ -21,7 +21,7 @@ try{
   process.stdout.write(JSON.stringify({checks,users}));
  }else{
   const u=input.users,driver=client(u.driver.token),company=client(u.company.token),other=client(u.other.token);
-  const profile=await driver.from('drivers').select('id,user_id');check('PostgREST RLS returns only own driver',!profile.error&&profile.data.length===1&&profile.data[0].user_id===u.driver.id);
+  const profile=await driver.from('drivers').select('id,user_id');diagnostic=JSON.stringify({code:profile.error?.code,status:profile.status,rows:profile.data?.length});check('PostgREST RLS returns only own driver',!profile.error&&profile.data.length===1&&profile.data[0].user_id===u.driver.id);
   const foreign=await other.from('drivers').select('id').eq('id',profile.data[0].id);check('PostgREST denies other driver visibility',!foreign.error&&foreign.data.length===0);
   const job=await company.from('jobs').insert({company_id:input.company_id,work_date:'2099-11-01',location:'Synthetic site',start_time:'09:00',end_time:'17:00',pay_guarantee:true}).select('id').single();
   check('Real company JWT creates own job',!job.error&&!!job.data?.id);
@@ -42,4 +42,4 @@ try{
   const downloaded=await storage.storage.from('v4-synthetic').download('fixture.txt');check('Storage bytes remain readable after refused deletion',!downloaded.error&&(await downloaded.data.text())==='synthetic-native-storage-only');
   process.stdout.write(JSON.stringify({checks}));
  }
-}catch{process.stdout.write(JSON.stringify({checks,error:'Native API contract failed after last recorded check'}));process.exitCode=1}
+}catch{process.stdout.write(JSON.stringify({checks,error:'Native API contract failed: '+attempted+'; '+diagnostic}));process.exitCode=1}

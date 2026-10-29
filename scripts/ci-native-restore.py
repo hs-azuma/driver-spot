@@ -43,6 +43,7 @@ try:
     metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
     report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -83,12 +84,12 @@ try:
     sql("NOTIFY pgrst, 'reload schema';")
     time.sleep(2)
     stage='native_auth';context={'url':api,'anon':anon,'service':service,'phase':'users'}
-    users=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=90));assert not users.get('error');report['checks']+=users['checks'];context['users']=users['users']
+    users=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=90,check=False));report['checks']+=users['checks'];assert not users.get('error'),users.get('error');context['users']=users['users']
     for u in users['users'].values():assert re.fullmatch('[0-9a-f-]{36}',u['id'])
     uid=users['users']['company']['id']
     context['company_id']=int(sql("INSERT INTO public.companies(company_name,user_id,email) VALUES('Synthetic native company','"+uid+"','v4-company@example.invalid') RETURNING id;").splitlines()[0])
     sql("CREATE POLICY v4_lab_storage_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK(bucket_id='v4-synthetic'); CREATE POLICY v4_lab_storage_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id='v4-synthetic' AND owner_id=auth.uid()::text);")
-    stage='native_api_rls_storage';context['phase']='verify';verified=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=120));report['checks']+=verified['checks'];assert not verified.get('error')
+    stage='native_api_rls_storage';context['phase']='verify';verified=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=120,check=False));report['checks']+=verified['checks'];assert not verified.get('error'),verified.get('error')
     stage='encrypted_database_restore';dump=pgtool('pg_dump',['-Fc','--no-owner','postgres'],timeout=180)
     restored=run(['node','tools/native-runner/roundtrip.mjs'],dump,timeout=90);check('Native pg_dump encrypted, decrypted, wrong-key and tamper checked',restored==dump)
     pgtool('createdb',['v4_fixture_restore'])
