@@ -1,4 +1,4 @@
-"""Fresh public CI only. Creates an internal-network synthetic Supabase, then destroys only that fixture."""
+"""Fresh public CI only. Creates a dedicated synthetic native Supabase, then stops only that fixture."""
 import base64,datetime,hashlib,json,os,re,secrets,shutil,subprocess,tempfile,time,urllib.request,urllib.parse
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
@@ -67,6 +67,13 @@ try:
     report['runtime']='official native processes';report['isolation']='Fresh runner and dedicated SUPABASE_HOME; API/DB URLs verified loopback; synthetic users only'
     check('Native API and PostgreSQL target loopback addresses only',True)
     report['postgres_version']=sql('SHOW server_version;');check('Native PostgreSQL major 17',report['postgres_version'].startswith('17.'))
+    stage='fixture_migration_role'
+    report['fixture_roles']=json.loads(sql("SELECT json_agg(json_build_object('role',rolname,'superuser',rolsuper,'member',pg_has_role(current_user,oid,'MEMBER'))) FROM pg_roles WHERE rolname IN ('postgres','supabase_admin','supabase_auth_admin');"))
+    # Native service bootstrap owns auth.users with a service role. A fresh local-only
+    # migration role needs membership to install the captured Auth triggers.
+    admin_prefix=[str(pg_bin/'psql'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','-X','-d','postgres','-At','-v','ON_ERROR_STOP=1']
+    run(admin_prefix,input=b'GRANT supabase_auth_admin TO postgres;',env=pg_env)
+    check('Fresh fixture grants Auth ownership role to migration role only',True)
     stage='application_ddl';check('Fresh target has no application tables',sql("SELECT to_regclass('public.applications') IS NULL;")=='t')
     apply('docs/database/restore-candidate/application-review.sql')
     check('22 application tables built',sql("SELECT count(*) FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE';")=='22')
