@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-10-29T10:38:14.225787+00:00",
+  "started_at": "2026-10-29T10:43:51.457999+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.465,
-      "output_sha256": "72cf493b936552c725646c69f842854b553fd92680630ecca722bdaac9d49a14"
+      "seconds": 0.441,
+      "output_sha256": "a9220f4f6b27e8261d1456686dcfe03178ad9098a1ec00ba7d958fd62f27defc"
     },
     {
       "name": "offline_regression",
@@ -27,9 +27,9 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 1.563,
-      "output_sha256": "43606ab2f4e51059dc4f4db14a36e9b58da722202469b8ad64e597aee427fb95",
-      "node_tests": 118,
+      "seconds": 1.539,
+      "output_sha256": "88cf4a890bd1d817ff1f8314cd755ffb22ec1fe35eaf6d0ca1b64fd7d31d8918",
+      "node_tests": 155,
       "python_suites": [
         6,
         16
@@ -44,7 +44,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 3.687,
+      "seconds": 3.322,
       "output_sha256": "128bf19a3c60a9166f3359b852932debf308eb38de7ada396385785648ce2d73"
     }
   ],
@@ -58,9 +58,9 @@
     "node": "v24.22.1",
     "npm": "11.9.0"
   },
-  "source_files": 214,
-  "source_sha256": "28263dffd17354ca24181f06d7f42ea7d8c1b693225b3b919acf92701673b6e4",
-  "base_commit": "b9409dbf572d5e14f05fca979fecfaf1e6d06086",
+  "source_files": 217,
+  "source_sha256": "9539c9a119800c7317575fdfd7d04fabf43f7f3b38bcd66b3df46f53a88ac703",
+  "base_commit": "7cbac3044e323ffc59c2ab3df1fabd419f0a5858",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
@@ -71,7 +71,7 @@
     "real_data_used": false,
     "known_findings": 6
   },
-  "completed_at": "2026-10-29T10:38:20.100331+00:00",
+  "completed_at": "2026-10-29T10:43:56.905155+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",

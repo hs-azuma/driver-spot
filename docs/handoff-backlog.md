@@ -1,9 +1,13 @@
 # 引き継ぎ整備の進捗
 
+最新: [通常の応募確認経路の修正と検証](v4-confirmation-flow-20261029.md)。
+apply-confirm.htmlの読込/同意/認証再確認/重複送信/応答喪失を37件追加検証。
+Node155件・Python22件・架空DB260項目が成功。本番未変更、実ブラウザー/SDKは未確認。
+
 最新: [本番適用の判断資料](release/v4-production-review-20261029.md)。
 8単位の対象ハッシュ・影響・順序・停止/切り戻しを固定。本番反映は全単位保留。
 mainの自動書換えActionsと、通常のapply-confirm応募経路の未検証を追加。
-次の無料作業はapply-confirm.htmlの例外/連続呼出し対策と架空応答試験。
+当時残っていたapply-confirm.htmlの例外/連続呼出し対策と架空応答試験は上記の追加記録で実施。
 
 最新: [応募・キャンセル・退会の異常時検証](v4-action-validation-20261029.md)。
 重複呼出し抑止と通信例外案内を追加。Node118件・Python22件が成功。

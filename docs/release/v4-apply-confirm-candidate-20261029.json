@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "date_jst": "2026-10-29",
+  "status": "SYNTHETIC_TESTED_NOT_PRODUCTION_READY",
+  "base_commit": "7cbac3044e323ffc59c2ab3df1fabd419f0a5858",
+  "includes_working_tree": true,
+  "package": "H",
+  "purpose": "Supplement to the earlier frozen review inventory; adds the actual primary application confirmation route",
+  "production_modified": false,
+  "approval": null,
+  "synthetic_confirmation_tests": 37,
+  "files": [
+    {
+      "path": "apply-confirm.html",
+      "bytes": 9847,
+      "sha256": "818754ce93aca94397afe917c28422d1ac1568ecdb19ce2ffb363454579c235c"
+    },
+    {
+      "path": "tests/apply-confirm.test.cjs",
+      "bytes": 10772,
+      "sha256": "26322ec46d41a3aff3e208343c4b64955b7278a7438b2d4dfcdd22398de68dc2"
+    }
+  ],
+  "remaining": [
+    "Real browser render and click verification",
+    "Native Supabase and exact SDK integration",
+    "Cross-tab and concurrent database application validation",
+    "Fresh production comparison and scoped approval"
+  ],
+  "limits": [
+    "Client-side interlock only; database authorization and unique constraints remain required",
+    "Response loss stops same-page resend; reload or other devices are not locked",
+    "No production credentials or real user records used by tests"
+  ]
+}

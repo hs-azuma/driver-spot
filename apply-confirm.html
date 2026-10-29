@@ -1,3 +1,67 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>スポドラ｜応募確認</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}header{background:#fff;padding:22px;border-bottom:1px solid #ddd}.brand{display:block;width:280px;max-width:72vw}.brand img{display:block;width:100%;height:auto}main{max-width:720px;margin:auto;padding:24px 16px}.card{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:24px}.confirm{margin:20px 0;padding:18px;background:#f8fafc;border:1px solid #dbe3ef;border-radius:12px}.confirm h3{margin-top:0}.checkrow{display:flex;gap:12px;align-items:flex-start;line-height:1.75}.checkrow input{width:24px;height:24px;flex:0 0 auto;margin-top:3px}.primary{width:100%;padding:15px;border:0;border-radius:10px;background:#1769d2;color:#fff;font-size:17px;font-weight:bold}.primary:disabled{background:#aab5c4}.back{display:block;text-align:center;margin-top:16px;color:#1769d2;text-decoration:none}.msg{margin-top:12px;color:#c62828;font-weight:bold}.job-map{margin-top:16px;padding:14px;background:#f8fafc;border:1px solid #dbe3ef;border-radius:12px}.job-map p{margin:0 0 10px;line-height:1.6;overflow-wrap:anywhere}.job-map-actions{display:flex;flex-wrap:wrap;gap:10px}.job-map-actions a{display:inline-block;padding:12px 16px;border:1px solid #1769d2;border-radius:10px;background:#fff;color:#1769d2;font-weight:bold;text-decoration:none}.job-map .job-map-note{margin:12px 0 0;font-size:13px;color:#68758b}</style></head><body><header><a class="brand" href="./"><img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ"></a><p>応募確認</p></header><main><div class="card"><h2>この求人に応募しますか？</h2><p>求人内容と勤務時間・休息時間を確認してから、下の「確認して応募する」を押してください。</p><div id="job"></div><div class="confirm"><h3>勤務時間・休息時間の確認</h3><label class="checkrow"><input id="workCheck" type="checkbox" onchange="document.getElementById('applyBtn').disabled=!this.checked"><span>以下の条件を満たしていることを確認してください。<br><br>・1か月の拘束時間：<b>原則284時間以内</b><br>・1日の拘束時間：<b>原則13時間以内</b><br>・勤務と勤務の間の休息：<b>原則11時間以上（最低9時間）</b><br>・上記は<b>本業・副業を含めた合計</b>で確認<br><br><b>上記の条件を満たしていることを確認しました</b></span></label></div><button id="applyBtn" class="primary" disabled onclick="applyJob()">確認して応募する</button><div id="msg" class="msg"></div><a class="back" href="./driver.html">求人一覧へ戻る</a></div></main><script>const db=supabase.createClient('https://wyxuekjikvflpcmlliwn.supabase.co','sb_publishable_YCin6s4LUf-5Xk44OmU6zQ_gDk9ThSC');const $=x=>document.getElementById(x),e=x=>String(x??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'),tm=x=>String(x||'').slice(0,5),wd=x=>{if(!x)return'';let a=String(x).split('-').map(Number),d=new Date(a[0],a[1]-1,a[2]);return x+'（'+['日','月','火','水','木','金','土'][d.getDay()]+'）'};const jobId=Number(new URLSearchParams(location.search).get('job'));let user,driver,job;function jobMapQuery(j){const loc=String(j.location||'').trim(),pref=String(j.work_prefecture||'').trim(),mun=String(j.work_municipality||'').trim();let query=loc;if(mun&&!mun.endsWith('全域')&&!query.includes(mun))query=mun+' '+query;if(pref&&!query.includes(pref))query=pref+' '+query;return query.trim()||mun;}
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>スポドラ｜応募確認</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}header{background:#fff;padding:22px;border-bottom:1px solid #ddd}.brand{display:block;width:280px;max-width:72vw}.brand img{display:block;width:100%;height:auto}main{max-width:720px;margin:auto;padding:24px 16px}.card{background:#fff;border:1px solid #dbe3ef;border-radius:16px;padding:24px}.confirm{margin:20px 0;padding:18px;background:#f8fafc;border:1px solid #dbe3ef;border-radius:12px}.confirm h3{margin-top:0}.checkrow{display:flex;gap:12px;align-items:flex-start;line-height:1.75}.checkrow input{width:24px;height:24px;flex:0 0 auto;margin-top:3px}.primary{width:100%;padding:15px;border:0;border-radius:10px;background:#1769d2;color:#fff;font-size:17px;font-weight:bold}.primary:disabled{background:#aab5c4}.back{display:block;text-align:center;margin-top:16px;color:#1769d2;text-decoration:none}.msg{margin-top:12px;color:#c62828;font-weight:bold;overflow-wrap:anywhere}.job-map{margin-top:16px;padding:14px;background:#f8fafc;border:1px solid #dbe3ef;border-radius:12px}.job-map p{margin:0 0 10px;line-height:1.6;overflow-wrap:anywhere}.job-map-actions{display:flex;flex-wrap:wrap;gap:10px}.job-map-actions a{display:inline-block;padding:12px 16px;border:1px solid #1769d2;border-radius:10px;background:#fff;color:#1769d2;font-weight:bold;text-decoration:none}.job-map .job-map-note{margin:12px 0 0;font-size:13px;color:#68758b}</style></head><body><header><a class="brand" href="./"><img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ"></a><p>応募確認</p></header><main><div class="card"><h2>この求人に応募しますか？</h2><p>求人内容と勤務時間・休息時間を確認してから、下の「確認して応募する」を押してください。</p><div id="job"></div><div class="confirm"><h3>勤務時間・休息時間の確認</h3><label class="checkrow"><input id="workCheck" type="checkbox" disabled onchange="updateApplyButton()"><span>以下の条件を満たしていることを確認してください。<br><br>・1か月の拘束時間：<b>原則284時間以内</b><br>・1日の拘束時間：<b>原則13時間以内</b><br>・勤務と勤務の間の休息：<b>原則11時間以上（最低9時間）</b><br>・上記は<b>本業・副業を含めた合計</b>で確認<br><br><b>上記の条件を満たしていることを確認しました</b></span></label></div><button id="applyBtn" class="primary" disabled onclick="applyJob()">確認して応募する</button><div id="msg" class="msg" role="status" aria-live="polite"></div><p id="historyHint" hidden><a href="./driver.html?view=work">応募履歴を確認する</a></p><button id="retryBtn" type="button" hidden onclick="init()">求人情報を再読み込み</button><a class="back" href="./driver.html">求人一覧へ戻る</a></div></main><script>const db=supabase.createClient('https://wyxuekjikvflpcmlliwn.supabase.co','sb_publishable_YCin6s4LUf-5Xk44OmU6zQ_gDk9ThSC');const $=x=>document.getElementById(x),e=x=>String(x??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'),tm=x=>String(x||'').slice(0,5),wd=x=>{if(!x)return'';let a=String(x).split('-').map(Number),d=new Date(a[0],a[1]-1,a[2]);return x+'（'+['日','月','火','水','木','金','土'][d.getDay()]+'）'};const jobId=Number(new URLSearchParams(location.search).get('job'));let user,driver,job;function jobMapQuery(j){const loc=String(j.location||'').trim(),pref=String(j.work_prefecture||'').trim(),mun=String(j.work_municipality||'').trim();let query=loc;if(mun&&!mun.endsWith('全域')&&!query.includes(mun))query=mun+' '+query;if(pref&&!query.includes(pref))query=pref+' '+query;return query.trim()||mun;}
 function jobMapLinks(j){const query=jobMapQuery(j);if(!query)return '';const encoded=encodeURIComponent(query),label=String(query).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');return '<div class="job-map"><p><b>勤務地・集合場所の地図</b></p><p>'+label+'</p><div class="job-map-actions"><a href="https://www.google.com/maps/search/?api=1&query='+encoded+'" target="_blank" rel="noopener noreferrer">地図を見る</a><a href="https://www.google.com/maps/dir/?api=1&destination='+encoded+'" target="_blank" rel="noopener noreferrer">経路を調べる</a></div><p class="job-map-note">Googleマップで住所・施設名を検索します。市区町村のみの場合は周辺表示です。集合場所は求人の案内をご確認ください。</p></div>';}
-async function init(){user=(await db.auth.getUser()).data.user;if(!user){location.href='./driver.html';return}driver=(await db.from('drivers').select('*').eq('user_id',user.id).maybeSingle()).data;if(!driver){location.href='./driver-profile-setup.html';return}let r=await db.from('jobs').select('*').eq('id',jobId).single();if(r.error||!r.data){$('msg').textContent='求人情報を確認できませんでした。';$('applyBtn').disabled=true;return}job=r.data;$('job').innerHTML=`<p><b>${e(job.job_description||'ドライバー求人')}</b></p><p>${e(wd(job.work_date||''))} ${tm(job.start_time)}〜${tm(job.end_time)}</p><p>${e(job.location||'')}${job.destination?' → '+e(job.destination):''}</p>${jobMapLinks(job)}`}async function applyJob(){if(!$('workCheck').checked)return;if(!confirm('この内容を確認のうえ応募しますか？'))return;let jr=await db.from('jobs').select('status,required_headcount,applications(status)').eq('id',jobId).single();if(jr.error)return $('msg').textContent=jr.error.message;if(jr.data.status==='キャンセル')return $('msg').textContent='この求人は取り消されています。';let need=Number(jr.data.required_headcount||1),hired=(jr.data.applications||[]).filter(x=>['採用','勤務確定','勤務完了'].includes(x.status)).length;if(hired>=need)return $('msg').textContent='この求人は募集人数に達しています。';let r=await db.from('applications').insert({job_id:jobId,driver_id:driver.id,status:'応募中'});if(r.error){if(String(r.error.message).includes('duplicate'))return $('msg').textContent='すでに応募済みです。';return $('msg').textContent=r.error.message}alert('応募しました。');location.href='./driver.html'}init();</script></body></html>
+let ready=false,loading=false,applying=false,submitted=false,submissionUncertain=false;
+function updateApplyButton(){
+ $('applyBtn').disabled=!ready||loading||applying||submitted||submissionUncertain||!$('workCheck').checked;
+ $('applyBtn').textContent=applying?'応募処理中…':submitted?'応募済み':'確認して応募する';
+ $('applyBtn').setAttribute('aria-busy',String(applying));
+ $('workCheck').disabled=!ready||loading||applying||submitted||submissionUncertain;
+}
+function showHistoryHint(){ $('historyHint').hidden=false }
+async function init(){
+ if(loading||applying||submitted||submissionUncertain)return;
+ ready=false;loading=true;user=null;driver=null;job=null;
+ $('workCheck').checked=false;$('job').textContent='';$('msg').textContent='求人情報を確認しています…';$('retryBtn').hidden=true;$('historyHint').hidden=true;updateApplyButton();
+ try{
+  const raw=new URLSearchParams(location.search).get('job');
+  if(!/^[1-9][0-9]*$/.test(raw||'')||!Number.isSafeInteger(jobId)){
+   $('msg').textContent='求人の指定が正しくありません。求人一覧から選び直してください。';return;
+  }
+  const auth=await db.auth.getUser();
+  if(auth.error){
+   if(auth.error.name==='AuthSessionMissingError'){location.href='./driver.html';return}
+   throw new Error('auth_unavailable');
+  }
+  user=auth.data?.user;
+  if(!user){location.href='./driver.html';return}
+  const profile=await db.from('drivers').select('*').eq('user_id',user.id).maybeSingle();
+  if(profile.error)throw new Error('profile_unavailable');
+  driver=profile.data;
+  if(!driver){location.href='./driver-profile-setup.html';return}
+  const r=await db.from('jobs').select('*').eq('id',jobId).single();
+  if(r.error||!r.data){$('msg').textContent='求人情報を確認できませんでした。再読み込みするか、求人一覧へ戻ってください。';$('retryBtn').hidden=false;return}
+  job=r.data;
+  $('job').innerHTML=`<p><b>${e(job.job_description||'ドライバー求人')}</b></p><p>${e(wd(job.work_date||''))} ${tm(job.start_time)}〜${tm(job.end_time)}</p><p>${e(job.location||'')}${job.destination?' → '+e(job.destination):''}</p>${jobMapLinks(job)}`;
+  if(job.status==='キャンセル'){$('msg').textContent='この求人は取り消されています。';return}
+  ready=true;$('msg').textContent='';
+ }catch(error){$('msg').textContent='ログイン状態または求人情報を確認できませんでした。通信を確認し、再読み込みしてください。';$('retryBtn').hidden=false}
+ finally{loading=false;updateApplyButton()}
+}
+async function applyJob(){
+ if(!ready||loading||applying||submitted||submissionUncertain||!user||!driver||!$('workCheck').checked)return;
+ applying=true;$('msg').textContent='';$('historyHint').hidden=true;$('retryBtn').hidden=true;updateApplyButton();
+ let mutationStarted=false;
+ try{
+  if(!confirm('この内容を確認のうえ応募しますか？'))return;
+  const auth=await db.auth.getUser();
+  if(auth.error||auth.data?.user?.id!==user.id){ready=false;$('msg').textContent='ログイン状態が変わったか確認できませんでした。求人一覧からログイン状態を確認してください。';return}
+  const jr=await db.from('jobs').select('status,required_headcount,applications(status)').eq('id',jobId).single();
+  if(jr.error){$('msg').textContent=jr.error.message||'求人情報を確認できませんでした。';return}
+  if(!jr.data){ready=false;$('msg').textContent='求人が見つかりません。求人一覧から選び直してください。';return}
+  if(jr.data.status==='キャンセル'){ready=false;$('msg').textContent='この求人は取り消されています。';return}
+  const need=Number(jr.data.required_headcount||1),hired=(jr.data.applications||[]).filter(x=>['採用','勤務確定','勤務完了'].includes(x.status)).length;
+  if(hired>=need){ready=false;$('msg').textContent='この求人は募集人数に達しています。';return}
+  mutationStarted=true;
+  const r=await db.from('applications').insert({job_id:jobId,driver_id:driver.id,status:'応募中'});
+  if(r.error){
+   if(r.error.code==='23505'||String(r.error.message).includes('duplicate')){submitted=true;$('msg').textContent='すでに応募済みです。応募履歴を確認してください。';showHistoryHint();return}
+   if(!/^[0-9A-Z]{5}$|^PGRST[0-9]{3}$/.test(r.error.code||''))throw new Error('mutation_response_uncertain');
+   $('msg').textContent=r.error.message||'応募できませんでした。';return;
+  }
+  submitted=true;alert('応募しました。');location.href='./driver.html';
+ }catch(error){
+  if(mutationStarted){submissionUncertain=true;$('msg').textContent='応募の完了を確認できませんでした。再送せず、応募履歴を確認してください。';showHistoryHint()}
+  else $('msg').textContent='応募に必要な情報を確認できませんでした。通信を確認し、再度お試しください。';
+ }finally{applying=false;updateApplyButton()}
+}
+init();</script></body></html>
