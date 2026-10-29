@@ -1,0 +1,7 @@
+/* Only editable job fields are copied; IDs, status, attendance and applications are excluded. */
+(function(){
+ const fields={desc:'job_description',detail:'job_detail',vehicle:'vehicle_type',head:'required_headcount',start:'start_time',end:'end_time',break:'break_minutes',pref:'work_prefecture',mun:'work_municipality',loc:'location',dest:'destination',access:'access_note',license:'required_license',exp:'required_experience',ptype:'pay_type',pay:'pay_amount',notes:'notes',fee:'transportation_fee',feeType:'transportation_fee_type'};
+ function values(job){const result={};for(const [id,key] of Object.entries(fields))result[id]=job[key]??'';result.start=String(result.start).slice(0,5);result.end=String(result.end).slice(0,5);result.head=job.required_headcount??1;result.break=job.break_minutes??0;result.guarantee=job.pay_guarantee===true?'true':job.pay_guarantee===false?'false':'';result.date='';return result}
+ function fill(job,doc=document){const v=values(job);const assign=(id,value)=>{const el=doc.getElementById(id);if(!el)return;if(el.tagName==='SELECT'&&value!==''&&!Array.from(el.options).some(o=>o.value===String(value))){const o=doc.createElement('option');o.value=String(value);o.textContent=id==='break'?value+'分':String(value);el.appendChild(o)}el.value=String(value)};assign('pref',v.pref);fillMunicipalitySelect(doc.getElementById('mun'),String(v.pref));for(const [id,value]of Object.entries(v))assign(id,value);doc.getElementById('confirm').checked=false}
+ window.SpodoraJobCopy={values,fill};
+})();

@@ -1,0 +1,49 @@
+{
+  "status": "PASS_METADATA_ONLY",
+  "errors": [],
+  "counts": {
+    "tables": 22,
+    "columns": 239,
+    "constraints": 97,
+    "indexes": 54,
+    "policies": 40,
+    "triggers": 12,
+    "functions": 54,
+    "auth_triggers": 2,
+    "sequences": 7,
+    "columns_with_explicit_acl": 21
+  },
+  "security_review_required": [
+    "public.apply_attendance_rounding(p_application_id bigint)",
+    "public.company_manual_attendance(p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_reason text)",
+    "public.create_driver_profile_from_auth()",
+    "public.current_driver_id()",
+    "public.get_my_driver()",
+    "public.prepare_driver_attendance(p_action text)",
+    "public.register_company(p_company_name text, p_contact_name text, p_phone text, p_email text, p_address text)",
+    "public.rls_auto_enable()",
+    "public.scan_attendance(p_token uuid)",
+    "public.scan_company_attendance(p_token uuid)",
+    "public.scan_company_attendance(p_token uuid, p_action text)",
+    "public.scan_driver_attendance(p_token uuid, p_action text)"
+  ],
+  "notes": [
+    "internal.sequences repeats public sequences; never create them twice.",
+    "ACL null uses PostgreSQL defaults; it does not mean no access."
+  ],
+  "unverified": [
+    "Native Supabase reconstruction including extensions, services and full dependency execution",
+    "Schema/default/column ACL, grant options and ownership equivalence",
+    "Auth/Storage service version and configuration compatibility",
+    "Encrypted data backup, Storage files, cron and secret recovery",
+    "Full authorization matrix and real production backup restoration"
+  ],
+  "sha256": {
+    "function-dependencies-20261029.json": "2691d7fc263f5c5e4ed9388c4f3dd4756baf83b756b071ee18e356eeadaec407",
+    "public-catalog-20261029.json": "db3e5552daeadf50669959317df43d79b8e124ebc4d9ed4ddf81bf1dfb237ae0",
+    "restore-metadata-20261029.json": "c6cbf73c2fb0eb241ceed2ff8b6e0a3465ca927b8a81e75ed06e511efe6747f2",
+    "private-dependencies-20261029.json": "e9d1fd10ec171f72bab0e77bd20b137c92fde4d79d0ae6f3f3d4b73c788858d6",
+    "column-privileges-20261029.json": "9997d23fad10d7d408f1bdd8c619baba1c03511886c5439bd075f94064175813",
+    "function-hashes-live-20261029.json": "6f42bb60bc77e0328b86d5e0380fef3b9278aa76992a2f9c8ee7e722c73f5169"
+  }
+}

@@ -1,0 +1,28 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>スポドラ 出勤・退勤</title><link rel="stylesheet" href="./assets/attendance-qr.css?v=20261005b"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.105.0"></script><script src="./assets/attendance-qr.js?v=20261005b"></script><style id="logo-surface-match">body{background:#fff}</style></head><body><header><a href="./"><img src="./assets/supodora-logo-final.png?v=20261001b" alt="スポドラ"></a></header><main><div class="card"><h1>出勤・退勤</h1><h2 id="company"></h2><div id="msg" role="status" aria-live="polite">勤務を確認中…</div><div id="work"></div><div class="actions"><a class="button" href="./driver-attendance.html">QRを読み直す</a><a class="button" href="./driver.html">応募・仕事管理へ戻る</a></div></div></main><script>
+const {db,esc,time}=SpodoraQR,$=id=>document.getElementById(id),token=SpodoraQR.token(location.href);let busy=false,rows=[];
+async function init(){
+ if(!token){$('msg').className='error';$('msg').textContent='企業の出退勤QRを読み取ってください。';return}
+ try{
+ const user=(await db.auth.getUser()).data.user;if(!user){$('msg').innerHTML='ドライバーとしてログインしてください。<div class="actions"><a class="button primary" href="'+SpodoraQR.loginURL(token)+'">ログインして打刻へ進む</a></div>';return}
+ const r=await db.rpc('company_scan_work',{p_token:token});if(r.error)throw r.error;
+ $('company').textContent=r.data.company_name;rows=r.data.work||[];render();
+ $('msg').className='info';$('msg').textContent=rows.length?'対象の勤務を確認して打刻してください。':'本日この企業で打刻できる確定済みの勤務がありません。';
+ }catch(err){$('msg').className='error';$('msg').textContent=err.message||'勤務を確認できませんでした。ページを開き直してください。'}
+}
+function render(){
+ $('work').innerHTML=rows.map(a=>'<section class="work"><h2>'+esc(a.title)+'</h2><p>'+esc(a.work_date)+'　'+esc(a.start_time?.slice(0,5))+'〜'+esc(a.end_time?.slice(0,5))+'</p><p><b>'+(a.checked_out_at?'退勤済み':a.checked_in_at?'出勤中':'未出勤')+'</b><br>実出勤 '+time(a.checked_in_at)+' ／ 実退勤 '+time(a.checked_out_at)+'</p>'+(!a.checked_out_at?'<button class="'+(a.checked_in_at?'out':'primary')+'" onclick="punch('+Number(a.id)+',\''+(a.checked_in_at?'out':'in')+'\')">'+(a.checked_in_at?'退勤する':'出勤する')+'</button>':'')+'</section>').join('');
+}
+async function punch(id,action){
+ if(busy)return;const a=rows.find(x=>Number(x.id)===id);if(!a)return;
+ if(!confirm(a.title+'\n'+(action==='in'?'出勤':'退勤')+'を記録しますか？'))return;
+ busy=true;document.querySelectorAll('#work button').forEach(b=>b.disabled=true);$('msg').textContent='打刻を記録しています…';
+ try{
+ const r=await db.rpc('punch_company_qr',{p_token:token,p_application_id:id,p_action:action});if(r.error)throw r.error;
+ Object.assign(a,{checked_in_at:r.data.checked_in_at||a.checked_in_at,checked_out_at:r.data.checked_out_at||a.checked_out_at});render();
+ $('msg').className='ok success';$('msg').textContent='✓ '+r.data.message+'（'+time(action==='in'?r.data.checked_in_at:r.data.checked_out_at)+'）';
+ if(!r.data.already_recorded&&navigator.vibrate)navigator.vibrate(80);
+ }catch(err){$('msg').className='error';$('msg').textContent=(err.message||'通信できませんでした。')+' 記録済みの場合、もう一度押しても重複記録されません。';}
+ finally{busy=false;document.querySelectorAll('#work button').forEach(b=>b.disabled=false)}
+}
+init();
+</script></body></html>

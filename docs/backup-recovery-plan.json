@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "status": "REAL_BACKUP_NOT_CONFIGURED",
+  "project": "driver-spot",
+  "production_project_ref": "wyxuekjikvflpcmlliwn",
+  "production_data_exported": false,
+  "production_restore_tested": false,
+  "synthetic_encrypted_restore_tested": true,
+  "private_destination": null,
+  "key_custodian": null,
+  "key_storage_reference": null,
+  "retention_days": null,
+  "rpo_hours": null,
+  "rto_hours": null,
+  "backup_operator": null,
+  "restore_operator": null,
+  "scope": [
+    {"item": "application_database_schema_and_data", "real_backup_verified": false},
+    {"item": "auth_users_identities_and_auth_configuration", "real_backup_verified": false},
+    {"item": "storage_metadata_and_object_bytes", "real_backup_verified": false},
+    {"item": "edge_function_sources_and_runtime_configuration", "real_backup_verified": false},
+    {"item": "secrets_vault_and_external_provider_configuration", "real_backup_verified": false},
+    {"item": "dns_domains_schedules_and_notification_restart_plan", "real_backup_verified": false}
+  ],
+  "requirements": [
+    "Do not publish data, credentials, private keys or passphrases to GitHub",
+    "Store real backup ciphertext and recovery keys with independently controlled access",
+    "Validate decryption and native Supabase restore in an isolated environment before claiming recoverability",
+    "Keep email, LINE, cron and external hooks disabled during restore verification",
+    "Agree ownership, retention and recovery objectives before exporting real personal data"
+  ]
+}

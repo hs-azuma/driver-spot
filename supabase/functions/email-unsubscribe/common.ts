@@ -1,0 +1,6 @@
+const encoder=new TextEncoder();
+async function signingKey(secret:string){const derived=await crypto.subtle.digest('SHA-256',encoder.encode('spodora/email-unsubscribe/v1:'+secret));return crypto.subtle.importKey('raw',derived,{name:'HMAC',hash:'SHA-256'},false,['sign','verify'])}
+const hex=(b:ArrayBuffer)=>Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+export async function unsubscribeToken(userId:string,secret:string){if(!/^[0-9a-f-]{36}$/i.test(userId))throw new Error('Invalid user ID');const signature=await crypto.subtle.sign('HMAC',await signingKey(secret),encoder.encode('job-match:'+userId));return userId+'.'+hex(signature)}
+export async function verifyUnsubscribeToken(token:string,secret:string){const m=/^([0-9a-f-]{36})\.([0-9a-f]{64})$/i.exec(token||'');if(!m)return null;const sig=new Uint8Array(m[2].match(/../g)!.map(x=>parseInt(x,16)));return await crypto.subtle.verify('HMAC',await signingKey(secret),sig,encoder.encode('job-match:'+m[1]))?m[1]:null}
+export function unsubscribeLinks(token:string){return {page:'https://spodora.com/email-unsubscribe.html#token='+encodeURIComponent(token),api:'https://wyxuekjikvflpcmlliwn.supabase.co/functions/v1/email-unsubscribe?token='+encodeURIComponent(token)}}

@@ -1,0 +1,326 @@
+[
+  {
+    "name": "sync_company_public_name",
+    "schema": "private",
+    "arguments": "",
+    "definition_md5": "ff7f2e76ed63487094300cb582440dc3"
+  },
+  {
+    "name": "account_auth_allow",
+    "schema": "public",
+    "arguments": "p_key text, p_limit integer, p_seconds integer",
+    "definition_md5": "bd75315d1d30eb2aa496de6024e9d53b"
+  },
+  {
+    "name": "apply_attendance_rounding",
+    "schema": "public",
+    "arguments": "p_application_id bigint",
+    "definition_md5": "ab0c8257eeec56e07d455b4f98718079"
+  },
+  {
+    "name": "attendance_company_qr",
+    "schema": "public",
+    "arguments": "p_regenerate boolean",
+    "definition_md5": "2a2c4afa85492631761bcdee5a85c092"
+  },
+  {
+    "name": "attendance_rounding_trigger",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "70ea2765c3c8efbe8c5e0bf6e12b835e"
+  },
+  {
+    "name": "begin_line_link",
+    "schema": "public",
+    "arguments": "p_ticket_hash text, p_user_id uuid, p_nonce_hash text",
+    "definition_md5": "084fdaf67fb71f49d8fbc58e815c0e07"
+  },
+  {
+    "name": "claim_company_application_emails",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "14dd46b9c6fef81eb7efc8d609cdc945"
+  },
+  {
+    "name": "claim_line_notifications",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "83d0c8efe9d30838b0659823c7c82916"
+  },
+  {
+    "name": "company_manual_attendance",
+    "schema": "public",
+    "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_reason text",
+    "definition_md5": "be16dd33ff750a6a609f7effa8464b68"
+  },
+  {
+    "name": "company_scan_work",
+    "schema": "public",
+    "arguments": "p_token uuid",
+    "definition_md5": "ec397328f6fa0621fceacb8952caab88"
+  },
+  {
+    "name": "complete_line_link",
+    "schema": "public",
+    "arguments": "p_nonce_hash text, p_line_user_id text, p_success boolean",
+    "definition_md5": "d1b18d9b24077029cf8d39f905676960"
+  },
+  {
+    "name": "create_driver_profile_from_auth",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "ae0e0221fd9ba909095e9b635da6f2ba"
+  },
+  {
+    "name": "current_driver_id",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "178c2fb87cf3e2f8a56bc49dc4bca03c"
+  },
+  {
+    "name": "decide_attendance_review",
+    "schema": "public",
+    "arguments": "p_request_id uuid, p_approve boolean, p_comment text, p_pay_guarantee boolean",
+    "definition_md5": "807d4dd680058f0a967a2495542db5d3"
+  },
+  {
+    "name": "get_job_hiring_counts",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "761c69725344cc1e51ec749a5ac04863"
+  },
+  {
+    "name": "get_my_driver",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "6f18756c380b1fffd9d5fe049774b3cd"
+  },
+  {
+    "name": "prepare_driver_attendance",
+    "schema": "public",
+    "arguments": "p_action text",
+    "definition_md5": "e7543a8a4f20e0c8dd01395c09fb5e69"
+  },
+  {
+    "name": "preserve_job_pay_guarantee",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "0967107561118d69054265d68e2156a4"
+  },
+  {
+    "name": "prevent_overlapping_driver_application",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "be50ff3f207b3a24f12151b5093e76e1"
+  },
+  {
+    "name": "publish_job_draft",
+    "schema": "public",
+    "arguments": "p_draft_id uuid, p_job jsonb",
+    "definition_md5": "4655650a52521c81b056b84563678198"
+  },
+  {
+    "name": "punch_company_qr",
+    "schema": "public",
+    "arguments": "p_token uuid, p_application_id bigint, p_action text",
+    "definition_md5": "4ceb19a68caa352627ee215991f5dc5c"
+  },
+  {
+    "name": "register_company",
+    "schema": "public",
+    "arguments": "p_company_name text, p_contact_name text, p_phone text, p_email text, p_address text",
+    "definition_md5": "4130527cc3a55e7194920eafbbdf7f43"
+  },
+  {
+    "name": "request_attendance_review",
+    "schema": "public",
+    "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text",
+    "definition_md5": "73490e2a2d92471a23c681960f645f46"
+  },
+  {
+    "name": "request_pay_confirmation",
+    "schema": "public",
+    "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text, p_transportation_fee integer, p_pay_guarantee boolean",
+    "definition_md5": "9d2b60a164bb605267db74f0e766137d"
+  },
+  {
+    "name": "rls_auto_enable",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "6998ea6b4c2480f5d2e34b5dcf3f8d36"
+  },
+  {
+    "name": "save_driver_preferences",
+    "schema": "public",
+    "arguments": "p_profile jsonb, p_line jsonb",
+    "definition_md5": "9909b33a4409b2da7b1c75d89d898fc2"
+  },
+  {
+    "name": "scan_attendance",
+    "schema": "public",
+    "arguments": "p_token uuid",
+    "definition_md5": "e31fcf439238f2fdf0856dd0a78004f2"
+  },
+  {
+    "name": "scan_company_attendance",
+    "schema": "public",
+    "arguments": "p_token uuid",
+    "definition_md5": "436b37c126ea3d12dbffef9871706b11"
+  },
+  {
+    "name": "scan_company_attendance",
+    "schema": "public",
+    "arguments": "p_token uuid, p_action text",
+    "definition_md5": "00db615a78288bfcec39341165bc0696"
+  },
+  {
+    "name": "scan_driver_attendance",
+    "schema": "public",
+    "arguments": "p_token uuid, p_action text",
+    "definition_md5": "56547fc2748b13c532a96f907837cc08"
+  },
+  {
+    "name": "set_application_workflow_timestamps",
+    "schema": "public",
+    "arguments": "",
+    "definition_md5": "42d971fdca2709c3ba21a667d0a0c929"
+  },
+  {
+    "name": "submit_work_review",
+    "schema": "public",
+    "arguments": "p_application_id bigint, p_side text, p_rating integer, p_comment text",
+    "definition_md5": "71a25839905ce2f7b65f92478a0afc75"
+  },
+  {
+    "name": "unlink_line_account",
+    "schema": "public",
+    "arguments": "p_user_id uuid",
+    "definition_md5": "52375d09a80e211575f6614b3c61c8dd"
+  },
+  {
+    "name": "hired_counts",
+    "schema": "spodora_job_counts",
+    "arguments": "",
+    "definition_md5": "31e1481d3ae555b27f80398e12248820"
+  },
+  {
+    "name": "attendance_company_qr",
+    "schema": "spodora_private",
+    "arguments": "p_regenerate boolean",
+    "definition_md5": "30c40acbaec690aaae947c4b609c0bde"
+  },
+  {
+    "name": "attendance_job_context",
+    "schema": "spodora_private",
+    "arguments": "j jobs, policy boolean",
+    "definition_md5": "320528bb608f0949fffe248b1c4ba66d"
+  },
+  {
+    "name": "capture_application_pay_guarantee",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "068d7a4f26a4102860017b2269cf9898"
+  },
+  {
+    "name": "claim_company_application_emails",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "b83088714f1425165199fec5f05e9629"
+  },
+  {
+    "name": "claim_line_notifications",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "60dd0a6ea47480b8f900e3910e20d943"
+  },
+  {
+    "name": "company_scan_work",
+    "schema": "spodora_private",
+    "arguments": "p_token uuid",
+    "definition_md5": "5e26e261a78cba4f893808fc9c51dd1a"
+  },
+  {
+    "name": "decide_attendance_review",
+    "schema": "spodora_private",
+    "arguments": "p_request_id uuid, p_approve boolean, p_comment text, p_pay_guarantee boolean",
+    "definition_md5": "a76c8c81a2ed9359f0cd87f288896401"
+  },
+  {
+    "name": "driver_job_area_matches",
+    "schema": "spodora_private",
+    "arguments": "d drivers, j jobs, p_channel text",
+    "definition_md5": "8e03b0c99dbc63ad7eb03c727b0fbbb4"
+  },
+  {
+    "name": "enqueue_line",
+    "schema": "spodora_private",
+    "arguments": "p_user uuid, p_kind text, p_key text, p_message text, p_job bigint, p_application bigint",
+    "definition_md5": "257e408562e9ff3030a6d0713d21e12c"
+  },
+  {
+    "name": "finish_confirmed_company_registration",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "f92c5cd0dc332279a3a4910b0d3122cd"
+  },
+  {
+    "name": "guard_account_portal",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "728aad7724d1b60f616192ced28e076d"
+  },
+  {
+    "name": "line_application_notifications",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "39705563fcc2bfe183767a81ab9611ab"
+  },
+  {
+    "name": "line_job_notifications",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "df245593fbcd782ef21cc80a0160aa66"
+  },
+  {
+    "name": "prepare_line_reminders",
+    "schema": "spodora_private",
+    "arguments": "p_clock timestamp with time zone",
+    "definition_md5": "4f7524e87064f4adf919f179c9b94e8e"
+  },
+  {
+    "name": "punch_company_qr",
+    "schema": "spodora_private",
+    "arguments": "p_token uuid, p_application_id bigint, p_action text",
+    "definition_md5": "9a8c9afa99e75002493c7efc862f2abb"
+  },
+  {
+    "name": "queue_company_application_email",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "09ee1d0ebb87caeb095ff79a46acef51"
+  },
+  {
+    "name": "request_attendance_review",
+    "schema": "spodora_private",
+    "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text",
+    "definition_md5": "ccfb3e58c158dbc4e34875e37d5417a0"
+  },
+  {
+    "name": "request_pay_confirmation",
+    "schema": "spodora_private",
+    "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text, p_transportation_fee integer, p_pay_guarantee boolean",
+    "definition_md5": "6c19e639df0ff729bd41c6bd7f042623"
+  },
+  {
+    "name": "require_company_email_confirmation",
+    "schema": "spodora_private",
+    "arguments": "",
+    "definition_md5": "abd98c225c36fd2fe40a4dc95e680ab4"
+  },
+  {
+    "name": "submit_work_review",
+    "schema": "spodora_reviews",
+    "arguments": "p_application_id bigint, p_side text, p_rating integer, p_comment text",
+    "definition_md5": "973d7ddae65e1ac7b064b28591cbf900"
+  }
+]

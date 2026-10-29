@@ -1,0 +1,6086 @@
+{
+  "enums": null,
+  "tables": [
+    {
+      "rls": true,
+      "name": "companies",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "line_connections",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "line_link_requests",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "line_notification_preferences",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "company_public_names",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "line_notification_queue",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "job_drafts",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "driver_job_favorites",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "driver_company_favorites",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "account_login_ids",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "account_auth_limits",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "company_driver_favorites",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "drivers",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "jobs",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "reviews",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "company_driver_blocks",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "applications",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "attendance_edit_logs",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "attendance_review_requests",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "company_job_invitations",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "pending_company_registrations",
+      "force_rls": false
+    },
+    {
+      "rls": true,
+      "name": "company_application_email_queue",
+      "force_rls": false
+    }
+  ],
+  "columns": [
+    {
+      "name": "id",
+      "type": "bigint",
+      "table": "companies",
+      "default": null,
+      "identity": "d",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_name",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "contact_name",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "phone",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "email",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "address",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "companies",
+      "default": "now()",
+      "identity": "",
+      "not_null": false,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "attendance_token",
+      "type": "uuid",
+      "table": "companies",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": false,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "attendance_rounding_minutes",
+      "type": "integer",
+      "table": "companies",
+      "default": "15",
+      "identity": "",
+      "not_null": true,
+      "position": 10,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_source",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 11,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_medium",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 12,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_campaign",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 13,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_content",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 14,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_ref",
+      "type": "text",
+      "table": "companies",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 15,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "line_connections",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "line_user_id",
+      "type": "text",
+      "table": "line_connections",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "active",
+      "type": "boolean",
+      "table": "line_connections",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "linked_at",
+      "type": "timestamp with time zone",
+      "table": "line_connections",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "ticket_hash",
+      "type": "text",
+      "table": "line_link_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "line_user_id",
+      "type": "text",
+      "table": "line_link_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "link_token",
+      "type": "text",
+      "table": "line_link_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "expires_at",
+      "type": "timestamp with time zone",
+      "table": "line_link_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "line_link_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "nonce_hash",
+      "type": "text",
+      "table": "line_link_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "line_notification_preferences",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "job_match",
+      "type": "boolean",
+      "table": "line_notification_preferences",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "application_result",
+      "type": "boolean",
+      "table": "line_notification_preferences",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "work_reminder",
+      "type": "boolean",
+      "table": "line_notification_preferences",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "new_application",
+      "type": "boolean",
+      "table": "line_notification_preferences",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "company_public_names",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_name",
+      "type": "text",
+      "table": "company_public_names",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "uuid",
+      "table": "line_notification_queue",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "kind",
+      "type": "text",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "event_key",
+      "type": "text",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "job_id",
+      "type": "bigint",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "application_id",
+      "type": "bigint",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "message",
+      "type": "text",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "state",
+      "type": "text",
+      "table": "line_notification_queue",
+      "default": "'pending'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "attempts",
+      "type": "integer",
+      "table": "line_notification_queue",
+      "default": "0",
+      "identity": "",
+      "not_null": true,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "available_at",
+      "type": "timestamp with time zone",
+      "table": "line_notification_queue",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 10,
+      "generated": ""
+    },
+    {
+      "name": "expires_at",
+      "type": "timestamp with time zone",
+      "table": "line_notification_queue",
+      "default": "(now() + '1 day'::interval)",
+      "identity": "",
+      "not_null": true,
+      "position": 11,
+      "generated": ""
+    },
+    {
+      "name": "lease_until",
+      "type": "timestamp with time zone",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 12,
+      "generated": ""
+    },
+    {
+      "name": "first_attempt_at",
+      "type": "timestamp with time zone",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 13,
+      "generated": ""
+    },
+    {
+      "name": "destination",
+      "type": "text",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 14,
+      "generated": ""
+    },
+    {
+      "name": "last_status",
+      "type": "integer",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 15,
+      "generated": ""
+    },
+    {
+      "name": "sent_at",
+      "type": "timestamp with time zone",
+      "table": "line_notification_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 16,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "line_notification_queue",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 17,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "uuid",
+      "table": "job_drafts",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "job_drafts",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "content",
+      "type": "jsonb",
+      "table": "job_drafts",
+      "default": "'{}'::jsonb",
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "job_drafts",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "updated_at",
+      "type": "timestamp with time zone",
+      "table": "job_drafts",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "driver_id",
+      "type": "bigint",
+      "table": "driver_job_favorites",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "job_id",
+      "type": "bigint",
+      "table": "driver_job_favorites",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "driver_job_favorites",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "driver_id",
+      "type": "bigint",
+      "table": "driver_company_favorites",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "driver_company_favorites",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "driver_company_favorites",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "login_id",
+      "type": "text",
+      "table": "account_login_ids",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "account_login_ids",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "recovery_hash",
+      "type": "text",
+      "table": "account_login_ids",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "account_login_ids",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "key",
+      "type": "text",
+      "table": "account_auth_limits",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "window_start",
+      "type": "timestamp with time zone",
+      "table": "account_auth_limits",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "attempts",
+      "type": "integer",
+      "table": "account_auth_limits",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "company_driver_favorites",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "driver_id",
+      "type": "bigint",
+      "table": "company_driver_favorites",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "company_driver_favorites",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "table": "drivers",
+      "default": null,
+      "identity": "d",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "name",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "age",
+      "type": "integer",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "phone",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "email",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "area",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "license_type",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "experience_years",
+      "type": "integer",
+      "table": "drivers",
+      "default": "0",
+      "identity": "",
+      "not_null": false,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "rating",
+      "type": "numeric(2,1)",
+      "table": "drivers",
+      "default": "5.0",
+      "identity": "",
+      "not_null": false,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "available",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": false,
+      "position": 10,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "drivers",
+      "default": "now()",
+      "identity": "",
+      "not_null": false,
+      "position": 11,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 12,
+      "generated": ""
+    },
+    {
+      "name": "attendance_token",
+      "type": "uuid",
+      "table": "drivers",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": false,
+      "position": 13,
+      "generated": ""
+    },
+    {
+      "name": "preferred_prefecture",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 14,
+      "generated": ""
+    },
+    {
+      "name": "preferred_municipality",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 15,
+      "generated": ""
+    },
+    {
+      "name": "match_email_enabled",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 16,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_source",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 17,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_medium",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 18,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_campaign",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 19,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_content",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 20,
+      "generated": ""
+    },
+    {
+      "name": "acquisition_ref",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 21,
+      "generated": ""
+    },
+    {
+      "name": "preferred_area",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 22,
+      "generated": ""
+    },
+    {
+      "name": "experience",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 23,
+      "generated": ""
+    },
+    {
+      "name": "is_paused",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "false",
+      "identity": "",
+      "not_null": true,
+      "position": 24,
+      "generated": ""
+    },
+    {
+      "name": "preferred_vehicle_types",
+      "type": "text[]",
+      "table": "drivers",
+      "default": "ARRAY['軽バン・軽貨物'::text, '2t'::text, '4t'::text, '大型（10t）'::text, 'トレーラー'::text]",
+      "identity": "",
+      "not_null": true,
+      "position": 25,
+      "generated": ""
+    },
+    {
+      "name": "preferred_weekdays",
+      "type": "integer[]",
+      "table": "drivers",
+      "default": "ARRAY[0, 1, 2, 3, 4, 5, 6]",
+      "identity": "",
+      "not_null": true,
+      "position": 26,
+      "generated": ""
+    },
+    {
+      "name": "preferred_time_slots",
+      "type": "text[]",
+      "table": "drivers",
+      "default": "ARRAY['early'::text, 'morning'::text, 'afternoon'::text, 'evening'::text]",
+      "identity": "",
+      "not_null": true,
+      "position": 27,
+      "generated": ""
+    },
+    {
+      "name": "preferred_prefecture_2",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 28,
+      "generated": ""
+    },
+    {
+      "name": "preferred_municipality_2",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 29,
+      "generated": ""
+    },
+    {
+      "name": "preferred_prefecture_3",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 30,
+      "generated": ""
+    },
+    {
+      "name": "preferred_municipality_3",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 31,
+      "generated": ""
+    },
+    {
+      "name": "preferred_email_enabled_1",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 32,
+      "generated": ""
+    },
+    {
+      "name": "preferred_line_enabled_1",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 33,
+      "generated": ""
+    },
+    {
+      "name": "preferred_email_enabled_2",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 34,
+      "generated": ""
+    },
+    {
+      "name": "preferred_line_enabled_2",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 35,
+      "generated": ""
+    },
+    {
+      "name": "preferred_email_enabled_3",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 36,
+      "generated": ""
+    },
+    {
+      "name": "preferred_line_enabled_3",
+      "type": "boolean",
+      "table": "drivers",
+      "default": "true",
+      "identity": "",
+      "not_null": true,
+      "position": 37,
+      "generated": ""
+    },
+    {
+      "name": "name_kana",
+      "type": "text",
+      "table": "drivers",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 38,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "table": "jobs",
+      "default": null,
+      "identity": "d",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "work_date",
+      "type": "date",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "start_time",
+      "type": "time without time zone",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "end_time",
+      "type": "time without time zone",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "location",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "destination",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "vehicle_type",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "job_description",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "required_license",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 10,
+      "generated": ""
+    },
+    {
+      "name": "required_experience",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 11,
+      "generated": ""
+    },
+    {
+      "name": "hourly_wage",
+      "type": "integer",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 12,
+      "generated": ""
+    },
+    {
+      "name": "transportation_fee",
+      "type": "integer",
+      "table": "jobs",
+      "default": "0",
+      "identity": "",
+      "not_null": false,
+      "position": 13,
+      "generated": ""
+    },
+    {
+      "name": "urgent",
+      "type": "boolean",
+      "table": "jobs",
+      "default": "false",
+      "identity": "",
+      "not_null": false,
+      "position": 14,
+      "generated": ""
+    },
+    {
+      "name": "status",
+      "type": "text",
+      "table": "jobs",
+      "default": "'募集中'::text",
+      "identity": "",
+      "not_null": false,
+      "position": 15,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "jobs",
+      "default": "now()",
+      "identity": "",
+      "not_null": false,
+      "position": 16,
+      "generated": ""
+    },
+    {
+      "name": "pay_type",
+      "type": "text",
+      "table": "jobs",
+      "default": "'時給'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 17,
+      "generated": ""
+    },
+    {
+      "name": "pay_amount",
+      "type": "integer",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 18,
+      "generated": ""
+    },
+    {
+      "name": "transportation_fee_type",
+      "type": "text",
+      "table": "jobs",
+      "default": "'金額指定'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 19,
+      "generated": ""
+    },
+    {
+      "name": "transportation_fee_limit_type",
+      "type": "text",
+      "table": "jobs",
+      "default": "'なし'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 20,
+      "generated": ""
+    },
+    {
+      "name": "transportation_fee_limit",
+      "type": "integer",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 21,
+      "generated": ""
+    },
+    {
+      "name": "required_headcount",
+      "type": "integer",
+      "table": "jobs",
+      "default": "1",
+      "identity": "",
+      "not_null": true,
+      "position": 22,
+      "generated": ""
+    },
+    {
+      "name": "break_minutes",
+      "type": "integer",
+      "table": "jobs",
+      "default": "0",
+      "identity": "",
+      "not_null": true,
+      "position": 23,
+      "generated": ""
+    },
+    {
+      "name": "contact_name",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 24,
+      "generated": ""
+    },
+    {
+      "name": "contact_phone",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 25,
+      "generated": ""
+    },
+    {
+      "name": "contact_note",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 26,
+      "generated": ""
+    },
+    {
+      "name": "visibility",
+      "type": "text",
+      "table": "jobs",
+      "default": "'all'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 27,
+      "generated": ""
+    },
+    {
+      "name": "target_group",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 28,
+      "generated": ""
+    },
+    {
+      "name": "job_detail",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 29,
+      "generated": ""
+    },
+    {
+      "name": "access_note",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 30,
+      "generated": ""
+    },
+    {
+      "name": "notes",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 31,
+      "generated": ""
+    },
+    {
+      "name": "work_prefecture",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 32,
+      "generated": ""
+    },
+    {
+      "name": "work_municipality",
+      "type": "text",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 33,
+      "generated": ""
+    },
+    {
+      "name": "pay_guarantee",
+      "type": "boolean",
+      "table": "jobs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 34,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "table": "reviews",
+      "default": null,
+      "identity": "d",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "application_id",
+      "type": "bigint",
+      "table": "reviews",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "driver_rating",
+      "type": "integer",
+      "table": "reviews",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "company_rating",
+      "type": "integer",
+      "table": "reviews",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "driver_comment",
+      "type": "text",
+      "table": "reviews",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "company_comment",
+      "type": "text",
+      "table": "reviews",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "reviews",
+      "default": "now()",
+      "identity": "",
+      "not_null": false,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "table": "company_driver_blocks",
+      "default": null,
+      "identity": "d",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "company_driver_blocks",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "driver_id",
+      "type": "bigint",
+      "table": "company_driver_blocks",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "company_driver_blocks",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "table": "applications",
+      "default": null,
+      "identity": "d",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "job_id",
+      "type": "bigint",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "driver_id",
+      "type": "bigint",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "status",
+      "type": "text",
+      "table": "applications",
+      "default": "'応募中'::text",
+      "identity": "",
+      "not_null": false,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "applied_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": "now()",
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "hired_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "work_confirmed_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "completed_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "checked_in_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "checked_out_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 10,
+      "generated": ""
+    },
+    {
+      "name": "attendance_method",
+      "type": "text",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 11,
+      "generated": ""
+    },
+    {
+      "name": "attendance_confirmed_by",
+      "type": "uuid",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 12,
+      "generated": ""
+    },
+    {
+      "name": "attendance_note",
+      "type": "text",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 13,
+      "generated": ""
+    },
+    {
+      "name": "attendance_token",
+      "type": "uuid",
+      "table": "applications",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": false,
+      "position": 14,
+      "generated": ""
+    },
+    {
+      "name": "rounded_check_in_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 15,
+      "generated": ""
+    },
+    {
+      "name": "rounded_check_out_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 16,
+      "generated": ""
+    },
+    {
+      "name": "attendance_rounding_minutes",
+      "type": "integer",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 17,
+      "generated": ""
+    },
+    {
+      "name": "attendance_review_status",
+      "type": "text",
+      "table": "applications",
+      "default": "'未確認'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 18,
+      "generated": ""
+    },
+    {
+      "name": "attendance_reviewed_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 19,
+      "generated": ""
+    },
+    {
+      "name": "attendance_reviewed_by",
+      "type": "uuid",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 20,
+      "generated": ""
+    },
+    {
+      "name": "late_minutes",
+      "type": "integer",
+      "table": "applications",
+      "default": "0",
+      "identity": "",
+      "not_null": true,
+      "position": 21,
+      "generated": ""
+    },
+    {
+      "name": "overtime_minutes",
+      "type": "integer",
+      "table": "applications",
+      "default": "0",
+      "identity": "",
+      "not_null": true,
+      "position": 22,
+      "generated": ""
+    },
+    {
+      "name": "early_leave_minutes",
+      "type": "integer",
+      "table": "applications",
+      "default": "0",
+      "identity": "",
+      "not_null": true,
+      "position": 23,
+      "generated": ""
+    },
+    {
+      "name": "approved_work_minutes",
+      "type": "integer",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 24,
+      "generated": ""
+    },
+    {
+      "name": "attendance_manual_reason",
+      "type": "text",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 25,
+      "generated": ""
+    },
+    {
+      "name": "attendance_manual_updated_at",
+      "type": "timestamp with time zone",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 26,
+      "generated": ""
+    },
+    {
+      "name": "attendance_manual_updated_by",
+      "type": "uuid",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 27,
+      "generated": ""
+    },
+    {
+      "name": "pay_guarantee_snapshot",
+      "type": "boolean",
+      "table": "applications",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 28,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "bigint",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "d",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "application_id",
+      "type": "bigint",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "old_checked_in_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "old_checked_out_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "new_checked_in_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "new_checked_out_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "reason",
+      "type": "text",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "edited_by",
+      "type": "uuid",
+      "table": "attendance_edit_logs",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_edit_logs",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "uuid",
+      "table": "attendance_review_requests",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "application_id",
+      "type": "bigint",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "requested_by",
+      "type": "uuid",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "requested_in",
+      "type": "timestamp with time zone",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "requested_out",
+      "type": "timestamp with time zone",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "break_minutes",
+      "type": "integer",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "reason",
+      "type": "text",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "original_in",
+      "type": "timestamp with time zone",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "original_out",
+      "type": "timestamp with time zone",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "job_context",
+      "type": "jsonb",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 10,
+      "generated": ""
+    },
+    {
+      "name": "status",
+      "type": "text",
+      "table": "attendance_review_requests",
+      "default": "'pending'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 11,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_review_requests",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 12,
+      "generated": ""
+    },
+    {
+      "name": "reviewed_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 13,
+      "generated": ""
+    },
+    {
+      "name": "reviewed_by",
+      "type": "uuid",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 14,
+      "generated": ""
+    },
+    {
+      "name": "review_comment",
+      "type": "text",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 15,
+      "generated": ""
+    },
+    {
+      "name": "effective_pay_guarantee",
+      "type": "boolean",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 16,
+      "generated": ""
+    },
+    {
+      "name": "approved_work_seconds",
+      "type": "numeric",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 17,
+      "generated": ""
+    },
+    {
+      "name": "approved_basic_amount",
+      "type": "numeric",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 18,
+      "generated": ""
+    },
+    {
+      "name": "requested_transportation_fee",
+      "type": "integer",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 19,
+      "generated": ""
+    },
+    {
+      "name": "driver_confirmed_at",
+      "type": "timestamp with time zone",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 20,
+      "generated": ""
+    },
+    {
+      "name": "approved_transportation_fee",
+      "type": "numeric",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 21,
+      "generated": ""
+    },
+    {
+      "name": "approved_total_amount",
+      "type": "numeric",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 22,
+      "generated": ""
+    },
+    {
+      "name": "requested_pay_guarantee",
+      "type": "boolean",
+      "table": "attendance_review_requests",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 23,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "uuid",
+      "table": "company_job_invitations",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "company_job_invitations",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "job_id",
+      "type": "bigint",
+      "table": "company_job_invitations",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "driver_id",
+      "type": "bigint",
+      "table": "company_job_invitations",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "company_name",
+      "type": "text",
+      "table": "company_job_invitations",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "company_job_invitations",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "email_state",
+      "type": "text",
+      "table": "company_job_invitations",
+      "default": "'pending'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "user_id",
+      "type": "uuid",
+      "table": "pending_company_registrations",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "profile",
+      "type": "jsonb",
+      "table": "pending_company_registrations",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "pending_company_registrations",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "id",
+      "type": "uuid",
+      "table": "company_application_email_queue",
+      "default": "gen_random_uuid()",
+      "identity": "",
+      "not_null": true,
+      "position": 1,
+      "generated": ""
+    },
+    {
+      "name": "company_id",
+      "type": "bigint",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 2,
+      "generated": ""
+    },
+    {
+      "name": "application_id",
+      "type": "bigint",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 3,
+      "generated": ""
+    },
+    {
+      "name": "job_id",
+      "type": "bigint",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 4,
+      "generated": ""
+    },
+    {
+      "name": "recipient",
+      "type": "text",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 5,
+      "generated": ""
+    },
+    {
+      "name": "subject",
+      "type": "text",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 6,
+      "generated": ""
+    },
+    {
+      "name": "message",
+      "type": "text",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": true,
+      "position": 7,
+      "generated": ""
+    },
+    {
+      "name": "state",
+      "type": "text",
+      "table": "company_application_email_queue",
+      "default": "'pending'::text",
+      "identity": "",
+      "not_null": true,
+      "position": 8,
+      "generated": ""
+    },
+    {
+      "name": "attempts",
+      "type": "integer",
+      "table": "company_application_email_queue",
+      "default": "0",
+      "identity": "",
+      "not_null": true,
+      "position": 9,
+      "generated": ""
+    },
+    {
+      "name": "available_at",
+      "type": "timestamp with time zone",
+      "table": "company_application_email_queue",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 10,
+      "generated": ""
+    },
+    {
+      "name": "lease_until",
+      "type": "timestamp with time zone",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 11,
+      "generated": ""
+    },
+    {
+      "name": "first_attempt_at",
+      "type": "timestamp with time zone",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 12,
+      "generated": ""
+    },
+    {
+      "name": "last_status",
+      "type": "integer",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 13,
+      "generated": ""
+    },
+    {
+      "name": "provider_email_id",
+      "type": "text",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 14,
+      "generated": ""
+    },
+    {
+      "name": "sent_at",
+      "type": "timestamp with time zone",
+      "table": "company_application_email_queue",
+      "default": null,
+      "identity": "",
+      "not_null": false,
+      "position": 15,
+      "generated": ""
+    },
+    {
+      "name": "created_at",
+      "type": "timestamp with time zone",
+      "table": "company_application_email_queue",
+      "default": "now()",
+      "identity": "",
+      "not_null": true,
+      "position": 16,
+      "generated": ""
+    }
+  ],
+  "indexes": [
+    {
+      "name": "companies_pkey",
+      "table": "companies",
+      "definition": "CREATE UNIQUE INDEX companies_pkey ON public.companies USING btree (id)"
+    },
+    {
+      "name": "companies_user_id_unique",
+      "table": "companies",
+      "definition": "CREATE UNIQUE INDEX companies_user_id_unique ON public.companies USING btree (user_id) WHERE (user_id IS NOT NULL)"
+    },
+    {
+      "name": "companies_user_id_key",
+      "table": "companies",
+      "definition": "CREATE UNIQUE INDEX companies_user_id_key ON public.companies USING btree (user_id)"
+    },
+    {
+      "name": "companies_attendance_token_uidx",
+      "table": "companies",
+      "definition": "CREATE UNIQUE INDEX companies_attendance_token_uidx ON public.companies USING btree (attendance_token)"
+    },
+    {
+      "name": "line_connections_pkey",
+      "table": "line_connections",
+      "definition": "CREATE UNIQUE INDEX line_connections_pkey ON public.line_connections USING btree (user_id)"
+    },
+    {
+      "name": "line_connections_line_user_id_key",
+      "table": "line_connections",
+      "definition": "CREATE UNIQUE INDEX line_connections_line_user_id_key ON public.line_connections USING btree (line_user_id)"
+    },
+    {
+      "name": "line_link_requests_pkey",
+      "table": "line_link_requests",
+      "definition": "CREATE UNIQUE INDEX line_link_requests_pkey ON public.line_link_requests USING btree (ticket_hash)"
+    },
+    {
+      "name": "line_link_requests_nonce_hash_key",
+      "table": "line_link_requests",
+      "definition": "CREATE UNIQUE INDEX line_link_requests_nonce_hash_key ON public.line_link_requests USING btree (nonce_hash)"
+    },
+    {
+      "name": "line_link_requests_expiry",
+      "table": "line_link_requests",
+      "definition": "CREATE INDEX line_link_requests_expiry ON public.line_link_requests USING btree (expires_at)"
+    },
+    {
+      "name": "line_link_requests_user",
+      "table": "line_link_requests",
+      "definition": "CREATE INDEX line_link_requests_user ON public.line_link_requests USING btree (user_id)"
+    },
+    {
+      "name": "line_link_requests_line_user",
+      "table": "line_link_requests",
+      "definition": "CREATE INDEX line_link_requests_line_user ON public.line_link_requests USING btree (line_user_id)"
+    },
+    {
+      "name": "line_notification_preferences_pkey",
+      "table": "line_notification_preferences",
+      "definition": "CREATE UNIQUE INDEX line_notification_preferences_pkey ON public.line_notification_preferences USING btree (user_id)"
+    },
+    {
+      "name": "company_public_names_pkey",
+      "table": "company_public_names",
+      "definition": "CREATE UNIQUE INDEX company_public_names_pkey ON public.company_public_names USING btree (company_id)"
+    },
+    {
+      "name": "line_notification_queue_pkey",
+      "table": "line_notification_queue",
+      "definition": "CREATE UNIQUE INDEX line_notification_queue_pkey ON public.line_notification_queue USING btree (id)"
+    },
+    {
+      "name": "line_notification_queue_user_id_event_key_key",
+      "table": "line_notification_queue",
+      "definition": "CREATE UNIQUE INDEX line_notification_queue_user_id_event_key_key ON public.line_notification_queue USING btree (user_id, event_key)"
+    },
+    {
+      "name": "line_queue_pending",
+      "table": "line_notification_queue",
+      "definition": "CREATE INDEX line_queue_pending ON public.line_notification_queue USING btree (available_at) WHERE (state = ANY (ARRAY['pending'::text, 'sending'::text]))"
+    },
+    {
+      "name": "job_drafts_pkey",
+      "table": "job_drafts",
+      "definition": "CREATE UNIQUE INDEX job_drafts_pkey ON public.job_drafts USING btree (id)"
+    },
+    {
+      "name": "job_drafts_company_updated",
+      "table": "job_drafts",
+      "definition": "CREATE INDEX job_drafts_company_updated ON public.job_drafts USING btree (company_id, updated_at DESC)"
+    },
+    {
+      "name": "driver_job_favorites_pkey",
+      "table": "driver_job_favorites",
+      "definition": "CREATE UNIQUE INDEX driver_job_favorites_pkey ON public.driver_job_favorites USING btree (driver_id, job_id)"
+    },
+    {
+      "name": "driver_job_favorites_job_idx",
+      "table": "driver_job_favorites",
+      "definition": "CREATE INDEX driver_job_favorites_job_idx ON public.driver_job_favorites USING btree (job_id)"
+    },
+    {
+      "name": "driver_company_favorites_pkey",
+      "table": "driver_company_favorites",
+      "definition": "CREATE UNIQUE INDEX driver_company_favorites_pkey ON public.driver_company_favorites USING btree (driver_id, company_id)"
+    },
+    {
+      "name": "driver_company_favorites_company_idx",
+      "table": "driver_company_favorites",
+      "definition": "CREATE INDEX driver_company_favorites_company_idx ON public.driver_company_favorites USING btree (company_id)"
+    },
+    {
+      "name": "account_login_ids_pkey",
+      "table": "account_login_ids",
+      "definition": "CREATE UNIQUE INDEX account_login_ids_pkey ON public.account_login_ids USING btree (login_id)"
+    },
+    {
+      "name": "account_login_ids_user_id_key",
+      "table": "account_login_ids",
+      "definition": "CREATE UNIQUE INDEX account_login_ids_user_id_key ON public.account_login_ids USING btree (user_id)"
+    },
+    {
+      "name": "account_auth_limits_pkey",
+      "table": "account_auth_limits",
+      "definition": "CREATE UNIQUE INDEX account_auth_limits_pkey ON public.account_auth_limits USING btree (key)"
+    },
+    {
+      "name": "company_driver_favorites_pkey",
+      "table": "company_driver_favorites",
+      "definition": "CREATE UNIQUE INDEX company_driver_favorites_pkey ON public.company_driver_favorites USING btree (company_id, driver_id)"
+    },
+    {
+      "name": "company_driver_favorites_driver_idx",
+      "table": "company_driver_favorites",
+      "definition": "CREATE INDEX company_driver_favorites_driver_idx ON public.company_driver_favorites USING btree (driver_id)"
+    },
+    {
+      "name": "drivers_pkey",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_pkey ON public.drivers USING btree (id)"
+    },
+    {
+      "name": "drivers_user_id_unique",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_user_id_unique ON public.drivers USING btree (user_id) WHERE (user_id IS NOT NULL)"
+    },
+    {
+      "name": "drivers_user_id_unique_idx",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_user_id_unique_idx ON public.drivers USING btree (user_id) WHERE (user_id IS NOT NULL)"
+    },
+    {
+      "name": "drivers_user_id_unique_full_idx",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_user_id_unique_full_idx ON public.drivers USING btree (user_id)"
+    },
+    {
+      "name": "drivers_attendance_token_uidx",
+      "table": "drivers",
+      "definition": "CREATE UNIQUE INDEX drivers_attendance_token_uidx ON public.drivers USING btree (attendance_token)"
+    },
+    {
+      "name": "jobs_pkey",
+      "table": "jobs",
+      "definition": "CREATE UNIQUE INDEX jobs_pkey ON public.jobs USING btree (id)"
+    },
+    {
+      "name": "reviews_pkey",
+      "table": "reviews",
+      "definition": "CREATE UNIQUE INDEX reviews_pkey ON public.reviews USING btree (id)"
+    },
+    {
+      "name": "reviews_application_id_unique",
+      "table": "reviews",
+      "definition": "CREATE UNIQUE INDEX reviews_application_id_unique ON public.reviews USING btree (application_id)"
+    },
+    {
+      "name": "company_driver_blocks_pkey",
+      "table": "company_driver_blocks",
+      "definition": "CREATE UNIQUE INDEX company_driver_blocks_pkey ON public.company_driver_blocks USING btree (id)"
+    },
+    {
+      "name": "company_driver_blocks_company_id_driver_id_key",
+      "table": "company_driver_blocks",
+      "definition": "CREATE UNIQUE INDEX company_driver_blocks_company_id_driver_id_key ON public.company_driver_blocks USING btree (company_id, driver_id)"
+    },
+    {
+      "name": "applications_pkey",
+      "table": "applications",
+      "definition": "CREATE UNIQUE INDEX applications_pkey ON public.applications USING btree (id)"
+    },
+    {
+      "name": "applications_job_id_driver_id_key",
+      "table": "applications",
+      "definition": "CREATE UNIQUE INDEX applications_job_id_driver_id_key ON public.applications USING btree (job_id, driver_id)"
+    },
+    {
+      "name": "applications_checked_in_at_idx",
+      "table": "applications",
+      "definition": "CREATE INDEX applications_checked_in_at_idx ON public.applications USING btree (checked_in_at)"
+    },
+    {
+      "name": "applications_checked_out_at_idx",
+      "table": "applications",
+      "definition": "CREATE INDEX applications_checked_out_at_idx ON public.applications USING btree (checked_out_at)"
+    },
+    {
+      "name": "applications_attendance_token_uidx",
+      "table": "applications",
+      "definition": "CREATE UNIQUE INDEX applications_attendance_token_uidx ON public.applications USING btree (attendance_token)"
+    },
+    {
+      "name": "attendance_edit_logs_pkey",
+      "table": "attendance_edit_logs",
+      "definition": "CREATE UNIQUE INDEX attendance_edit_logs_pkey ON public.attendance_edit_logs USING btree (id)"
+    },
+    {
+      "name": "attendance_review_requests_pkey",
+      "table": "attendance_review_requests",
+      "definition": "CREATE UNIQUE INDEX attendance_review_requests_pkey ON public.attendance_review_requests USING btree (id)"
+    },
+    {
+      "name": "attendance_review_application_idx",
+      "table": "attendance_review_requests",
+      "definition": "CREATE INDEX attendance_review_application_idx ON public.attendance_review_requests USING btree (application_id, created_at DESC)"
+    },
+    {
+      "name": "attendance_review_one_pending",
+      "table": "attendance_review_requests",
+      "definition": "CREATE UNIQUE INDEX attendance_review_one_pending ON public.attendance_review_requests USING btree (application_id) WHERE (status = 'pending'::text)"
+    },
+    {
+      "name": "company_job_invitations_pkey",
+      "table": "company_job_invitations",
+      "definition": "CREATE UNIQUE INDEX company_job_invitations_pkey ON public.company_job_invitations USING btree (id)"
+    },
+    {
+      "name": "company_job_invitations_job_id_driver_id_key",
+      "table": "company_job_invitations",
+      "definition": "CREATE UNIQUE INDEX company_job_invitations_job_id_driver_id_key ON public.company_job_invitations USING btree (job_id, driver_id)"
+    },
+    {
+      "name": "company_job_invitations_driver_idx",
+      "table": "company_job_invitations",
+      "definition": "CREATE INDEX company_job_invitations_driver_idx ON public.company_job_invitations USING btree (driver_id, created_at DESC)"
+    },
+    {
+      "name": "company_job_invitations_company_idx",
+      "table": "company_job_invitations",
+      "definition": "CREATE INDEX company_job_invitations_company_idx ON public.company_job_invitations USING btree (company_id)"
+    },
+    {
+      "name": "pending_company_registrations_pkey",
+      "table": "pending_company_registrations",
+      "definition": "CREATE UNIQUE INDEX pending_company_registrations_pkey ON public.pending_company_registrations USING btree (user_id)"
+    },
+    {
+      "name": "company_application_email_queue_pkey",
+      "table": "company_application_email_queue",
+      "definition": "CREATE UNIQUE INDEX company_application_email_queue_pkey ON public.company_application_email_queue USING btree (id)"
+    },
+    {
+      "name": "company_application_email_queue_application_id_key",
+      "table": "company_application_email_queue",
+      "definition": "CREATE UNIQUE INDEX company_application_email_queue_application_id_key ON public.company_application_email_queue USING btree (application_id)"
+    },
+    {
+      "name": "company_application_email_pending_idx",
+      "table": "company_application_email_queue",
+      "definition": "CREATE INDEX company_application_email_pending_idx ON public.company_application_email_queue USING btree (available_at, created_at) WHERE (state = ANY (ARRAY['pending'::text, 'sending'::text]))"
+    }
+  ],
+  "policies": [
+    {
+      "name": "Public jobs readable",
+      "check": null,
+      "roles": [
+        "public"
+      ],
+      "table": "jobs",
+      "using": "true",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Public drivers insertable",
+      "check": "true",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Public companies insertable",
+      "check": "true",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "table": "companies",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Public jobs insertable",
+      "check": "true",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "table": "jobs",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Public applications insertable",
+      "check": "true",
+      "roles": [
+        "anon",
+        "authenticated"
+      ],
+      "table": "applications",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Drivers read own profile",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": "(user_id = auth.uid())",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Drivers update own profile",
+      "check": "(user_id = auth.uid())",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": "(user_id = auth.uid())",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies read own profile",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "companies",
+      "using": "(user_id = auth.uid())",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies update own profile",
+      "check": "(user_id = auth.uid())",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "companies",
+      "using": "(user_id = auth.uid())",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Drivers insert own profile",
+      "check": "(user_id = auth.uid())",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies insert own profile",
+      "check": "(user_id = auth.uid())",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "companies",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers_select_own",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": "(auth.uid() = user_id)",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers_insert_own",
+      "check": "(auth.uid() = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers_update_own",
+      "check": "(auth.uid() = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": "(auth.uid() = user_id)",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies manage own jobs",
+      "check": "(company_id IN ( SELECT companies.id\n   FROM companies\n  WHERE (companies.user_id = auth.uid())))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "jobs",
+      "using": "(company_id IN ( SELECT companies.id\n   FROM companies\n  WHERE (companies.user_id = auth.uid())))",
+      "command": "ALL",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies read applications to own jobs",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "applications",
+      "using": "(job_id IN ( SELECT j.id\n   FROM (jobs j\n     JOIN companies c ON ((c.id = j.company_id)))\n  WHERE (c.user_id = auth.uid())))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies update applications to own jobs",
+      "check": "(job_id IN ( SELECT j.id\n   FROM (jobs j\n     JOIN companies c ON ((c.id = j.company_id)))\n  WHERE (c.user_id = auth.uid())))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "applications",
+      "using": "(job_id IN ( SELECT j.id\n   FROM (jobs j\n     JOIN companies c ON ((c.id = j.company_id)))\n  WHERE (c.user_id = auth.uid())))",
+      "command": "UPDATE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies read applicants",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "drivers",
+      "using": "(id IN ( SELECT a.driver_id\n   FROM ((applications a\n     JOIN jobs j ON ((j.id = a.job_id)))\n     JOIN companies c ON ((c.id = j.company_id)))\n  WHERE (c.user_id = auth.uid())))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Drivers read own applications",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "applications",
+      "using": "(driver_id = current_driver_id())",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Drivers delete own applications",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "applications",
+      "using": "(driver_id = current_driver_id())",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "companies manage own blocks",
+      "check": "(EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = company_driver_blocks.company_id) AND (c.user_id = auth.uid()))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_driver_blocks",
+      "using": "(EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = company_driver_blocks.company_id) AND (c.user_id = auth.uid()))))",
+      "command": "ALL",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers read own blocks",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_driver_blocks",
+      "using": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = company_driver_blocks.driver_id) AND (d.user_id = auth.uid()))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "company can read own attendance edit logs",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "attendance_edit_logs",
+      "using": "(EXISTS ( SELECT 1\n   FROM ((applications a\n     JOIN jobs j ON ((j.id = a.job_id)))\n     JOIN companies c ON ((c.id = j.company_id)))\n  WHERE ((a.id = attendance_edit_logs.application_id) AND (c.user_id = auth.uid()))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "own_preferences",
+      "check": "(( SELECT auth.uid() AS uid) = user_id)",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "line_notification_preferences",
+      "using": "(( SELECT auth.uid() AS uid) = user_id)",
+      "command": "ALL",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "attendance_review_read_own",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "attendance_review_requests",
+      "using": "(EXISTS ( SELECT 1\n   FROM (((applications a\n     JOIN jobs j ON ((j.id = a.job_id)))\n     LEFT JOIN drivers d ON ((d.id = a.driver_id)))\n     LEFT JOIN companies c ON ((c.id = j.company_id)))\n  WHERE ((a.id = attendance_review_requests.application_id) AND ((d.user_id = ( SELECT auth.uid() AS uid)) OR (c.user_id = ( SELECT auth.uid() AS uid))))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "company_owns_drafts",
+      "check": "(EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = job_drafts.company_id) AND (c.user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "job_drafts",
+      "using": "(EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = job_drafts.company_id) AND (c.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "ALL",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers read own favorites",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "driver_job_favorites",
+      "using": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = driver_job_favorites.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers save own favorites",
+      "check": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = driver_job_favorites.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "driver_job_favorites",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers delete own favorites",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "driver_job_favorites",
+      "using": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = driver_job_favorites.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies read own favorites",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_driver_favorites",
+      "using": "(EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = company_driver_favorites.company_id) AND (c.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies save own applicants",
+      "check": "((EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = company_driver_favorites.company_id) AND (c.user_id = ( SELECT auth.uid() AS uid))))) AND (EXISTS ( SELECT 1\n   FROM (applications a\n     JOIN jobs j ON ((j.id = a.job_id)))\n  WHERE ((a.driver_id = company_driver_favorites.driver_id) AND (j.company_id = company_driver_favorites.company_id)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_driver_favorites",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies remove own favorites",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_driver_favorites",
+      "using": "(EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = company_driver_favorites.company_id) AND (c.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Companies read own job invitations",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_job_invitations",
+      "using": "(EXISTS ( SELECT 1\n   FROM companies c\n  WHERE ((c.id = company_job_invitations.company_id) AND (c.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Drivers read received job invitations",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_job_invitations",
+      "using": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = company_job_invitations.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Work participants read mutual reviews",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "reviews",
+      "using": "(EXISTS ( SELECT 1\n   FROM applications a\n  WHERE ((a.id = reviews.application_id) AND ((EXISTS ( SELECT 1\n           FROM drivers d\n          WHERE ((d.id = a.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid))))) OR (EXISTS ( SELECT 1\n           FROM (jobs j\n             JOIN companies c ON ((c.id = j.company_id)))\n          WHERE ((j.id = a.job_id) AND (c.user_id = ( SELECT auth.uid() AS uid)))))))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "Only related applicants can be blocked",
+      "check": "(EXISTS ( SELECT 1\n   FROM (applications a\n     JOIN jobs j ON ((j.id = a.job_id)))\n  WHERE ((a.driver_id = company_driver_blocks.driver_id) AND (j.company_id = company_driver_blocks.company_id))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_driver_blocks",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "RESTRICTIVE"
+    },
+    {
+      "name": "signed in readers see company names",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "company_public_names",
+      "using": "true",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers read own company favorites",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "driver_company_favorites",
+      "using": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = driver_company_favorites.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "SELECT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers save own company favorites",
+      "check": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = driver_company_favorites.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid)))))",
+      "roles": [
+        "authenticated"
+      ],
+      "table": "driver_company_favorites",
+      "using": null,
+      "command": "INSERT",
+      "permissive": "PERMISSIVE"
+    },
+    {
+      "name": "drivers delete own company favorites",
+      "check": null,
+      "roles": [
+        "authenticated"
+      ],
+      "table": "driver_company_favorites",
+      "using": "(EXISTS ( SELECT 1\n   FROM drivers d\n  WHERE ((d.id = driver_company_favorites.driver_id) AND (d.user_id = ( SELECT auth.uid() AS uid)))))",
+      "command": "DELETE",
+      "permissive": "PERMISSIVE"
+    }
+  ],
+  "triggers": [
+    {
+      "name": "trg_application_workflow_timestamps",
+      "table": "applications",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER trg_application_workflow_timestamps BEFORE UPDATE ON public.applications FOR EACH ROW EXECUTE FUNCTION set_application_workflow_timestamps()"
+    },
+    {
+      "name": "trg_attendance_rounding",
+      "table": "applications",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER trg_attendance_rounding AFTER INSERT OR UPDATE OF checked_in_at, checked_out_at ON public.applications FOR EACH ROW EXECUTE FUNCTION attendance_rounding_trigger()"
+    },
+    {
+      "name": "trg_prevent_overlapping_driver_application",
+      "table": "applications",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER trg_prevent_overlapping_driver_application BEFORE INSERT OR UPDATE OF job_id, driver_id, status ON public.applications FOR EACH ROW EXECUTE FUNCTION prevent_overlapping_driver_application()"
+    },
+    {
+      "name": "line_job_notifications",
+      "table": "jobs",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER line_job_notifications AFTER INSERT OR UPDATE OF status ON public.jobs FOR EACH ROW EXECUTE FUNCTION spodora_private.line_job_notifications()"
+    },
+    {
+      "name": "line_application_notifications",
+      "table": "applications",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER line_application_notifications AFTER INSERT OR UPDATE OF status ON public.applications FOR EACH ROW EXECUTE FUNCTION spodora_private.line_application_notifications()"
+    },
+    {
+      "name": "preserve_job_pay_guarantee",
+      "table": "jobs",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER preserve_job_pay_guarantee BEFORE INSERT OR UPDATE OF pay_guarantee ON public.jobs FOR EACH ROW EXECUTE FUNCTION preserve_job_pay_guarantee()"
+    },
+    {
+      "name": "capture_application_pay_guarantee",
+      "table": "applications",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER capture_application_pay_guarantee BEFORE INSERT OR UPDATE OF pay_guarantee_snapshot, job_id ON public.applications FOR EACH ROW EXECUTE FUNCTION spodora_private.capture_application_pay_guarantee()"
+    },
+    {
+      "name": "sync_company_public_name",
+      "table": "companies",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER sync_company_public_name AFTER INSERT OR UPDATE OF company_name ON public.companies FOR EACH ROW EXECUTE FUNCTION private.sync_company_public_name()"
+    },
+    {
+      "name": "company_application_email",
+      "table": "applications",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER company_application_email AFTER INSERT ON public.applications FOR EACH ROW EXECUTE FUNCTION spodora_private.queue_company_application_email()"
+    },
+    {
+      "name": "guard_driver_account_portal",
+      "table": "drivers",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER guard_driver_account_portal BEFORE INSERT OR UPDATE OF user_id ON public.drivers FOR EACH ROW EXECUTE FUNCTION spodora_private.guard_account_portal()"
+    },
+    {
+      "name": "guard_company_account_portal",
+      "table": "companies",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER guard_company_account_portal BEFORE INSERT OR UPDATE OF user_id ON public.companies FOR EACH ROW EXECUTE FUNCTION spodora_private.guard_account_portal()"
+    },
+    {
+      "name": "require_company_email_confirmation",
+      "table": "companies",
+      "enabled": "O",
+      "definition": "CREATE TRIGGER require_company_email_confirmation BEFORE INSERT ON public.companies FOR EACH ROW EXECUTE FUNCTION spodora_private.require_company_email_confirmation()"
+    }
+  ],
+  "functions": [
+    {
+      "name": "rls_auto_enable",
+      "config": [
+        "search_path=pg_catalog"
+      ],
+      "result": "event_trigger",
+      "arguments": "",
+      "definition_md5": "6998ea6b4c2480f5d2e34b5dcf3f8d36",
+      "security_definer": true
+    },
+    {
+      "name": "register_company",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "bigint",
+      "arguments": "p_company_name text, p_contact_name text, p_phone text, p_email text, p_address text",
+      "definition_md5": "4130527cc3a55e7194920eafbbdf7f43",
+      "security_definer": true
+    },
+    {
+      "name": "get_my_driver",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "SETOF drivers",
+      "arguments": "",
+      "definition_md5": "6f18756c380b1fffd9d5fe049774b3cd",
+      "security_definer": true
+    },
+    {
+      "name": "current_driver_id",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "bigint",
+      "arguments": "",
+      "definition_md5": "178c2fb87cf3e2f8a56bc49dc4bca03c",
+      "security_definer": true
+    },
+    {
+      "name": "set_application_workflow_timestamps",
+      "config": null,
+      "result": "trigger",
+      "arguments": "",
+      "definition_md5": "42d971fdca2709c3ba21a667d0a0c929",
+      "security_definer": false
+    },
+    {
+      "name": "scan_attendance",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "text",
+      "arguments": "p_token uuid",
+      "definition_md5": "e31fcf439238f2fdf0856dd0a78004f2",
+      "security_definer": true
+    },
+    {
+      "name": "scan_company_attendance",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "text",
+      "arguments": "p_token uuid",
+      "definition_md5": "436b37c126ea3d12dbffef9871706b11",
+      "security_definer": true
+    },
+    {
+      "name": "scan_company_attendance",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "text",
+      "arguments": "p_token uuid, p_action text",
+      "definition_md5": "00db615a78288bfcec39341165bc0696",
+      "security_definer": true
+    },
+    {
+      "name": "prepare_driver_attendance",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "uuid",
+      "arguments": "p_action text",
+      "definition_md5": "e7543a8a4f20e0c8dd01395c09fb5e69",
+      "security_definer": true
+    },
+    {
+      "name": "apply_attendance_rounding",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "void",
+      "arguments": "p_application_id bigint",
+      "definition_md5": "ab0c8257eeec56e07d455b4f98718079",
+      "security_definer": true
+    },
+    {
+      "name": "attendance_rounding_trigger",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "trigger",
+      "arguments": "",
+      "definition_md5": "70ea2765c3c8efbe8c5e0bf6e12b835e",
+      "security_definer": false
+    },
+    {
+      "name": "scan_driver_attendance",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "text",
+      "arguments": "p_token uuid, p_action text",
+      "definition_md5": "56547fc2748b13c532a96f907837cc08",
+      "security_definer": true
+    },
+    {
+      "name": "company_manual_attendance",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "void",
+      "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_reason text",
+      "definition_md5": "be16dd33ff750a6a609f7effa8464b68",
+      "security_definer": true
+    },
+    {
+      "name": "prevent_overlapping_driver_application",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "trigger",
+      "arguments": "",
+      "definition_md5": "be50ff3f207b3a24f12151b5093e76e1",
+      "security_definer": false
+    },
+    {
+      "name": "create_driver_profile_from_auth",
+      "config": [
+        "search_path=public"
+      ],
+      "result": "trigger",
+      "arguments": "",
+      "definition_md5": "ae0e0221fd9ba909095e9b635da6f2ba",
+      "security_definer": true
+    },
+    {
+      "name": "begin_line_link",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "text",
+      "arguments": "p_ticket_hash text, p_user_id uuid, p_nonce_hash text",
+      "definition_md5": "084fdaf67fb71f49d8fbc58e815c0e07",
+      "security_definer": false
+    },
+    {
+      "name": "complete_line_link",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "text",
+      "arguments": "p_nonce_hash text, p_line_user_id text, p_success boolean",
+      "definition_md5": "d1b18d9b24077029cf8d39f905676960",
+      "security_definer": false
+    },
+    {
+      "name": "unlink_line_account",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "void",
+      "arguments": "p_user_id uuid",
+      "definition_md5": "52375d09a80e211575f6614b3c61c8dd",
+      "security_definer": false
+    },
+    {
+      "name": "claim_line_notifications",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "SETOF line_notification_queue",
+      "arguments": "",
+      "definition_md5": "83d0c8efe9d30838b0659823c7c82916",
+      "security_definer": false
+    },
+    {
+      "name": "preserve_job_pay_guarantee",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "trigger",
+      "arguments": "",
+      "definition_md5": "0967107561118d69054265d68e2156a4",
+      "security_definer": false
+    },
+    {
+      "name": "publish_job_draft",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "bigint",
+      "arguments": "p_draft_id uuid, p_job jsonb",
+      "definition_md5": "4655650a52521c81b056b84563678198",
+      "security_definer": false
+    },
+    {
+      "name": "request_attendance_review",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "uuid",
+      "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text",
+      "definition_md5": "73490e2a2d92471a23c681960f645f46",
+      "security_definer": false
+    },
+    {
+      "name": "decide_attendance_review",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "void",
+      "arguments": "p_request_id uuid, p_approve boolean, p_comment text, p_pay_guarantee boolean",
+      "definition_md5": "807d4dd680058f0a967a2495542db5d3",
+      "security_definer": false
+    },
+    {
+      "name": "attendance_company_qr",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "jsonb",
+      "arguments": "p_regenerate boolean",
+      "definition_md5": "2a2c4afa85492631761bcdee5a85c092",
+      "security_definer": false
+    },
+    {
+      "name": "company_scan_work",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "jsonb",
+      "arguments": "p_token uuid",
+      "definition_md5": "ec397328f6fa0621fceacb8952caab88",
+      "security_definer": false
+    },
+    {
+      "name": "punch_company_qr",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "jsonb",
+      "arguments": "p_token uuid, p_application_id bigint, p_action text",
+      "definition_md5": "4ceb19a68caa352627ee215991f5dc5c",
+      "security_definer": false
+    },
+    {
+      "name": "get_job_hiring_counts",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "TABLE(job_id bigint, hired_count bigint)",
+      "arguments": "",
+      "definition_md5": "761c69725344cc1e51ec749a5ac04863",
+      "security_definer": false
+    },
+    {
+      "name": "submit_work_review",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "bigint",
+      "arguments": "p_application_id bigint, p_side text, p_rating integer, p_comment text",
+      "definition_md5": "71a25839905ce2f7b65f92478a0afc75",
+      "security_definer": false
+    },
+    {
+      "name": "request_pay_confirmation",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "uuid",
+      "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text, p_transportation_fee integer, p_pay_guarantee boolean",
+      "definition_md5": "9d2b60a164bb605267db74f0e766137d",
+      "security_definer": false
+    },
+    {
+      "name": "claim_company_application_emails",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "SETOF company_application_email_queue",
+      "arguments": "",
+      "definition_md5": "14dd46b9c6fef81eb7efc8d609cdc945",
+      "security_definer": false
+    },
+    {
+      "name": "save_driver_preferences",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "void",
+      "arguments": "p_profile jsonb, p_line jsonb",
+      "definition_md5": "9909b33a4409b2da7b1c75d89d898fc2",
+      "security_definer": false
+    },
+    {
+      "name": "account_auth_allow",
+      "config": [
+        "search_path=\"\""
+      ],
+      "result": "boolean",
+      "arguments": "p_key text, p_limit integer, p_seconds integer",
+      "definition_md5": "bd75315d1d30eb2aa496de6024e9d53b",
+      "security_definer": false
+    }
+  ],
+  "extensions": [
+    {
+      "name": "plpgsql",
+      "version": "1.0"
+    },
+    {
+      "name": "pg_stat_statements",
+      "version": "1.11"
+    },
+    {
+      "name": "uuid-ossp",
+      "version": "1.1"
+    },
+    {
+      "name": "pgcrypto",
+      "version": "1.3"
+    },
+    {
+      "name": "supabase_vault",
+      "version": "0.3.1"
+    },
+    {
+      "name": "pg_cron",
+      "version": "1.6.4"
+    },
+    {
+      "name": "pg_net",
+      "version": "0.20.4"
+    }
+  ],
+  "constraints": [
+    {
+      "name": "company_driver_blocks_driver_id_fkey",
+      "type": "f",
+      "table": "company_driver_blocks",
+      "definition": "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "line_notification_preferences_pkey",
+      "type": "p",
+      "table": "line_notification_preferences",
+      "definition": "PRIMARY KEY (user_id)"
+    },
+    {
+      "name": "line_notification_preferences_user_id_fkey",
+      "type": "f",
+      "table": "line_notification_preferences",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "drivers_pkey",
+      "type": "p",
+      "table": "drivers",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "companies_pkey",
+      "type": "p",
+      "table": "companies",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "line_notification_queue_message_check",
+      "type": "c",
+      "table": "line_notification_queue",
+      "definition": "CHECK ((length(message) <= 4500))"
+    },
+    {
+      "name": "jobs_status_check",
+      "type": "c",
+      "table": "jobs",
+      "definition": "CHECK ((status = ANY (ARRAY['募集中'::text, '募集終了'::text, '確定'::text, 'キャンセル'::text])))"
+    },
+    {
+      "name": "jobs_pkey",
+      "type": "p",
+      "table": "jobs",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "jobs_company_id_fkey",
+      "type": "f",
+      "table": "jobs",
+      "definition": "FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "applications_pkey",
+      "type": "p",
+      "table": "applications",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "applications_job_id_driver_id_key",
+      "type": "u",
+      "table": "applications",
+      "definition": "UNIQUE (job_id, driver_id)"
+    },
+    {
+      "name": "applications_job_id_fkey",
+      "type": "f",
+      "table": "applications",
+      "definition": "FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "applications_driver_id_fkey",
+      "type": "f",
+      "table": "applications",
+      "definition": "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "reviews_driver_rating_check",
+      "type": "c",
+      "table": "reviews",
+      "definition": "CHECK (((driver_rating >= 1) AND (driver_rating <= 5)))"
+    },
+    {
+      "name": "reviews_company_rating_check",
+      "type": "c",
+      "table": "reviews",
+      "definition": "CHECK (((company_rating >= 1) AND (company_rating <= 5)))"
+    },
+    {
+      "name": "reviews_pkey",
+      "type": "p",
+      "table": "reviews",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "reviews_application_id_fkey",
+      "type": "f",
+      "table": "reviews",
+      "definition": "FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "drivers_user_id_fkey",
+      "type": "f",
+      "table": "drivers",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "companies_user_id_fkey",
+      "type": "f",
+      "table": "companies",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE SET NULL"
+    },
+    {
+      "name": "companies_user_id_key",
+      "type": "u",
+      "table": "companies",
+      "definition": "UNIQUE (user_id)"
+    },
+    {
+      "name": "company_driver_blocks_pkey",
+      "type": "p",
+      "table": "company_driver_blocks",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "company_driver_blocks_company_id_driver_id_key",
+      "type": "u",
+      "table": "company_driver_blocks",
+      "definition": "UNIQUE (company_id, driver_id)"
+    },
+    {
+      "name": "company_driver_blocks_company_id_fkey",
+      "type": "f",
+      "table": "company_driver_blocks",
+      "definition": "FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "applications_status_check",
+      "type": "c",
+      "table": "applications",
+      "definition": "CHECK ((status = ANY (ARRAY['応募中'::text, '採用'::text, '不採用'::text, '辞退'::text, '完了'::text, '勤務確定'::text, '勤務完了'::text])))"
+    },
+    {
+      "name": "applications_attendance_method_check",
+      "type": "c",
+      "table": "applications",
+      "definition": "CHECK (((attendance_method IS NULL) OR (attendance_method = ANY (ARRAY['qr'::text, 'manual'::text]))))"
+    },
+    {
+      "name": "companies_attendance_rounding_minutes_check",
+      "type": "c",
+      "table": "companies",
+      "definition": "CHECK ((attendance_rounding_minutes = ANY (ARRAY[1, 5, 10, 15, 30])))"
+    },
+    {
+      "name": "applications_attendance_review_status_check",
+      "type": "c",
+      "table": "applications",
+      "definition": "CHECK ((attendance_review_status = ANY (ARRAY['未確認'::text, '確認待ち'::text, '承認済み'::text, '修正済み'::text])))"
+    },
+    {
+      "name": "attendance_edit_logs_pkey",
+      "type": "p",
+      "table": "attendance_edit_logs",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "attendance_edit_logs_application_id_fkey",
+      "type": "f",
+      "table": "attendance_edit_logs",
+      "definition": "FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "jobs_required_headcount_check",
+      "type": "c",
+      "table": "jobs",
+      "definition": "CHECK ((required_headcount >= 1))"
+    },
+    {
+      "name": "line_notification_queue_kind_check",
+      "type": "c",
+      "table": "line_notification_queue",
+      "definition": "CHECK ((kind = ANY (ARRAY['job_match'::text, 'application_result'::text, 'work_reminder'::text, 'new_application'::text, 'test'::text])))"
+    },
+    {
+      "name": "drivers_preferred_vehicle_types_valid",
+      "type": "c",
+      "table": "drivers",
+      "definition": "CHECK (((preferred_vehicle_types <@ ARRAY['軽バン・軽貨物'::text, '2t'::text, '4t'::text, '大型（10t）'::text, 'トレーラー'::text]) AND (array_position(preferred_vehicle_types, NULL::text) IS NULL)))"
+    },
+    {
+      "name": "drivers_preferred_weekdays_valid",
+      "type": "c",
+      "table": "drivers",
+      "definition": "CHECK (((preferred_weekdays <@ ARRAY[0, 1, 2, 3, 4, 5, 6]) AND (array_position(preferred_weekdays, NULL::integer) IS NULL)))"
+    },
+    {
+      "name": "drivers_preferred_time_slots_valid",
+      "type": "c",
+      "table": "drivers",
+      "definition": "CHECK (((preferred_time_slots <@ ARRAY['early'::text, 'morning'::text, 'afternoon'::text, 'evening'::text]) AND (array_position(preferred_time_slots, NULL::text) IS NULL)))"
+    },
+    {
+      "name": "line_connections_line_user_id_check",
+      "type": "c",
+      "table": "line_connections",
+      "definition": "CHECK ((line_user_id ~ '^U[0-9a-f]{32}$'::text))"
+    },
+    {
+      "name": "line_connections_pkey",
+      "type": "p",
+      "table": "line_connections",
+      "definition": "PRIMARY KEY (user_id)"
+    },
+    {
+      "name": "line_connections_line_user_id_key",
+      "type": "u",
+      "table": "line_connections",
+      "definition": "UNIQUE (line_user_id)"
+    },
+    {
+      "name": "line_connections_user_id_fkey",
+      "type": "f",
+      "table": "line_connections",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "line_link_requests_ticket_hash_check",
+      "type": "c",
+      "table": "line_link_requests",
+      "definition": "CHECK ((ticket_hash ~ '^[0-9a-f]{64}$'::text))"
+    },
+    {
+      "name": "line_link_requests_line_user_id_check",
+      "type": "c",
+      "table": "line_link_requests",
+      "definition": "CHECK ((line_user_id ~ '^U[0-9a-f]{32}$'::text))"
+    },
+    {
+      "name": "line_link_requests_nonce_hash_check",
+      "type": "c",
+      "table": "line_link_requests",
+      "definition": "CHECK ((nonce_hash ~ '^[0-9a-f]{64}$'::text))"
+    },
+    {
+      "name": "line_link_requests_pkey",
+      "type": "p",
+      "table": "line_link_requests",
+      "definition": "PRIMARY KEY (ticket_hash)"
+    },
+    {
+      "name": "line_link_requests_nonce_hash_key",
+      "type": "u",
+      "table": "line_link_requests",
+      "definition": "UNIQUE (nonce_hash)"
+    },
+    {
+      "name": "line_link_requests_user_id_fkey",
+      "type": "f",
+      "table": "line_link_requests",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "line_notification_queue_state_check",
+      "type": "c",
+      "table": "line_notification_queue",
+      "definition": "CHECK ((state = ANY (ARRAY['pending'::text, 'sending'::text, 'sent'::text, 'skipped'::text, 'failed'::text])))"
+    },
+    {
+      "name": "line_notification_queue_pkey",
+      "type": "p",
+      "table": "line_notification_queue",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "line_notification_queue_user_id_event_key_key",
+      "type": "u",
+      "table": "line_notification_queue",
+      "definition": "UNIQUE (user_id, event_key)"
+    },
+    {
+      "name": "line_notification_queue_user_id_fkey",
+      "type": "f",
+      "table": "line_notification_queue",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "line_notification_queue_job_id_fkey",
+      "type": "f",
+      "table": "line_notification_queue",
+      "definition": "FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "line_notification_queue_application_id_fkey",
+      "type": "f",
+      "table": "line_notification_queue",
+      "definition": "FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "attendance_review_requests_break_minutes_check",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK ((break_minutes >= 0))"
+    },
+    {
+      "name": "attendance_review_requests_reason_check",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK (((length(TRIM(BOTH FROM reason)) >= 1) AND (length(TRIM(BOTH FROM reason)) <= 1000)))"
+    },
+    {
+      "name": "attendance_review_requests_status_check",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK ((status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text])))"
+    },
+    {
+      "name": "attendance_review_requests_check",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK ((requested_out > requested_in))"
+    },
+    {
+      "name": "attendance_review_requests_check1",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK ((((break_minutes * 60))::numeric <= EXTRACT(epoch FROM (requested_out - requested_in))))"
+    },
+    {
+      "name": "attendance_review_requests_pkey",
+      "type": "p",
+      "table": "attendance_review_requests",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "attendance_review_requests_application_id_fkey",
+      "type": "f",
+      "table": "attendance_review_requests",
+      "definition": "FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "job_drafts_content_check",
+      "type": "c",
+      "table": "job_drafts",
+      "definition": "CHECK (((jsonb_typeof(content) = 'object'::text) AND (octet_length((content)::text) <= 100000)))"
+    },
+    {
+      "name": "job_drafts_pkey",
+      "type": "p",
+      "table": "job_drafts",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "job_drafts_company_id_fkey",
+      "type": "f",
+      "table": "job_drafts",
+      "definition": "FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "driver_location_2_pair",
+      "type": "c",
+      "table": "drivers",
+      "definition": "CHECK (((NULLIF(preferred_prefecture_2, ''::text) IS NULL) = (NULLIF(preferred_municipality_2, ''::text) IS NULL)))"
+    },
+    {
+      "name": "driver_location_3_pair",
+      "type": "c",
+      "table": "drivers",
+      "definition": "CHECK (((NULLIF(preferred_prefecture_3, ''::text) IS NULL) = (NULLIF(preferred_municipality_3, ''::text) IS NULL)))"
+    },
+    {
+      "name": "driver_job_favorites_pkey",
+      "type": "p",
+      "table": "driver_job_favorites",
+      "definition": "PRIMARY KEY (driver_id, job_id)"
+    },
+    {
+      "name": "driver_job_favorites_driver_id_fkey",
+      "type": "f",
+      "table": "driver_job_favorites",
+      "definition": "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "driver_job_favorites_job_id_fkey",
+      "type": "f",
+      "table": "driver_job_favorites",
+      "definition": "FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_driver_favorites_pkey",
+      "type": "p",
+      "table": "company_driver_favorites",
+      "definition": "PRIMARY KEY (company_id, driver_id)"
+    },
+    {
+      "name": "company_driver_favorites_company_id_fkey",
+      "type": "f",
+      "table": "company_driver_favorites",
+      "definition": "FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_driver_favorites_driver_id_fkey",
+      "type": "f",
+      "table": "company_driver_favorites",
+      "definition": "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_job_invitations_email_state_check",
+      "type": "c",
+      "table": "company_job_invitations",
+      "definition": "CHECK ((email_state = ANY (ARRAY['pending'::text, 'sent'::text, 'skipped'::text, 'failed'::text])))"
+    },
+    {
+      "name": "company_job_invitations_pkey",
+      "type": "p",
+      "table": "company_job_invitations",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "company_job_invitations_job_id_driver_id_key",
+      "type": "u",
+      "table": "company_job_invitations",
+      "definition": "UNIQUE (job_id, driver_id)"
+    },
+    {
+      "name": "company_job_invitations_company_id_fkey",
+      "type": "f",
+      "table": "company_job_invitations",
+      "definition": "FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_job_invitations_job_id_fkey",
+      "type": "f",
+      "table": "company_job_invitations",
+      "definition": "FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_job_invitations_driver_id_fkey",
+      "type": "f",
+      "table": "company_job_invitations",
+      "definition": "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "attendance_review_requests_requested_transportation_fee_check",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK (((requested_transportation_fee >= 0) AND (requested_transportation_fee <= 1000000)))"
+    },
+    {
+      "name": "attendance_review_requests_approved_transportation_fee_check",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK ((approved_transportation_fee >= (0)::numeric))"
+    },
+    {
+      "name": "attendance_review_requests_approved_total_amount_check",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK ((approved_total_amount >= (0)::numeric))"
+    },
+    {
+      "name": "pay_confirmation_total_matches",
+      "type": "c",
+      "table": "attendance_review_requests",
+      "definition": "CHECK ((((approved_total_amount IS NULL) AND (approved_transportation_fee IS NULL)) OR ((status = 'approved'::text) AND (requested_pay_guarantee IS NOT NULL) AND (driver_confirmed_at IS NOT NULL) AND (requested_transportation_fee IS NOT NULL) AND (approved_basic_amount IS NOT NULL) AND (approved_transportation_fee IS NOT NULL) AND (approved_total_amount IS NOT NULL) AND (approved_transportation_fee = (requested_transportation_fee)::numeric) AND (approved_total_amount = (approved_basic_amount + approved_transportation_fee)))))"
+    },
+    {
+      "name": "company_public_names_pkey",
+      "type": "p",
+      "table": "company_public_names",
+      "definition": "PRIMARY KEY (company_id)"
+    },
+    {
+      "name": "company_public_names_company_id_fkey",
+      "type": "f",
+      "table": "company_public_names",
+      "definition": "FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "driver_company_favorites_pkey",
+      "type": "p",
+      "table": "driver_company_favorites",
+      "definition": "PRIMARY KEY (driver_id, company_id)"
+    },
+    {
+      "name": "driver_company_favorites_driver_id_fkey",
+      "type": "f",
+      "table": "driver_company_favorites",
+      "definition": "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "driver_company_favorites_company_id_fkey",
+      "type": "f",
+      "table": "driver_company_favorites",
+      "definition": "FOREIGN KEY (company_id) REFERENCES company_public_names(company_id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_application_email_queue_state_check",
+      "type": "c",
+      "table": "company_application_email_queue",
+      "definition": "CHECK ((state = ANY (ARRAY['pending'::text, 'sending'::text, 'sent'::text, 'failed'::text, 'skipped'::text])))"
+    },
+    {
+      "name": "company_application_email_queue_pkey",
+      "type": "p",
+      "table": "company_application_email_queue",
+      "definition": "PRIMARY KEY (id)"
+    },
+    {
+      "name": "company_application_email_queue_application_id_key",
+      "type": "u",
+      "table": "company_application_email_queue",
+      "definition": "UNIQUE (application_id)"
+    },
+    {
+      "name": "company_application_email_queue_company_id_fkey",
+      "type": "f",
+      "table": "company_application_email_queue",
+      "definition": "FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_application_email_queue_application_id_fkey",
+      "type": "f",
+      "table": "company_application_email_queue",
+      "definition": "FOREIGN KEY (application_id) REFERENCES applications(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "company_application_email_queue_job_id_fkey",
+      "type": "f",
+      "table": "company_application_email_queue",
+      "definition": "FOREIGN KEY (job_id) REFERENCES jobs(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "drivers_name_kana_check",
+      "type": "c",
+      "table": "drivers",
+      "definition": "CHECK (((name_kana IS NULL) OR ((char_length(name_kana) <= 100) AND (name_kana ~ '^[ァ-ヺー・ ]+$'::text) AND (name_kana ~ '[ァ-ヺ]'::text))))"
+    },
+    {
+      "name": "account_login_ids_login_id_check",
+      "type": "c",
+      "table": "account_login_ids",
+      "definition": "CHECK ((login_id ~ '^[a-z0-9][a-z0-9_-]{3,31}$'::text))"
+    },
+    {
+      "name": "account_login_ids_pkey",
+      "type": "p",
+      "table": "account_login_ids",
+      "definition": "PRIMARY KEY (login_id)"
+    },
+    {
+      "name": "account_login_ids_user_id_key",
+      "type": "u",
+      "table": "account_login_ids",
+      "definition": "UNIQUE (user_id)"
+    },
+    {
+      "name": "account_login_ids_user_id_fkey",
+      "type": "f",
+      "table": "account_login_ids",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    },
+    {
+      "name": "account_auth_limits_pkey",
+      "type": "p",
+      "table": "account_auth_limits",
+      "definition": "PRIMARY KEY (key)"
+    },
+    {
+      "name": "pending_company_registrations_pkey",
+      "type": "p",
+      "table": "pending_company_registrations",
+      "definition": "PRIMARY KEY (user_id)"
+    },
+    {
+      "name": "pending_company_registrations_user_id_fkey",
+      "type": "f",
+      "table": "pending_company_registrations",
+      "definition": "FOREIGN KEY (user_id) REFERENCES auth.users(id) ON DELETE CASCADE"
+    }
+  ],
+  "table_grants": [
+    {
+      "role": "postgres",
+      "table": "companies",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "companies",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "companies",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "companies",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "companies",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "companies",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "companies",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "anon",
+      "table": "companies",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "anon",
+      "table": "companies",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "anon",
+      "table": "companies",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "anon",
+      "table": "companies",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "companies",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "companies",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "companies",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "companies",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "companies",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "authenticated",
+      "table": "companies",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "companies",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "companies",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "companies",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "companies",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "line_connections",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_connections",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_connections",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_connections",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_connections",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_connections",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "line_connections",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "line_connections",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_connections",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_connections",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_connections",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_connections",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_connections",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "line_connections",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "line_link_requests",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_link_requests",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_link_requests",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_link_requests",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_link_requests",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_link_requests",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "line_link_requests",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "line_link_requests",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_link_requests",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_link_requests",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_link_requests",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_link_requests",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_link_requests",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "line_link_requests",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_preferences",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_preferences",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_preferences",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_preferences",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_preferences",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_preferences",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_preferences",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_preferences",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_preferences",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_preferences",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_preferences",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_preferences",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_preferences",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_preferences",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "line_notification_preferences",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "line_notification_preferences",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "line_notification_preferences",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_public_names",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_public_names",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_public_names",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_public_names",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_public_names",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_public_names",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "company_public_names",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "company_public_names",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_public_names",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "company_public_names",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "company_public_names",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_queue",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_queue",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_queue",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_queue",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_queue",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_queue",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "line_notification_queue",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_queue",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_queue",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_queue",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_queue",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_queue",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_queue",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "line_notification_queue",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "job_drafts",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "job_drafts",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "job_drafts",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "job_drafts",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "job_drafts",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "job_drafts",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "job_drafts",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "job_drafts",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "job_drafts",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "job_drafts",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "job_drafts",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "job_drafts",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "job_drafts",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "job_drafts",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_job_favorites",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_job_favorites",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_job_favorites",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_job_favorites",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_job_favorites",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_job_favorites",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_job_favorites",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "driver_job_favorites",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "driver_job_favorites",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "driver_job_favorites",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "driver_job_favorites",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "driver_job_favorites",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "driver_job_favorites",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_company_favorites",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_company_favorites",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_company_favorites",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_company_favorites",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_company_favorites",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_company_favorites",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "driver_company_favorites",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "driver_company_favorites",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "driver_company_favorites",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "driver_company_favorites",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "driver_company_favorites",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "driver_company_favorites",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "driver_company_favorites",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "account_login_ids",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "account_login_ids",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "account_login_ids",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "account_login_ids",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "account_login_ids",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "account_login_ids",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "account_login_ids",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "account_login_ids",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "account_login_ids",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "account_login_ids",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "account_login_ids",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "account_login_ids",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "account_login_ids",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "account_login_ids",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "account_auth_limits",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "account_auth_limits",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "account_auth_limits",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "account_auth_limits",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "account_auth_limits",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "account_auth_limits",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "account_auth_limits",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "account_auth_limits",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "account_auth_limits",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "account_auth_limits",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "account_auth_limits",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "account_auth_limits",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "account_auth_limits",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "account_auth_limits",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_favorites",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_favorites",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_favorites",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_favorites",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_favorites",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_favorites",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_favorites",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "company_driver_favorites",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_driver_favorites",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "company_driver_favorites",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "company_driver_favorites",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "company_driver_favorites",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "company_driver_favorites",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "drivers",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "drivers",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "drivers",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "drivers",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "drivers",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "drivers",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "drivers",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "anon",
+      "table": "drivers",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "anon",
+      "table": "drivers",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "anon",
+      "table": "drivers",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "anon",
+      "table": "drivers",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "authenticated",
+      "table": "drivers",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "drivers",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "drivers",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "drivers",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "drivers",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "jobs",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "jobs",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "jobs",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "jobs",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "jobs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "jobs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "jobs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "anon",
+      "table": "jobs",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "anon",
+      "table": "jobs",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "anon",
+      "table": "jobs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "anon",
+      "table": "jobs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "anon",
+      "table": "jobs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "jobs",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "jobs",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "jobs",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "jobs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "jobs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "authenticated",
+      "table": "jobs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "jobs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "jobs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "jobs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "reviews",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "reviews",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "reviews",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "reviews",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "reviews",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "reviews",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "reviews",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "reviews",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "reviews",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "reviews",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "reviews",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_blocks",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_blocks",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_blocks",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_blocks",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_blocks",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_blocks",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "company_driver_blocks",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "company_driver_blocks",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_driver_blocks",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "company_driver_blocks",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "company_driver_blocks",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "applications",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "applications",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "applications",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "applications",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "applications",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "applications",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "applications",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "anon",
+      "table": "applications",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "anon",
+      "table": "applications",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "anon",
+      "table": "applications",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "anon",
+      "table": "applications",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "applications",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "authenticated",
+      "table": "applications",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "authenticated",
+      "table": "applications",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "applications",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "authenticated",
+      "table": "applications",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "applications",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "authenticated",
+      "table": "applications",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "applications",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "applications",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "applications",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_edit_logs",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_edit_logs",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_edit_logs",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_edit_logs",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_edit_logs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_edit_logs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_edit_logs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "anon",
+      "table": "attendance_edit_logs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "anon",
+      "table": "attendance_edit_logs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "anon",
+      "table": "attendance_edit_logs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "attendance_edit_logs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "authenticated",
+      "table": "attendance_edit_logs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "authenticated",
+      "table": "attendance_edit_logs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "attendance_edit_logs",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "attendance_edit_logs",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "attendance_edit_logs",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_review_requests",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_review_requests",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_review_requests",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_review_requests",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_review_requests",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_review_requests",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "attendance_review_requests",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "attendance_review_requests",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "attendance_review_requests",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "attendance_review_requests",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "attendance_review_requests",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_job_invitations",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_job_invitations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_job_invitations",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_job_invitations",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_job_invitations",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_job_invitations",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "company_job_invitations",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "company_job_invitations",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "company_job_invitations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "company_job_invitations",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_job_invitations",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_job_invitations",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_job_invitations",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "company_job_invitations",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "authenticated",
+      "table": "company_job_invitations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "pending_company_registrations",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "pending_company_registrations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "pending_company_registrations",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "pending_company_registrations",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "pending_company_registrations",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "pending_company_registrations",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "pending_company_registrations",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "pending_company_registrations",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "service_role",
+      "table": "pending_company_registrations",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "pending_company_registrations",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "pending_company_registrations",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "service_role",
+      "table": "pending_company_registrations",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "pending_company_registrations",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "pending_company_registrations",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "postgres",
+      "table": "company_application_email_queue",
+      "privilege": "INSERT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_application_email_queue",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "postgres",
+      "table": "company_application_email_queue",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_application_email_queue",
+      "privilege": "DELETE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_application_email_queue",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "postgres",
+      "table": "company_application_email_queue",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "postgres",
+      "table": "company_application_email_queue",
+      "privilege": "TRIGGER"
+    },
+    {
+      "role": "service_role",
+      "table": "company_application_email_queue",
+      "privilege": "SELECT"
+    },
+    {
+      "role": "service_role",
+      "table": "company_application_email_queue",
+      "privilege": "UPDATE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_application_email_queue",
+      "privilege": "TRUNCATE"
+    },
+    {
+      "role": "service_role",
+      "table": "company_application_email_queue",
+      "privilege": "REFERENCES"
+    },
+    {
+      "role": "service_role",
+      "table": "company_application_email_queue",
+      "privilege": "TRIGGER"
+    }
+  ],
+  "function_grants": [
+    {
+      "anon": true,
+      "name": "rls_auto_enable",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "register_company",
+      "arguments": "p_company_name text, p_contact_name text, p_phone text, p_email text, p_address text",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "get_my_driver",
+      "arguments": "",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "current_driver_id",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "set_application_workflow_timestamps",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "scan_attendance",
+      "arguments": "p_token uuid",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "scan_company_attendance",
+      "arguments": "p_token uuid",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "scan_company_attendance",
+      "arguments": "p_token uuid, p_action text",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "prepare_driver_attendance",
+      "arguments": "p_action text",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "apply_attendance_rounding",
+      "arguments": "p_application_id bigint",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "attendance_rounding_trigger",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "scan_driver_attendance",
+      "arguments": "p_token uuid, p_action text",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "company_manual_attendance",
+      "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_reason text",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "prevent_overlapping_driver_application",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "create_driver_profile_from_auth",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "begin_line_link",
+      "arguments": "p_ticket_hash text, p_user_id uuid, p_nonce_hash text",
+      "service_role": true,
+      "authenticated": false
+    },
+    {
+      "anon": false,
+      "name": "complete_line_link",
+      "arguments": "p_nonce_hash text, p_line_user_id text, p_success boolean",
+      "service_role": true,
+      "authenticated": false
+    },
+    {
+      "anon": false,
+      "name": "unlink_line_account",
+      "arguments": "p_user_id uuid",
+      "service_role": true,
+      "authenticated": false
+    },
+    {
+      "anon": false,
+      "name": "claim_line_notifications",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": false
+    },
+    {
+      "anon": false,
+      "name": "preserve_job_pay_guarantee",
+      "arguments": "",
+      "service_role": false,
+      "authenticated": false
+    },
+    {
+      "anon": false,
+      "name": "publish_job_draft",
+      "arguments": "p_draft_id uuid, p_job jsonb",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "request_attendance_review",
+      "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "decide_attendance_review",
+      "arguments": "p_request_id uuid, p_approve boolean, p_comment text, p_pay_guarantee boolean",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "attendance_company_qr",
+      "arguments": "p_regenerate boolean",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "company_scan_work",
+      "arguments": "p_token uuid",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "punch_company_qr",
+      "arguments": "p_token uuid, p_application_id bigint, p_action text",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": true,
+      "name": "get_job_hiring_counts",
+      "arguments": "",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "submit_work_review",
+      "arguments": "p_application_id bigint, p_side text, p_rating integer, p_comment text",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "request_pay_confirmation",
+      "arguments": "p_application_id bigint, p_checked_in_at timestamp with time zone, p_checked_out_at timestamp with time zone, p_break_minutes integer, p_reason text, p_transportation_fee integer, p_pay_guarantee boolean",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "claim_company_application_emails",
+      "arguments": "",
+      "service_role": true,
+      "authenticated": false
+    },
+    {
+      "anon": false,
+      "name": "save_driver_preferences",
+      "arguments": "p_profile jsonb, p_line jsonb",
+      "service_role": false,
+      "authenticated": true
+    },
+    {
+      "anon": false,
+      "name": "account_auth_allow",
+      "arguments": "p_key text, p_limit integer, p_seconds integer",
+      "service_role": true,
+      "authenticated": false
+    }
+  ]
+}

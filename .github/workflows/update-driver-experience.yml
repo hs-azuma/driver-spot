@@ -1,0 +1,32 @@
+name: Update driver experience choices
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update experience fields
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text()
+          s = s.replace("function v(id){", "function expLabel(x){const n=Number(x||0);return n>=4?'4年以上':n>=1?'1〜3年':'1年未満'}function v(id){")
+          s = s.replace('<label>ドライバー経験年数</label><input id="completeYears" type="number" min="0" value="${esc(md.driver_experience_years||0)}">', '<label>ドライバー経験年数</label><select id="completeYears"><option value="0">1年未満</option><option value="2">1〜3年</option><option value="4">4年以上</option></select>')
+          s = s.replace(";if(md.driver_license){const s=document.getElementById('completeLicense');if(s)s.value=md.driver_license}}", ";if(md.driver_license){const s=document.getElementById('completeLicense');if(s)s.value=md.driver_license}const y=document.getElementById('completeYears');if(y){const n=Number(md.driver_experience_years||0);y.value=n>=4?'4':n>=1?'2':'0'}}")
+          s = s.replace('<p>経験年数：${esc(currentDriver.experience_years??0)}年</p>', '<p>経験年数：${esc(expLabel(currentDriver.experience_years))}</p>')
+          s = s.replace('<label>ドライバー経験年数</label><input id="driverExperienceYears" type="number" min="0">', '<label>ドライバー経験年数</label><select id="driverExperienceYears"><option value="0">1年未満</option><option value="2">1〜3年</option><option value="4">4年以上</option></select>')
+          p.write_text(s)
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Use grouped driver experience choices"
+          git push

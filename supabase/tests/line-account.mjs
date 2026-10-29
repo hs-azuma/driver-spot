@@ -1,0 +1,51 @@
+import assert from 'node:assert/strict';
+globalThis.Deno={env:{get:name=>env[name]},serve:()=>{}};
+let env={LINE_CHANNEL_SECRET:'test-only-secret',LINE_CHANNEL_ACCESS_TOKEN:'test-only-token',SUPABASE_URL:'https://example.test',SUPABASE_SERVICE_ROLE_KEY:'test-only-service',SUPABASE_ANON_KEY:'test-only-anon'};
+const {hash,verifySignature,rest}=await import('../functions/line-webhook/common.ts');
+const {handle:webhook}=await import('../functions/line-webhook/index.ts');
+const {handle:account}=await import('../functions/line-account/index.ts');
+let checks=0;const check=(actual,expected)=>{assert.deepEqual(actual,expected);checks++;};
+async function sign(raw){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(env.LINE_CHANNEL_SECRET),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Buffer.from(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(raw))).toString('base64');}
+const raw=JSON.stringify({events:[]});const sig=await sign(raw);
+check(await verifySignature(raw,sig,env.LINE_CHANNEL_SECRET),true);
+check(await verifySignature(raw+' ',sig,env.LINE_CHANNEL_SECRET),false);
+check(await verifySignature(raw,'bad',env.LINE_CHANNEL_SECRET),false);
+check((await webhook(new Request('https://example.test',{method:'POST',body:raw,headers:{'x-line-signature':sig}}))).status,200);
+check((await webhook(new Request('https://example.test',{method:'POST',body:raw}))).status,401);
+check((await webhook(new Request('https://example.test'))).status,405);
+const invalid='{';check((await webhook(new Request('https://example.test',{method:'POST',body:invalid,headers:{'x-line-signature':await sign(invalid)}}))).status,400);
+delete env.LINE_CHANNEL_SECRET;
+check((await webhook(new Request('https://example.test',{method:'POST',body:raw,headers:{'x-line-signature':sig}}))).status,503);
+env.LINE_CHANNEL_SECRET='test-only-secret';
+check((await account(new Request('https://example.test',{method:'POST',body:'{}'}))).status,401);
+const preflight=await account(new Request('https://example.test',{method:'OPTIONS',headers:{Origin:'https://spodora.com','Access-Control-Request-Method':'POST','Access-Control-Request-Headers':'authorization,apikey,content-type,x-client-info,x-supabase-client-platform'}}));
+check(preflight.status,204);
+check(preflight.headers.get('Access-Control-Allow-Origin'),'*');
+for(const header of ['authorization','apikey','content-type','x-client-info','x-supabase-client-platform'])check(preflight.headers.get('Access-Control-Allow-Headers').split(', ').includes(header),true);
+let calls=[];const uid='00000000-0000-4000-8000-000000000001';
+globalThis.fetch=async(url,options={})=>{calls.push({url,body:options.body,headers:options.headers});if(url.endsWith('/auth/v1/user'))return Response.json({id:uid});if(url.includes('/drivers?'))return Response.json([{id:1}]);if(url.includes('/companies?'))return Response.json([]);if(url.includes('/line_connections?'))return Response.json([]);if(url.endsWith('/rpc/begin_line_link'))return Response.json('test-link-token');return Response.json({});};
+const request=body=>new Request('https://example.test',{method:'POST',headers:{Authorization:'Bearer test-only-user'},body:JSON.stringify(body)});
+check(await (await account(request({action:'status'}))).json(),{linked:false,active:false,configured:true});
+for(const call of calls.filter(x=>x.url.includes('/drivers?')||x.url.includes('/companies?'))){check(call.headers.Authorization,'Bearer test-only-user');check(call.headers.apikey,env.SUPABASE_ANON_KEY);}
+check((await account(request({action:'begin',ticket:'bad'}))).status,400);
+const result=await (await account(request({action:'begin',ticket:'a'.repeat(64)}))).json();const link=new URL(result.url);
+check(link.origin,'https://access.line.me');check(link.searchParams.get('linkToken'),'test-link-token');check(link.searchParams.get('nonce').length,64);
+const rpcCall=calls.find(x=>x.url.endsWith('/rpc/begin_line_link'));const payload=JSON.parse(rpcCall.body);check(payload.p_user_id,uid);check(payload.p_nonce_hash,await hash(link.searchParams.get('nonce')));check(payload.p_ticket_hash,await hash('a'.repeat(64)));
+globalThis.fetch=async()=>new Response(null,{status:201});
+check(await rest('line_link_requests',{method:'POST'}),null);
+let reply;
+globalThis.fetch=async(url,options={})=>{
+ if(url.endsWith('/linkToken'))return Response.json({linkToken:'test-only-link'});
+ if(url.endsWith('/message/reply')){reply=JSON.parse(options.body);return new Response('',{status:200});}
+ if(options.method==='DELETE')return new Response(null,{status:204});
+ if(options.method==='POST')return new Response(null,{status:201});
+ throw new Error('Unexpected fetch');
+};
+const message=JSON.stringify({events:[{type:'message',source:{type:'user',userId:'U'+'1'.repeat(32)},replyToken:'test-only-reply',message:{type:'text',text:'連携'}}]});
+check((await webhook(new Request('https://example.test',{method:'POST',body:message,headers:{'x-line-signature':await sign(message)}}))).status,200);
+check(reply.replyToken,'test-only-reply');
+check(reply.messages[0].text.includes('https://spodora.com/line-link.html?ticket='),true);
+check(reply.messages[0].text.includes('\nhttps://'),true);
+globalThis.fetch=async()=>new Response('',{status:401});
+check((await account(request({action:'status'}))).status,401);
+console.log(checks+' checks passed; only mocked LINE/network calls used.');
