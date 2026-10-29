@@ -1,0 +1,23 @@
+{
+  "status": "FAIL",
+  "production_access": false,
+  "real_data_used": false,
+  "started_at": "2026-10-29T12:50:56.815002+00:00",
+  "checks": [
+    "Docker network has no external routing"
+  ],
+  "limitations": [
+    "Database dump restored to a second database; global roles and service configs not independently restored",
+    "Storage API bytes tested, but object volume not independently restored from a storage backup",
+    "Native API tests do not deploy Edge Functions or send email/LINE",
+    "Ephemeral synthetic fixtures only; not a production backup"
+  ],
+  "source_commit": "79e46724f0dfc66faf5198121104c51b29f993cc",
+  "runner": "standard ubuntu-24.04",
+  "cli_version": "2.122.0",
+  "failed_stage": "start_supabase",
+  "error_type": "RuntimeError",
+  "error": "command_failed_exit_1; Error response from daemon: toomanyrequests: Data limit exceeded | Error response from daemon: toomanyrequests: Data limit exceeded | failed to connect to postgres: failed to connect to `host=127.0.0.1 user=postgres database=postgres`: dial error (connect ECONNREFUSED 127.0.0.1:54322) | Try rerunning the command with --debug to troubleshoot the error.",
+  "container_status": [],
+  "completed_at": "2026-10-29T12:52:12.820850+00:00"
+}
