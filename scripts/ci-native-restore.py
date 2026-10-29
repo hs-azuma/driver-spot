@@ -20,9 +20,9 @@ def check(name,ok):
     if not ok:raise RuntimeError(name)
     report['checks'].append(name)
 
-def pgtool(name,args,input=None,timeout=90):
+def pgtool(name,args,input=None,timeout=90,admin=False):
     assert pg_bin and pg_port and pg_env
-    return run([str(pg_bin/name),'-h','127.0.0.1','-p',str(pg_port),'-U','postgres',*args],input=input,timeout=timeout,env=pg_env)
+    return run([str(pg_bin/name),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin' if admin else 'postgres',*args],input=input,timeout=timeout,env=pg_env)
 
 def sql(text,db='postgres'):
     return pgtool('psql',['-X','-d',db,'-At','-v','ON_ERROR_STOP=1'],text.encode()).decode().strip()
@@ -90,10 +90,10 @@ try:
     context['company_id']=int(sql("INSERT INTO public.companies(company_name,user_id,email) VALUES('Synthetic native company','"+uid+"','v4-company@example.invalid') RETURNING id;").splitlines()[0])
     sql("CREATE POLICY v4_lab_storage_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK(bucket_id='v4-synthetic'); CREATE POLICY v4_lab_storage_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id='v4-synthetic' AND owner_id=auth.uid()::text);")
     stage='native_api_rls_storage';context['phase']='verify';verified=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=120,check=False));report['checks']+=verified['checks'];assert not verified.get('error'),verified.get('error')
-    stage='encrypted_database_restore';dump=pgtool('pg_dump',['-Fc','--no-owner','postgres'],timeout=180)
+    stage='encrypted_database_restore';dump=pgtool('pg_dump',['-Fc','postgres'],timeout=180,admin=True)
     restored=run(['node','tools/native-runner/roundtrip.mjs'],dump,timeout=90);check('Native pg_dump encrypted, decrypted, wrong-key and tamper checked',restored==dump)
-    pgtool('createdb',['v4_fixture_restore'])
-    pgtool('pg_restore',['--no-owner','--clean','--if-exists','--single-transaction','--exit-on-error','-d','v4_fixture_restore'],restored,timeout=180)
+    pgtool('createdb',['v4_fixture_restore'],admin=True)
+    pgtool('pg_restore',['--clean','--if-exists','--single-transaction','--exit-on-error','-d','v4_fixture_restore'],restored,timeout=180,admin=True)
     catalog=(ROOT/'docs/database/read-catalog.sql').read_text();before=json.loads(sql(catalog));after=json.loads(sql(catalog,'v4_fixture_restore'));normalize=lambda d:{k:sorted(json.dumps(row,sort_keys=True) for row in (v or [])) for k,v in d.items()};check('Restored application catalog equals source',normalize(before)==normalize(after))
     counts="SELECT json_build_object('auth',(SELECT count(*) FROM auth.users),'drivers',(SELECT count(*) FROM public.drivers),'companies',(SELECT count(*) FROM public.companies),'jobs',(SELECT count(*) FROM public.jobs),'applications',(SELECT count(*) FROM public.applications),'storage',(SELECT count(*) FROM storage.objects));"
     check('Auth and application and Storage metadata rows restored',json.loads(sql(counts))==json.loads(sql(counts,'v4_fixture_restore')))

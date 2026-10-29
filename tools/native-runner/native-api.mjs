@@ -37,8 +37,9 @@ try{
   const bucket=await admin.storage.createBucket('v4-synthetic',{public:false});check('Real Storage creates private synthetic bucket',!bucket.error);
   const storage=client(u.storage.token);const bytes=new TextEncoder().encode('synthetic-native-storage-only');
   const uploaded=await storage.storage.from('v4-synthetic').upload('fixture.txt',bytes,{contentType:'text/plain'});check('Real Storage uploads synthetic owned bytes',!uploaded.error);
+  const storagePreflight=await admin.rpc('withdrawal_preflight',{p_user_id:u.storage.id});check('Native preflight blocks Storage ownership',!storagePreflight.error&&storagePreflight.data.mode==='review_required'&&storagePreflight.data.reason==='storage_objects');
   const ownedDelete=await admin.auth.admin.deleteUser(u.storage.id,false);check('Owned Storage prevents Auth user deletion',!!ownedDelete.error);
-  const ownedAfter=await admin.from('drivers').select('id').eq('user_id',u.storage.id);check('Storage refusal rolls back empty-profile removal',!ownedAfter.error&&ownedAfter.data.length===1);
+  const ownedAfter=await admin.from('drivers').select('id').eq('user_id',u.storage.id);check('Storage ownership refusal retains driver profile',!ownedAfter.error&&ownedAfter.data.length===1);
   const downloaded=await storage.storage.from('v4-synthetic').download('fixture.txt');check('Storage bytes remain readable after refused deletion',!downloaded.error&&(await downloaded.data.text())==='synthetic-native-storage-only');
   process.stdout.write(JSON.stringify({checks}));
  }
