@@ -1,0 +1,172 @@
+[
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "companies",
+    "column": "id",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "companies",
+    "column": "user_id",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "id",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "name",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "user_id",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_prefecture",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_municipality",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "match_email_enabled",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "is_paused",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_vehicle_types",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_weekdays",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_time_slots",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_prefecture_2",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_municipality_2",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_prefecture_3",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_municipality_3",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_email_enabled_1",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_email_enabled_2",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "service_role=r/postgres"
+    ],
+    "table": "drivers",
+    "column": "preferred_email_enabled_3",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "authenticated=ar/postgres",
+      "service_role=r/postgres"
+    ],
+    "table": "company_driver_blocks",
+    "column": "company_id",
+    "schema": "public"
+  },
+  {
+    "acl": [
+      "authenticated=ar/postgres",
+      "service_role=r/postgres"
+    ],
+    "table": "company_driver_blocks",
+    "column": "driver_id",
+    "schema": "public"
+  }
+]

@@ -32,8 +32,21 @@ class RestoreAuditTests(unittest.TestCase):
                          lambda d: d['public']['functions'][0].update(definition='SELECT 1'))
         self.assertEqual(r['status'], 'FAIL')
 
+    def test_explicit_anon_grant_is_also_reviewed(self):
+        report = module.audit()
+        self.assertTrue(any(f.startswith('public.register_company(') for f in report['security_review_required']))
+        self.assertTrue(any(f.startswith('public.get_my_driver(') for f in report['security_review_required']))
+
     def test_missing_identity_owner_is_rejected(self):
         r = self.changed('restore-metadata-20261029.json', lambda d: d['sequences'].pop())
+        self.assertEqual(r['status'], 'FAIL')
+
+    def test_missing_private_trigger_function_is_rejected(self):
+        r = self.changed('private-dependencies-20261029.json', lambda d: d['functions'].clear())
+        self.assertTrue(any('Missing trigger dependency' in error for error in r['errors']))
+
+    def test_missing_column_privilege_is_rejected(self):
+        r = self.changed('column-privileges-20261029.json', lambda d: d.pop())
         self.assertEqual(r['status'], 'FAIL')
 
     def test_rls_disabled_is_rejected(self):

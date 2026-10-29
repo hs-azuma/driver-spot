@@ -3,6 +3,13 @@
 スポットドライバーと企業の求人・応募・勤怠管理サービス。
 本番: https://spodora.com / ソース: hs-azuma/driver-spot
 
+## 第4版の最新引き継ぎ地点
+
+[2026-10-29 再構築の実行検証](docs/v4-reconstruction-validation-20261029.md)から再開してください。
+54関数を含むアプリDDLと69項目を無料の隔離ラボで検証済み。
+本番変更・実データバックアップ・Supabase全サービスの復元・第三者受け入れは未完了です。
+[再実行手順](tools/restore-lab/README.md)と[残作業](docs/handoff-backlog.md)を参照してください。
+
 ## 開発・保守の入口
 
 - [第4版・仕様と開発方針](docs/spodora-v4-handoff.md)
