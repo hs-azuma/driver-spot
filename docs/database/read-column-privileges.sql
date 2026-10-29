@@ -1,2 +1,0 @@
--- READ ONLY: column ACL metadata, no user rows.
-select coalesce(jsonb_agg(jsonb_build_object('schema',n.nspname,'table',c.relname,'column',a.attname,'acl',a.attacl)), '[]'::jsonb) as column_acl from pg_attribute a join pg_class c on c.oid=a.attrelid join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and a.attnum>0 and not a.attisdropped and a.attacl is not null;
