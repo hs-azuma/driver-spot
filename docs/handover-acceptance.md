@@ -1,5 +1,10 @@
 # 第三者への引き継ぎ受け入れ手順
 
+最新版: [4項目の到達点](v4-four-stage-progress-20261029.md)と[自動点検](third-party-readiness-20261029.json)。
+自動点検と独立した第三者本人の合格は別。signed_byは未記入、production_readyもfalse。
+GitHub/Supabase/DNS/Resend/LINEの個別権限、MFA、予備管理者、保持/バックアップ、実機・実復元を確認してから署名する。
+検証スクリプトは値を公開資料に置かず、担当者別アクセスの確認や招待を自動実行しない。
+
 2026-10-29追加: [別フォルダ再現・暗号化復元](v4-encrypted-backup-handover-20261029.md)を準備。
 `python3 -B scripts/verify-handover.py`の結果をhandover-cleanroom-20261029.jsonに記録する。
 同一ホストでの自動再現であり、第三者本人・ネイティブSupabase・実データの受け入れは別途必要。

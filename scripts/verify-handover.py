@@ -15,7 +15,8 @@ import time
 
 ROOT=Path(__file__).resolve().parents[1]
 REPORT=ROOT/'docs/handover-cleanroom-20261029.json'
-OUTPUTS={'docs/handover-cleanroom-20261029.json','docs/database/restore-candidate/lab-result.json'}
+OUTPUTS={'docs/handover-cleanroom-20261029.json','docs/database/restore-candidate/lab-result.json','docs/dependency-inventory-20261029.json','docs/native-preflight-20261029.json','docs/third-party-readiness-20261029.json'}
+GENERATED_PREFIXES=('docs/browser-lab-20261029/','docs/sdk-lab-20261029/','docs/business-lab-20261029/')
 
 
 def main():
@@ -30,7 +31,7 @@ def main():
         if report['runtime']['node']!='v'+(ROOT/'.nvmrc').read_text().strip() or sys.version_info[:2]!=(3,12):
             raise RuntimeError('pinned_runtime_mismatch')
         paths=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','-z'],cwd=ROOT).decode().split('\0')
-        paths=sorted(set(p for p in paths if p and p not in OUTPUTS and not p.startswith(('docs/browser-lab-20261029/','docs/sdk-lab-20261029/'))))
+        paths=sorted(set(p for p in paths if p and p not in OUTPUTS and not p.startswith(GENERATED_PREFIXES)))
         fingerprint=hashlib.sha256()
         with tempfile.TemporaryDirectory(prefix='spodora-handover-') as tmp:
             target=Path(tmp)/'source'
@@ -57,7 +58,8 @@ def main():
                       ('install_sdk_pinned_offline',[npm,'ci','--prefix','tools/sdk-lab','--ignore-scripts','--offline','--no-audit','--no-fund']),
                       ('offline_regression',[npm,'test']),('synthetic_db_encryption_restore',[npm,'--prefix','tools/restore-lab','test']),
                       ('chromium_synthetic_ui',[npm,'--prefix','tools/browser-lab','test']),
-                      ('real_sdk_synthetic_http',[npm,'--prefix','tools/sdk-lab','test'])]
+                      ('real_sdk_synthetic_http',[npm,'--prefix','tools/sdk-lab','test']),
+                      ('business_actions_and_modal_qr',[npm,'--prefix','tools/business-lab','test'])]
             for name,command in commands:
                 started=time.monotonic()
                 result=subprocess.run(command,cwd=target,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
@@ -88,6 +90,10 @@ def main():
                 raise RuntimeError('missing_real_sdk_evidence')
             report['sdk']={'status':sdk['status'],'checks':len(sdk['checks']),
                            'version':sdk['sdk'],'real_http_backend':False,'production_access':False}
+            business=json.loads((target/'docs/business-lab-20261029/result.json').read_text())
+            if business['status']!='PASS_BUSINESS_ACTIONS_WITH_SYNTHETIC_BACKEND' or len(business['checks'])!=51 or any(c['status']!='PASS' for c in business['checks']):
+                raise RuntimeError('missing_business_evidence')
+            report['business']={'status':business['status'],'checks':len(business['checks']),'real_backend':False}
             report['status']='PASS_SOURCE_REPRODUCTION_ONLY'
     except (subprocess.SubprocessError,OSError,ValueError,KeyError,RuntimeError) as error:
         report['error']=str(error)

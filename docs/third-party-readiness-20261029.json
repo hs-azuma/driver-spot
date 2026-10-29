@@ -1,0 +1,107 @@
+{
+  "status": "PASS_PREPARATION_AUDIT_WITH_BLOCKERS",
+  "date_jst": "2026-10-29",
+  "checked_at": "2026-10-29T11:53:23.766983+00:00",
+  "production_modified": false,
+  "production_ready": false,
+  "independent_human_acceptance": false,
+  "signed_by": null,
+  "checks": [
+    {
+      "name": "local_document_links",
+      "pass": true,
+      "detail": {
+        "files": 36,
+        "links": 98,
+        "missing": []
+      }
+    },
+    {
+      "name": "runtime_imports_exact",
+      "pass": true,
+      "detail": {
+        "imports": 29,
+        "floating_runtime_imports": 0,
+        "floating_type_imports": 4,
+        "unfixed_action_refs": 2
+      }
+    },
+    {
+      "name": "browser_result",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "browser_source_hashes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "sdk_result",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "sdk_source_hashes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "business_result",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "business_source_hashes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "clean_source_reproduction_current",
+      "pass": true,
+      "detail": null
+    }
+  ],
+  "remaining_gates": [
+    {
+      "id": "native_restore",
+      "complete": false,
+      "evidence": "docs/native-preflight-20261029.json",
+      "blockers": [
+        "native_postgres_nonroot_execution_unavailable",
+        "supabase_cli_missing"
+      ]
+    },
+    {
+      "id": "real_backup_custody_and_restore",
+      "complete": false,
+      "evidence": "docs/backup-recovery-plan.json",
+      "status": "REAL_BACKUP_NOT_CONFIGURED"
+    },
+    {
+      "id": "ownership_MFA_backup_admin_external_contracts",
+      "complete": false
+    },
+    {
+      "id": "retention_anonymization_and_withdrawal_operations",
+      "complete": false
+    },
+    {
+      "id": "real_device_notifications_Deno_and_native_concurrency",
+      "complete": false
+    },
+    {
+      "id": "scoped_production_approval",
+      "complete": false
+    },
+    {
+      "id": "independent_third_person_demonstration",
+      "complete": false
+    }
+  ],
+  "limits": [
+    "This is an automated source/evidence audit, not a third person acceptance",
+    "Local link existence does not verify external URLs, owners, credentials, or permissions",
+    "No real personal-data export, production change, message delivery or paid resource"
+  ]
+}
