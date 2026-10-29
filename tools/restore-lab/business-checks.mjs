@@ -99,7 +99,7 @@ export async function businessChecks(ctx) {
     check('Rollback restores baseline job INSERT privilege', (await one("SELECT has_table_privilege('anon','public.jobs','INSERT') allowed")).allowed, true);
     check('Rollback removes only new delete policy', (await one("SELECT count(*)::int n FROM pg_policies WHERE schemaname='public' AND tablename='applications' AND policyname='V4 retain confirmed and attended applications'")).n, 0);
   } finally {
-    await role('postgres');
     await db.exec('ROLLBACK TO SAVEPOINT business_suite; RELEASE SAVEPOINT business_suite');
+    await role('postgres');
   }
 }

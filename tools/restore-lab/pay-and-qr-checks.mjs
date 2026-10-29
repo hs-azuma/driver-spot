@@ -72,7 +72,7 @@ export async function payAndQrChecks(ctx) {
     await role('authenticated', driverUid);
     await rejects('QR old token rejected after regeneration', "SELECT public.punch_company_qr($1,$2,'in')", [token, todayApplication.id], e => e.code === 'P0001' && e.message.includes('無効'));
   } finally {
-    await role('postgres');
     await db.exec('ROLLBACK TO SAVEPOINT pay_qr_suite; RELEASE SAVEPOINT pay_qr_suite');
+    await role('postgres');
   }
 }

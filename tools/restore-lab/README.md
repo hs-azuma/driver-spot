@@ -1,6 +1,6 @@
 # 隔離再構築ラボ
 
-最新の[業務検証記録](../../docs/v4-business-validation-20261029.md)では152項目が成功。
+最新の[権限・異常状態検証](../../docs/v4-access-and-state-validation-20261029.md)では228項目が成功。
 お気に入り・ブロック・評価・キャンセル保護・通知キュー・給与確認・QRを追加。
 修正案は本番未適用。`lab-result.json`に実行時刻・検査項目・ソースSHA256と既知の問題を記録する。
 
@@ -37,6 +37,7 @@ npm test
 - 完了済み応募DELETEの履歴保護案と通常応募キャンセルの継続、求人制限と合わせた切り戻し。
 - 相互評価の双方保持、お気に入り/ブロックの所有者制限、給与確認・保証金額、QR再発行。
 - DB通知キューの期限/回数上限/宛先変更/再試行リース。複数接続の競合試験は対象外。
+- 匿名勤怠再計算・旧登録の認可、取消求人/初期状態の制限、修正案の組合せで給与/QRを再検証。
 
 出力は`docs/database/restore-candidate/lab-result.json`。
 バックアップの実体はメモリ上だけで保持して破棄し、サイズとSHA256のみ結果に記録する。
@@ -52,3 +53,4 @@ WebAuthn、SMTP/LINE、Supabase標準イベントトリガー、拡張、cron、
 
 `sql/review-v4-job-insert-hardening.sql`もローカルでのみ試す。本番適用は所有者の事前承認が必要。
 `sql/review-v4-application-delete-guard.sql`と`sql/review-v4-hardening-rollback.sql`もレビュー専用。
+新しいアクセス制限/切り戻しSQLは`python3 -B scripts/build-access-review.py`で保存定義から再生成する。

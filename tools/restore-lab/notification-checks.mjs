@@ -67,7 +67,7 @@ export async function notificationChecks(ctx) {
     check('Capped email marked skipped', (await one('SELECT state FROM public.company_application_email_queue WHERE id=$1', [mail.id])).state, 'skipped');
     // No notification processor/provider is loaded. These are DB queue and serial lease tests only.
   } finally {
-    await role('postgres');
     await db.exec('ROLLBACK TO SAVEPOINT notification_suite; RELEASE SAVEPOINT notification_suite');
+    await role('postgres');
   }
 }

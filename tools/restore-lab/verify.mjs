@@ -8,6 +8,8 @@ import {createHash} from 'node:crypto';
 import {businessChecks} from './business-checks.mjs';
 import {notificationChecks} from './notification-checks.mjs';
 import {payAndQrChecks} from './pay-and-qr-checks.mjs';
+import {accessChecks} from './access-checks.mjs';
+import {edgeStateChecks} from './edge-state-checks.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const db = new PGlite(); // no path: volatile memory; no production credentials accepted
@@ -138,6 +140,10 @@ try {
   await scenario('notification_queue_and_serial_leases', () => notificationChecks({db, root, check, one, role, rejects, company, driver, otherDriverUid, driverUid, companyUid, job, application}));
   await scenario('pay_confirmation_and_qr_attendance', () => payAndQrChecks({db, root, check, one, role, rejects, company, otherCompany, driver,
     companyUid, otherCompanyUid, driverUid, otherDriverUid}));
+  await scenario('legacy_registration_rounding_access_and_guarded_regression', () => accessChecks({db, root, check, one, role, rejects, findings, company, otherCompany, driver,
+    companyUid, otherCompanyUid, driverUid, otherDriverUid, application}));
+  await scenario('abnormal_entry_states_and_combined_hardening_regression', () => edgeStateChecks({db, root, check, one, role, rejects, findings, company, otherCompany, driver,
+    companyUid, otherCompanyUid, driverUid, otherDriverUid}));
   await role('anon');
   check('Anonymous visitor can browse jobs', (await db.query('SELECT id FROM public.jobs')).rows.length, 2);
   await rejects('Anonymous driver-profile read denied', 'SELECT * FROM public.drivers', []);
@@ -206,7 +212,9 @@ try {
     source_sha256: Object.fromEntries(['tools/restore-lab/verify.mjs', 'tools/restore-lab/business-checks.mjs',
       'tools/restore-lab/notification-checks.mjs', 'tools/restore-lab/pay-and-qr-checks.mjs',
       'sql/review-v4-application-delete-guard.sql', 'sql/review-v4-job-insert-hardening.sql',
-      'sql/review-v4-hardening-rollback.sql'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
+      'sql/review-v4-hardening-rollback.sql','tools/restore-lab/access-checks.mjs','tools/restore-lab/edge-state-checks.mjs',
+      'sql/review-v4-legacy-and-rounding-access.sql','sql/review-v4-legacy-and-rounding-rollback.sql',
+      'sql/review-v4-application-entry-access.sql','sql/review-v4-application-entry-rollback.sql'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
     limitations: ['Auth is mocked; no HTTP login, token verification or password recovery tested',
       'No Supabase extensions, cron, event triggers, service settings or Storage files restored',
       'Synthetic PGlite data-directory export/reload is not encrypted production backup or pg_dump/pg_restore proof',
