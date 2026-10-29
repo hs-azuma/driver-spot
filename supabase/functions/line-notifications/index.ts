@@ -13,13 +13,7 @@ export async function deliver(row){
  const retry=response.status>=500||response.status===429;
  return {accepted,retry,status:response.status};
 }
-export async function handle(req){
- if(req.method!=='POST')return out({error:'Method not allowed'},405);
- const key=req.headers.get('x-spodora-worker-key')||'';
- if(await hash(key)!==AUTH_HASH)return out({error:'Unauthorized'},401);
- let emailResult;
- try{emailResult=await processApplicationEmails()}catch{emailResult={error:'Application email worker failed'}}
- try{
+export async function processLineNotifications(){
  const rows=await rest('rpc/claim_line_notifications',{method:'POST',body:'{}'});
  let accepted=0,failed=0;
  for(const row of rows){
@@ -33,7 +27,17 @@ export async function handle(req){
  })});
  if(result.accepted)accepted++;else failed++;
  }
- return out({processed:rows.length,accepted,failed,application_email:emailResult});
+ return {processed:rows.length,accepted,failed};
+}
+export async function handle(req){
+ if(req.method!=='POST')return out({error:'Method not allowed'},405);
+ const key=req.headers.get('x-spodora-worker-key')||'';
+ if(await hash(key)!==AUTH_HASH)return out({error:'Unauthorized'},401);
+ let emailResult;
+ try{emailResult=await processApplicationEmails()}catch{emailResult={error:'Application email worker failed'}}
+ try{
+ const result=await processLineNotifications();
+ return out({...result,application_email:emailResult});
  }catch{return out({error:'Notification worker failed'},500);}
 }
 Deno.serve(handle);

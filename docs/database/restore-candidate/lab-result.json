@@ -1,13 +1,13 @@
 {
   "status": "PASS_APPLICATION_DDL_AND_LIMITED_RLS_TESTS_WITH_KNOWN_FINDINGS",
-  "started_at": "2026-10-29T08:31:28.085Z",
-  "completed_at": "2026-10-29T08:31:31.398Z",
+  "started_at": "2026-10-29T08:48:33.395Z",
+  "completed_at": "2026-10-29T08:48:36.521Z",
   "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
   "runtime": "@electric-sql/pglite@0.3.14",
   "candidate_sha256": "cd1708d9d22e8177b58aa502831c1997fa5757152d23c5add6f2d4fe69e8ecd5",
   "synthetic_archive": {
-    "bytes": 4232265,
-    "sha256": "796d4eb79314f389774165e2c8fd7e581f7d3135c782c68142a866dea16175b2",
+    "bytes": 4226321,
+    "sha256": "78dedd32b67ee6ccffb1594fa3bf383193bd4a3759bf307d83cc1c8cafe1a26a",
     "format": "PGlite gzip data-directory; NOT portable pg_dump or production backup",
     "stored": false
   },
@@ -218,6 +218,32 @@
     "COMBINED QR repeated checkout is idempotent",
     "COMBINED QR regeneration rotates token",
     "COMBINED QR old token rejected after regeneration",
+    "BASELINE profile deletion leaves Auth account present",
+    "BASELINE service profile deletion removes application history",
+    "BASELINE service profile deletion removes reviews",
+    "Client cannot call withdrawal preflight for any user",
+    "PROPOSAL driver with history requires operator review",
+    "PROPOSAL company with jobs requires operator review",
+    "PROPOSAL service-role driver DELETE cannot erase history",
+    "PROPOSAL service-role company DELETE cannot erase jobs",
+    "PROPOSAL Auth DELETE cannot bypass history guard",
+    "PROPOSAL protected review still exists",
+    "PROPOSAL empty account is eligible",
+    "PROPOSAL missing active guard fails closed",
+    "PROPOSAL injected Auth delete failure is reported",
+    "PROPOSAL failed Auth DELETE retains empty driver profile",
+    "PROPOSAL failed Auth DELETE retains Auth row",
+    "PROPOSAL successful empty withdrawal removes Auth row",
+    "PROPOSAL successful empty withdrawal removes profile atomically",
+    "Withdrawal rollback removes all three added triggers",
+    "BASELINE next-day overlap can be submitted",
+    "BASELINE same-evening overnight overlap can be submitted",
+    "PROPOSAL overnight overlap rejected: next calendar day",
+    "PROPOSAL overnight overlap rejected: same evening",
+    "PROPOSAL exact end/start boundary remains allowed",
+    "PROPOSAL reverse insertion order also rejects overlap",
+    "PROPOSAL cancelled conflicting job no longer blocks valid application",
+    "Overnight rollback restores exact captured function hash",
     "Anonymous visitor can browse jobs",
     "Anonymous driver-profile read denied",
     "Baseline characterization left original jobs intact",
@@ -261,16 +287,26 @@
     {
       "name": "abnormal_entry_states_and_combined_hardening_regression",
       "checks": 36
+    },
+    {
+      "name": "withdrawal_retention_and_atomic_profile_cleanup",
+      "checks": 18
+    },
+    {
+      "name": "overnight_overlap_and_boundary_checks",
+      "checks": 8
     }
   ],
   "known_findings": [
     "BASELINE: driver DELETE can remove an attended application and cascade reviews/attendance edit history; UI only hides the button",
     "BASELINE: anonymous rounding RPC can recalculate another application and reset approved attendance state",
     "BASELINE: cancelled jobs accept direct applications; a driver can choose initial completed state instead of pending",
+    "BASELINE: service-role profile deletion cascades business history before Auth deletion; separate HTTP steps can leave a live Auth account after profile loss",
+    "BASELINE: same-date time-only overlap predicate misses overnight and adjacent-calendar-day conflicts",
     "BASELINE: anonymous INSERT can create a job owned by another company"
   ],
   "source_sha256": {
-    "tools/restore-lab/verify.mjs": "3aa12939fb00163dc71ac7ac72f7eaf58d5dede36635f0f5d46cf1093f9469ab",
+    "tools/restore-lab/verify.mjs": "3ac4ee81cba17c21381d96653e751c6ece6d598d2e6eb4288b5cf598fa920a11",
     "tools/restore-lab/business-checks.mjs": "0430b84926d09bc20360df775d79e6921e479d8405735b376a11bb2efe1a40a0",
     "tools/restore-lab/notification-checks.mjs": "cf11ea9fc88b32dce05d6b7738a096885125c6d62e5a526573557b7f09986f2b",
     "tools/restore-lab/pay-and-qr-checks.mjs": "4725b6b9380ac52d982330462cc387d650c2d96d9c2e79933e13bc304f5ae657",
@@ -282,7 +318,13 @@
     "sql/review-v4-legacy-and-rounding-access.sql": "5da24b4333e68ce1ed4af9f6eb258f47733540c836ff9b427898d2b8657582e5",
     "sql/review-v4-legacy-and-rounding-rollback.sql": "9e6acde8100285de73ee6e6b522ab59a7de01ef63542e13e63edbe2c7bad38c1",
     "sql/review-v4-application-entry-access.sql": "0617668b72d632382cc0684a3bdc3bdb31e274e2154193bf1eb30880518423bb",
-    "sql/review-v4-application-entry-rollback.sql": "8c1be297da2fa87977d56ece830ce9a221c83d8e819bb2ace0c0f78c97c0d4af"
+    "sql/review-v4-application-entry-rollback.sql": "8c1be297da2fa87977d56ece830ce9a221c83d8e819bb2ace0c0f78c97c0d4af",
+    "tools/restore-lab/withdrawal-checks.mjs": "c90db986bdb57daf3555af3b038e07db282ceaef6311c71215349cf1324adb9e",
+    "tools/restore-lab/overnight-checks.mjs": "2c7a3573e2e5202cb8e2d512846ef390448909aca52197c9bb90ced244d8fb9b",
+    "sql/review-v4-withdrawal-retention.sql": "5f8ce9077b39f2f23f6237c7616bc41a3ac15117445b16b037a88106a8315c50",
+    "sql/review-v4-withdrawal-retention-rollback.sql": "5c721520986958ee3c53dd120dfd326e93dd6b5c69ace4b4607f36490a6c25a6",
+    "sql/review-v4-overnight-overlap.sql": "c306d4fd157cc43699c3a9100a5da470193aa58b4a014c671bd63cc60706baa7",
+    "sql/review-v4-overnight-overlap-rollback.sql": "1fc84ad1a55d9c07d27828824be55676efa28b8f45067ddc3a91b45ad148028c"
   },
   "limitations": [
     "Auth is mocked; no HTTP login, token verification or password recovery tested",

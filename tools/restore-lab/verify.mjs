@@ -10,6 +10,8 @@ import {notificationChecks} from './notification-checks.mjs';
 import {payAndQrChecks} from './pay-and-qr-checks.mjs';
 import {accessChecks} from './access-checks.mjs';
 import {edgeStateChecks} from './edge-state-checks.mjs';
+import {withdrawalChecks} from './withdrawal-checks.mjs';
+import {overnightChecks} from './overnight-checks.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const db = new PGlite(); // no path: volatile memory; no production credentials accepted
@@ -144,6 +146,8 @@ try {
     companyUid, otherCompanyUid, driverUid, otherDriverUid, application}));
   await scenario('abnormal_entry_states_and_combined_hardening_regression', () => edgeStateChecks({db, root, check, one, role, rejects, findings, company, otherCompany, driver,
     companyUid, otherCompanyUid, driverUid, otherDriverUid}));
+  await scenario('withdrawal_retention_and_atomic_profile_cleanup', () => withdrawalChecks({db,root,check,one,role,rejects,findings,company,companyUid,driver,driverUid,application}));
+  await scenario('overnight_overlap_and_boundary_checks', () => overnightChecks({db,root,check,one,role,rejects,findings,company,companyUid,driver,driverUid}));
   await role('anon');
   check('Anonymous visitor can browse jobs', (await db.query('SELECT id FROM public.jobs')).rows.length, 2);
   await rejects('Anonymous driver-profile read denied', 'SELECT * FROM public.drivers', []);
@@ -214,7 +218,10 @@ try {
       'sql/review-v4-application-delete-guard.sql', 'sql/review-v4-job-insert-hardening.sql',
       'sql/review-v4-hardening-rollback.sql','tools/restore-lab/access-checks.mjs','tools/restore-lab/edge-state-checks.mjs',
       'sql/review-v4-legacy-and-rounding-access.sql','sql/review-v4-legacy-and-rounding-rollback.sql',
-      'sql/review-v4-application-entry-access.sql','sql/review-v4-application-entry-rollback.sql'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
+      'sql/review-v4-application-entry-access.sql','sql/review-v4-application-entry-rollback.sql',
+      'tools/restore-lab/withdrawal-checks.mjs','tools/restore-lab/overnight-checks.mjs',
+      'sql/review-v4-withdrawal-retention.sql','sql/review-v4-withdrawal-retention-rollback.sql',
+      'sql/review-v4-overnight-overlap.sql','sql/review-v4-overnight-overlap-rollback.sql'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
     limitations: ['Auth is mocked; no HTTP login, token verification or password recovery tested',
       'No Supabase extensions, cron, event triggers, service settings or Storage files restored',
       'Synthetic PGlite data-directory export/reload is not encrypted production backup or pg_dump/pg_restore proof',
