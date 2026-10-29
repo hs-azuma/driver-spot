@@ -1,5 +1,5 @@
 """Fresh public CI only. Creates an internal-network synthetic Supabase, then destroys only that fixture."""
-import datetime,hashlib,json,os,re,secrets,subprocess,tempfile,time,urllib.request
+import base64,datetime,hashlib,json,os,re,secrets,subprocess,tempfile,time,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PROJECT='spodora-v4-native-ci';NETWORK='spodora-v4-native-ci-internal';CONTAINER='supabase_db_'+PROJECT
@@ -88,5 +88,7 @@ finally:
     report['completed_at']=datetime.datetime.now(datetime.timezone.utc).isoformat();REPORT.parent.mkdir(parents=True,exist_ok=True);REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n')
     if os.environ.get('GITHUB_STEP_SUMMARY'):
         with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:f.write('```json\n'+json.dumps(report,ensure_ascii=False,indent=2)+'\n```\n')
+    if os.environ.get('GITHUB_OUTPUT'):
+        with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('report_b64='+base64.b64encode(json.dumps(report).encode()).decode()+'\n')
     print('SPODORA_NATIVE_RESULT '+json.dumps(report,ensure_ascii=False))
 raise SystemExit(0 if report['status'].startswith('PASS_') else 1)
