@@ -2,11 +2,24 @@
   "status": "FAIL",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-10-29T12:59:55.542622+00:00",
+  "started_at": "2026-10-29T13:01:26.604405+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
-    "Fresh target has no application tables"
+    "Fresh fixture grants Auth ownership role to migration role only",
+    "Fresh target has no application tables",
+    "22 application tables built",
+    "All six local hardening proposals applied on native PG17",
+    "GoTrue admin creates confirmed synthetic company",
+    "Real password sign-in company",
+    "GoTrue admin creates confirmed synthetic driver",
+    "Real password sign-in driver",
+    "GoTrue admin creates confirmed synthetic other",
+    "Real password sign-in other",
+    "GoTrue admin creates confirmed synthetic empty",
+    "Real password sign-in empty",
+    "GoTrue admin creates confirmed synthetic storage",
+    "Real password sign-in storage"
   ],
   "limitations": [
     "Database dump restored to a second database; global roles and service configs not independently restored",
@@ -15,14 +28,31 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "f8ab99b8c039b945d3eb70f0c834bdf7793b5db3",
+  "source_commit": "1dfbb25f53bd36831715c5a3bffc5d6e16339079",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "runtime": "official native processes",
   "isolation": "Fresh runner and dedicated SUPABASE_HOME; API/DB URLs verified loopback; synthetic users only",
   "postgres_version": "17.11",
-  "failed_stage": "application_ddl",
+  "fixture_roles": [
+    {
+      "role": "supabase_admin",
+      "superuser": true,
+      "member": false
+    },
+    {
+      "role": "postgres",
+      "superuser": false,
+      "member": true
+    },
+    {
+      "role": "supabase_auth_admin",
+      "superuser": false,
+      "member": false
+    }
+  ],
+  "failed_stage": "native_api_rls_storage",
   "error_type": "RuntimeError",
-  "error": "command_failed_exit_3; ERROR:  must be owner of table users",
-  "completed_at": "2026-10-29T13:00:16.142818+00:00"
+  "error": "command_failed_exit_1; ",
+  "completed_at": "2026-10-29T13:01:45.634848+00:00"
 }
