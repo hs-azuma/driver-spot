@@ -1,8 +1,8 @@
 {
-  "status": "PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE",
+  "status": "FAIL",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-10-29T15:22:27.499841+00:00",
+  "started_at": "2026-10-31T12:00:01.307871+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -72,23 +72,27 @@
     "Restored owned files still block withdrawal",
     "Native pg_dump encrypted, decrypted, wrong-key and tamper checked",
     "Restored application catalog equals source",
-    "Auth and application and Storage metadata rows restored"
+    "Auth and application and Storage metadata rows restored",
+    "Source stack stopped before independent restore",
+    "Independent target starts without application data",
+    "Independent PostgreSQL cluster identifier differs"
   ],
   "limitations": [
-    "Database dump restored to a second database; global roles and service configs not independently restored",
-    "Synthetic Storage bytes restored into a separate bucket; independent host, service configuration and original object UUID restore remain untested",
+    "Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export",
+    "Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested",
     "Native API tests do not deploy Edge Functions or send email/LINE",
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "75ea456e7f10fbd62681f0385695b880fd00e888",
+  "source_commit": "07975f03e9c382d2ed7c72b9f376720de86f544d",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "source_sha256": {
-    "scripts/ci-native-restore.py": "ae0615631b03f26fae7f0fe76d034bfb536b5de5f47b5d9e1ed1ed44949f1160",
-    "tools/native-runner/native-api.mjs": "182e7cef48a7e9f6244b208e36751af77b41826901e3474c3e06794502735c97",
+    "scripts/ci-native-restore.py": "d02c36293f9e5b524bd8038cc6cc8a098d01620168d09bac601be52626236257",
+    "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
     "tools/native-runner/roundtrip.mjs": "85903b2eec54045202e105ae788018054acfe2bc4a0d256e2411c9a1ecf1c4e9",
-    "tools/native-runner/storage-roundtrip.mjs": "d2dfb904bc1a976425c4f777f5709cdda8f1b3698d88a2f9f4c889b5bf527086",
+    "tools/native-runner/storage-roundtrip.mjs": "9f05f83cf84f1fe838b5425854b73b85c3cafdd807dfb74986575ab501a74d4e",
+    "tools/native-runner/independent-api.mjs": "f46828bd82e064a686c2d4f6b77cd5aa4ac8da7028ca222e9f8890edc9e02b69",
     "tools/restore-lab/backup-envelope.mjs": "d8de0360cc7f990935ce83dccb8381a8e0badc1ac3b4dadca6b4a9468fb0f374",
     "tools/native-runner/package-lock.json": "d30e28d162c34aa1844322366a8869f1bc0b6e283a19135b9d012a56a1f4aee9",
     "docs/database/restore-candidate/application-review.sql": "cd1708d9d22e8177b58aa502831c1997fa5757152d23c5add6f2d4fe69e8ecd5",
@@ -146,14 +150,14 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "1aa9ce07c48cf2c25315ada2410aedeb284fe6399110c476b9721c9f5f966b4e",
+    "ciphertext_sha256": "16ba022884d4175b7b2d4f16de487e3309bbb2b80507d11520e838edf638427d",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
     "owner_mapping": "original synthetic user JWT re-upload; original object UUIDs not preserved"
   },
-  "dump_bytes": 528160,
-  "dump_sha256": "2415ebd2388709915ebd4b69b8c800bd356e62a4caf77bec9346ab7e62d1bc48",
-  "native_auth_storage_api_tested": true,
-  "completed_at": "2026-10-29T15:22:51.426026+00:00"
+  "failed_stage": "independent_pg_restore",
+  "error_type": "RuntimeError",
+  "error": "Independent application catalog restored",
+  "completed_at": "2026-10-31T12:00:36.450161+00:00"
 }
