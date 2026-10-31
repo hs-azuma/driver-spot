@@ -48,6 +48,13 @@ def run_checks(sql,pg_bin,port,env,check,apply,context):
     limited=finish(spawn("UPDATE public.jobs SET required_headcount=1 WHERE work_date='2100-01-08';",'v4-capacity-reduction'));check('PROPOSAL capacity cannot reduce below existing hires',not limited['ok'])
     # Cancellation locks the job before a new application can inspect its state.
     cancelled=job('2100-01-12');a,b=pair("BEGIN;UPDATE public.jobs SET status='キャンセル' WHERE id="+str(cancelled)+';',begin(other_uid)+insert(cancelled,other),'v4-cancel');outcome('Native job cancellation wins before racing application',a,b)
+    raced=job('2100-01-14');rid=app(raced,other,other_uid)
+    a,b=pair(begin(company_uid)+"UPDATE public.applications SET status='勤務確定' WHERE id="+str(rid)+";",begin(other_uid)+'DELETE FROM public.applications WHERE id='+str(rid)+' RETURNING id;','v4-hire-versus-cancel')
+    check('Native hire winning race prevents driver cancellation',a['ok'] and b['ok'] and sql('SELECT status FROM public.applications WHERE id='+str(rid)+';')=='勤務確定')
+    raced2=job('2100-01-16');rid2=app(raced2,other,other_uid)
+    a,b=pair(begin(other_uid)+'DELETE FROM public.applications WHERE id='+str(rid2)+';',begin(company_uid)+"UPDATE public.applications SET status='勤務確定' WHERE id="+str(rid2)+" AND status='応募中' RETURNING id;",'v4-cancel-versus-hire')
+    check('Native cancellation winning race makes hiring update zero rows',a['ok'] and b['ok'] and sql('SELECT count(*) FROM public.applications WHERE id='+str(rid2)+';')=='0' and str(rid2) not in b['out'].splitlines())
+    check('Native cancelled application leaves no queued mail',sql('SELECT count(*) FROM public.company_application_email_queue WHERE application_id='+str(rid2)+';')=='0')
     # Concurrent QR in/out use the real public SECURITY DEFINER RPC with a driver JWT claim.
     today=sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;");qjob=job(today);qa=app(qjob,driver,driver_uid);sql("UPDATE public.applications SET status='勤務確定' WHERE id="+str(qa)+';');token=sql('SELECT attendance_token FROM public.companies WHERE id='+str(company)+';')
     def qr(action):return begin(driver_uid)+"SELECT public.punch_company_qr('"+token+"',"+str(qa)+",'"+action+"');"
@@ -56,6 +63,12 @@ def run_checks(sql,pg_bin,port,env,check,apply,context):
         a,b=pair(qr(action),qr(action),'v4-qr-'+action);values=rpc_values(a)+rpc_values(b);check('Native duplicate QR '+action+' records only once',a['ok'] and b['ok'] and len(values)==2 and sorted(v['already_recorded'] for v in values)==[False,True])
         field='checked_in_at' if action=='in' else 'checked_out_at';check('Native QR '+action+' returns identical committed timestamp',values[0][field]==values[1][field])
     check('Native concurrent QR ends in completed state',sql('SELECT status FROM public.applications WHERE id='+str(qa)+';')=='勤務完了')
+    a,b=pair(begin(company_uid)+'SELECT public.attendance_company_qr(true);',qr('in'),'v4-qr-rotation')
+    outcome('Native QR regeneration winning race invalidates old token punch',a,b)
+    apply('sql/review-v4-hiring-capacity-rollback.sql')
+    check('Native hiring rollback removes both added guards',sql("SELECT count(*) FROM pg_trigger WHERE tgname IN ('v4_guard_hiring_capacity','v4_guard_job_capacity');")=='0')
+    apply('sql/review-v4-hiring-capacity.sql')
+    check('Native hiring proposal safely reapplied after rollback',sql("SELECT count(*) FROM pg_trigger WHERE tgname IN ('v4_guard_hiring_capacity','v4_guard_job_capacity');")=='2')
     # Distinct DB workers claim disjoint queue leases; no HTTP worker is started.
     sql('TRUNCATE public.company_application_email_queue;')
     for day in range(1,13):app(job('2101-01-'+str(day).zfill(2)),other,other_uid)

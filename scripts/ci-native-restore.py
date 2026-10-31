@@ -168,26 +168,35 @@ try:
     stage='native_edge_functions'
     run(cli+['functions','serve','--help'],env=env)
     shutil.copytree(ROOT/'supabase/functions',work/'supabase/functions',ignore=shutil.ignore_patterns('.env','.env.*','node_modules'))
+    # Match the observed production JWT settings: nine handlers self-authorize; retired diagnostic stays gateway-protected.
+    config_path=work/'supabase/config.toml'
+    with config_path.open('a') as handle:
+        for path in sorted((work/'supabase/functions').glob('*/index.ts')):handle.write('\n[functions.'+path.parent.name+']\nverify_jwt='+('true' if path.parent.name=='line-setup-once' else 'false')+'\n')
     run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
     run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
+    edge_status=json.loads(run(cli+['stack','status','--workdir',str(work),'--output-format','json'],env=env));edge_values=edge_status.get('env',edge_status)
+    functions_url=edge_values.get('FUNCTIONS_URL',target_values['API_URL']+'/functions/v1').rstrip('/')
+    parsed_functions=urllib.parse.urlsplit(functions_url);assert parsed_functions.scheme=='http' and parsed_functions.hostname in ('127.0.0.1','localhost') and parsed_functions.path=='/functions/v1'
+    report['edge_endpoint']=functions_url;report['edge_status_env_names']=sorted(edge_values.keys())
     edge_env_file=work/'native-drill.env';edge_env_file.write_text('SPODORA_SYNTHETIC_DRILL=1\n');edge_env_file.chmod(0o600)
     edge_log=tempfile.TemporaryFile()
     edge_process=subprocess.Popen(cli+['functions','serve','--workdir',str(work),'--env-file',str(edge_env_file)],cwd=ROOT,env=env,stdout=edge_log,stderr=edge_log)
-    edge_ready=False
+    edge_ready=False;edge_codes={}
     for _ in range(100):
-        req=urllib.request.Request(target_values['API_URL']+'/functions/v1/line-setup-once',headers={'Authorization':'Bearer '+target_values['ANON_KEY'],'apikey':target_values['ANON_KEY']})
+        req=urllib.request.Request(functions_url+'/share-driver-spot-email',data=b'{}',headers={'Content-Type':'application/json','apikey':target_values['ANON_KEY']})
         try:
             response=urllib.request.urlopen(req,timeout=5);response.close()
         except urllib.error.HTTPError as error:
+            edge_codes[str(error.code)]=edge_codes.get(str(error.code),0)+1
             if error.code==410:edge_ready=True;break
         except (urllib.error.URLError,TimeoutError):pass
         time.sleep(.2)
     if not edge_ready:
         edge_log.seek(0);lines=edge_log.read().decode(errors='replace').splitlines()
         report['edge_diagnostics']=[re.sub(r'\x1b\[[0-9;]*m','',line)[:200] for line in lines if re.search('error|failed|fatal|docker|unsupported|not found',line,re.I) and not re.search('key|secret|token|jwt|authorization',line,re.I)][-4:]
-        report['edge_process_exit_code']=edge_process.poll()
+        report['edge_process_exit_code']=edge_process.poll();report['edge_readiness_codes']=edge_codes
     check('Native Edge runtime starts actual copied Functions',edge_ready)
-    edge_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'user':context['users']['company']}
+    edge_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'user':context['users']['company'],'functions_url':functions_url}
     edge=json.loads(run(['node','tools/native-runner/edge-smoke.mjs'],json.dumps(edge_input).encode(),timeout=240,check=False));report['checks']+=edge['checks'];assert not edge.get('error'),edge.get('error')
     report['edge_runtime']={k:v for k,v in edge.items() if k!='checks'}
     report['dump_bytes']=len(dump);report['dump_sha256']=hashlib.sha256(dump).hexdigest();report['status']='PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE';report['native_auth_storage_api_tested']=True
