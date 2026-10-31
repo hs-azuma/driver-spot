@@ -43,7 +43,7 @@ try:
     metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
     report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
-    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/reset-fixture-default-acl.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -132,6 +132,8 @@ try:
     check('Independent PostgreSQL cluster identifier differs',source_id!=target_id)
     run(target_admin,input=b'GRANT supabase_auth_admin TO postgres;',env=pg_env)
     stage='independent_pg_restore'
+    run(target_admin,input=(ROOT/'tools/native-runner/reset-fixture-default-acl.sql').read_bytes(),env=pg_env)
+    check('Fresh target creator default ACLs neutralized before restore',True)
     pgtool('pg_restore',['--clean','--if-exists','--single-transaction','--exit-on-error','-d','postgres'],portable,timeout=180,admin=True)
     target_catalog=json.loads(sql(catalog));sc=normalize(source_catalog);tc=normalize(target_catalog)
     if sc!=tc:report['independent_catalog_diff']={k:{'source_only':sorted(set(sc[k])-set(tc[k]))[:3],'target_only':sorted(set(tc[k])-set(sc[k]))[:3]} for k in sc if sc[k]!=tc[k]}
