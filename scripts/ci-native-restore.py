@@ -43,7 +43,7 @@ try:
     metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
     report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
-    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/reset-fixture-default-acl.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -113,7 +113,7 @@ try:
             rows=json.loads(sql("SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM auth."+name+" t;"))
             result['auth.'+name]=hashlib.sha256(json.dumps(sorted(json.dumps(r,sort_keys=True) for r in rows)).encode()).hexdigest()
         return result
-    source_rows=row_fingerprint()
+    source_rows=row_fingerprint();security_catalog=(ROOT/'tools/native-runner/read-security-catalog.sql').read_text();source_security=normalize(json.loads(sql(security_catalog)))
     source_sequences=json.loads(sql("SELECT json_agg(json_build_object('name',sequencename,'value',last_value) ORDER BY sequencename) FROM pg_sequences WHERE schemaname='public';"))
     source_id=run(admin_prefix,input=b'SELECT system_identifier FROM pg_control_system();',env=pg_env).decode().strip()
     run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env);started=False
@@ -138,6 +138,9 @@ try:
     target_catalog=json.loads(sql(catalog));sc=normalize(source_catalog);tc=normalize(target_catalog)
     if sc!=tc:report['independent_catalog_diff']={k:{'source_only':sorted(set(sc[k])-set(tc[k]))[:3],'target_only':sorted(set(tc[k])-set(sc[k]))[:3]} for k in sc if sc[k]!=tc[k]}
     check('Independent application catalog restored',sc==tc)
+    target_security=normalize(json.loads(sql(security_catalog)))
+    if source_security!=target_security:report['independent_security_diff']={k:{'source_only':sorted(set(source_security[k])-set(target_security[k]))[:3],'target_only':sorted(set(target_security[k])-set(source_security[k]))[:3]} for k in source_security if source_security[k]!=target_security[k]}
+    check('Independent private schema function column sequence and Auth trigger privileges restored',source_security==target_security)
     check('Independent all application rows and Auth hashes match',source_rows==row_fingerprint())
     check('Independent identity sequence values restored',source_sequences==json.loads(sql("SELECT json_agg(json_build_object('name',sequencename,'value',last_value) ORDER BY sequencename) FROM pg_sequences WHERE schemaname='public';")))
     check('Independent object metadata absent before file restore',sql('SELECT count(*) FROM storage.objects;')=='0')

@@ -1,0 +1,11 @@
+-- Metadata only. Effective privileges, private function definitions (hashes) and Auth trigger bindings.
+WITH role_names AS (SELECT unnest(ARRAY['anon','authenticated','service_role']) AS role),
+app_schemas AS (SELECT oid,nspname FROM pg_namespace WHERE nspname IN ('public','spodora_private','spodora_reviews','spodora_job_counts'))
+SELECT jsonb_build_object(
+ 'schemas',(SELECT jsonb_agg(jsonb_build_object('schema',n.nspname,'role',r.role,'usage',has_schema_privilege(r.role,n.oid,'USAGE'),'create',has_schema_privilege(r.role,n.oid,'CREATE'))) FROM app_schemas n CROSS JOIN role_names r),
+ 'sequences',(SELECT jsonb_agg(jsonb_build_object('schema',n.nspname,'name',c.relname,'owner',pg_get_userbyid(c.relowner),'role',r.role,'usage',has_sequence_privilege(r.role,c.oid,'USAGE'),'select',has_sequence_privilege(r.role,c.oid,'SELECT'),'update',has_sequence_privilege(r.role,c.oid,'UPDATE'))) FROM pg_class c JOIN app_schemas n ON n.oid=c.relnamespace CROSS JOIN role_names r WHERE c.relkind='S'),
+ 'functions',(SELECT jsonb_agg(jsonb_build_object('schema',n.nspname,'name',p.proname,'args',pg_get_function_identity_arguments(p.oid),'owner',pg_get_userbyid(p.proowner),'definer',p.prosecdef,'definition_md5',md5(pg_get_functiondef(p.oid)),'role',r.role,'execute',has_function_privilege(r.role,p.oid,'EXECUTE'))) FROM pg_proc p JOIN app_schemas n ON n.oid=p.pronamespace CROSS JOIN role_names r WHERE p.prokind='f'),
+ 'columns',(SELECT jsonb_agg(jsonb_build_object('table',c.relname,'column',a.attname,'role',r.role,'select',has_column_privilege(r.role,c.oid,a.attnum,'SELECT'),'insert',has_column_privilege(r.role,c.oid,a.attnum,'INSERT'),'update',has_column_privilege(r.role,c.oid,a.attnum,'UPDATE'))) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace JOIN pg_attribute a ON a.attrelid=c.oid CROSS JOIN role_names r WHERE n.nspname='public' AND c.relkind='r' AND a.attnum>0 AND NOT a.attisdropped),
+ 'auth_triggers',(SELECT jsonb_agg(jsonb_build_object('name',t.tgname,'definition',pg_get_triggerdef(t.oid),'enabled',t.tgenabled)) FROM pg_trigger t WHERE t.tgrelid='auth.users'::regclass AND NOT t.tgisinternal),
+ 'table_owners',(SELECT jsonb_agg(jsonb_build_object('schema',n.nspname,'name',c.relname,'owner',pg_get_userbyid(c.relowner))) FROM pg_class c JOIN app_schemas n ON n.oid=c.relnamespace WHERE c.relkind='r')
+);
