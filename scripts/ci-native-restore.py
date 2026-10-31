@@ -1,11 +1,11 @@
 """Fresh public CI only. Creates a dedicated synthetic native Supabase, then stops only that fixture."""
-import base64,datetime,hashlib,json,os,re,secrets,shutil,subprocess,tempfile,time,urllib.request,urllib.parse
+import base64,datetime,hashlib,importlib.util,json,os,re,secrets,shutil,subprocess,tempfile,time,urllib.request,urllib.parse,urllib.error
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PROJECT='spodora-v4-native-ci';pg_bin=None;pg_port=None;pg_env=None
 REPORT=ROOT/'docs/native-ci-20261029/result.json'
-report={'status':'FAIL','production_access':False,'real_data_used':False,'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':[],'limitations':['Database dump restored to a second database; global roles and service configs not independently restored','Synthetic Storage bytes restored into a separate bucket; independent host, service configuration and original object UUID restore remain untested','Native API tests do not deploy Edge Functions or send email/LINE','Native processes share the isolated runner host; there is no container egress network guard','Ephemeral synthetic fixtures only; not a production backup']}
-cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js')];stage='guard';work=None;started=False
+report={'status':'FAIL','production_access':False,'real_data_used':False,'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':[],'limitations':['Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export','Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested','Native Edge smoke does not verify real email/LINE delivery, webhooks or production deployment','Native processes share the isolated runner host; there is no container egress network guard','Ephemeral synthetic fixtures only; not a production backup']}
+cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js')];stage='guard';work=None;started=False;edge_process=None;edge_log=None;loss_server=None
 
 def run(args,input=None,timeout=90,check=True,env=None):
     r=subprocess.run(args,input=input,capture_output=True,timeout=timeout,cwd=ROOT,env=env)
@@ -40,10 +40,14 @@ try:
     for name in ['SUPABASE_ACCESS_TOKEN','SUPABASE_SERVICE_ROLE_KEY','RESEND_API_KEY','LINE_CHANNEL_ACCESS_TOKEN']:
         assert not os.environ.get(name),'Production secret environment forbidden'
     stage='public_repository_guard'
-    metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
-    report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
+    report['source_commit']=os.environ['GITHUB_SHA'];assert re.fullmatch('[0-9a-f]{40}',report['source_commit'])
+    read_token=os.environ.pop('REPO_READ_TOKEN','');headers={'User-Agent':'spodora-public-fixture-guard'}
+    if read_token:headers['Authorization']='Bearer '+read_token
+    metadata=json.load(urllib.request.urlopen(urllib.request.Request('https://api.github.com/repos/hs-azuma/driver-spot',headers=headers),timeout=20));assert metadata['private'] is False
+    read_token='';headers={}
+    report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
-    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/fault-proxy.py','tools/native-runner/crash-recovery.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*.ts'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -73,7 +77,7 @@ try:
     # Native service bootstrap owns auth.users with a service role. A fresh local-only
     # migration role needs membership to install the captured Auth triggers.
     admin_prefix=[str(pg_bin/'psql'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','-X','-d','postgres','-At','-v','ON_ERROR_STOP=1']
-    run(admin_prefix,input=b'GRANT supabase_auth_admin TO postgres;',env=pg_env)
+    run(admin_prefix,input=b'GRANT supabase_auth_admin,authenticated,service_role TO postgres;',env=pg_env)
     check('Fresh fixture grants Auth ownership role to migration role only',True)
     stage='application_ddl';check('Fresh target has no application tables',sql("SELECT to_regclass('public.applications') IS NULL;")=='t')
     apply('docs/database/restore-candidate/application-review.sql')
@@ -90,6 +94,12 @@ try:
     context['company_id']=int(sql("INSERT INTO public.companies(company_name,user_id,email) VALUES('Synthetic native company','"+uid+"','v4-company@example.invalid') RETURNING id;").splitlines()[0])
     sql("CREATE POLICY v4_lab_storage_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK(bucket_id IN ('v4-synthetic','v4-restored')); CREATE POLICY v4_lab_storage_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id IN ('v4-synthetic','v4-restored') AND owner_id=auth.uid()::text);")
     stage='native_api_rls_storage';context['phase']='verify';verified=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=120,check=False));report['checks']+=verified['checks'];assert not verified.get('error'),verified.get('error');report['storage_restore']=verified['storage_restore']
+    stage='native_multi_connection'
+    spec=importlib.util.spec_from_file_location('native_concurrency',ROOT/'tools/native-runner/concurrency.py');concurrency=importlib.util.module_from_spec(spec);spec.loader.exec_module(concurrency)
+    report['concurrency']=concurrency.run_checks(sql,pg_bin,pg_port,pg_env,check,apply,context)
+    stage='native_crash_recovery'
+    spec=importlib.util.spec_from_file_location('crash_recovery',ROOT/'tools/native-runner/crash-recovery.py');crash=importlib.util.module_from_spec(spec);spec.loader.exec_module(crash)
+    report['crash_recovery']=crash.run_check(sql,run,cli,work,env,pg_bin,pg_port,pg_env,context,check)
     stage='encrypted_database_restore';dump=pgtool('pg_dump',['-Fc','postgres'],timeout=180,admin=True)
     restored=run(['node','tools/native-runner/roundtrip.mjs'],dump,timeout=90);check('Native pg_dump encrypted, decrypted, wrong-key and tamper checked',restored==dump)
     pgtool('createdb',['v4_fixture_restore'],admin=True)
@@ -97,10 +107,117 @@ try:
     catalog=(ROOT/'docs/database/read-catalog.sql').read_text();before=json.loads(sql(catalog));after=json.loads(sql(catalog,'v4_fixture_restore'));normalize=lambda d:{k:sorted(json.dumps(row,sort_keys=True) for row in (v or [])) for k,v in d.items()};check('Restored application catalog equals source',normalize(before)==normalize(after))
     counts="SELECT json_build_object('auth',(SELECT count(*) FROM auth.users),'drivers',(SELECT count(*) FROM public.drivers),'companies',(SELECT count(*) FROM public.companies),'jobs',(SELECT count(*) FROM public.jobs),'applications',(SELECT count(*) FROM public.applications),'storage',(SELECT count(*) FROM storage.objects));"
     check('Auth and application and Storage metadata rows restored',json.loads(sql(counts))==json.loads(sql(counts,'v4_fixture_restore')))
+    stage='corrupt_restore_failure'
+    pgtool('createdb',['v4_corrupt_restore'],admin=True)
+    bad=subprocess.run([str(pg_bin/'pg_restore'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','--single-transaction','--exit-on-error','-d','v4_corrupt_restore'],input=restored[:len(restored)//2],capture_output=True,env=pg_env,timeout=120)
+    check('Truncated native dump causes restore failure',bad.returncode!=0)
+    check('Failed native restore rolls back application schema',sql("SELECT to_regclass('public.applications') IS NULL;",'v4_corrupt_restore')=='t')
+    stage='independent_backup'
+    portable=pgtool('pg_dump',['-Fc','--exclude-table-data=storage.objects','postgres'],timeout=180,admin=True)
+    portable=run(['node','tools/native-runner/roundtrip.mjs'],portable,timeout=90)
+    source_catalog=before;source_counts=json.loads(sql(counts));source_work=work;source_env=env
+    # Hash every application row plus Auth users/identities. Values never enter public logs.
+    def row_fingerprint():
+        tables=json.loads(sql("SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='public';"))
+        result={}
+        for name in tables:
+            assert re.fullmatch('[a-z_]+',name)
+            rows=json.loads(sql("SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM public."+name+" t;"))
+            result['public.'+name]=hashlib.sha256(json.dumps(sorted(json.dumps(r,sort_keys=True) for r in rows)).encode()).hexdigest()
+        for name in ['users','identities']:
+            rows=json.loads(sql("SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM auth."+name+" t;"))
+            result['auth.'+name]=hashlib.sha256(json.dumps(sorted(json.dumps(r,sort_keys=True) for r in rows)).encode()).hexdigest()
+        return result
+    source_rows=row_fingerprint();security_catalog=(ROOT/'tools/native-runner/read-security-catalog.sql').read_text();source_security=normalize(json.loads(sql(security_catalog)))
+    source_sequences=json.loads(sql("SELECT json_agg(json_build_object('name',sequencename,'value',last_value) ORDER BY sequencename) FROM pg_sequences WHERE schemaname='public';"))
+    source_id=run(admin_prefix,input=b'SELECT system_identifier FROM pg_control_system();',env=pg_env).decode().strip()
+    run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env);started=False
+    check('Source stack stopped before independent restore',True)
+    stage='independent_initialize';work=Path(tempfile.mkdtemp(prefix='spodora-independent-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
+    run(cli+['init','--workdir',str(work),'--yes'],env=env)
+    (work/'supabase/config.toml').write_text(config.read_text().replace(PROJECT,'spodora-v4-independent-ci'))
+    started=True
+    run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','rest,auth,storage,functions,studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
+    target_status=json.loads(run(cli+['stack','status','--workdir',str(work),'--output-format','json'],env=env));target_values=target_status.get('env',target_status)
+    parsed=urllib.parse.urlsplit(target_values['DB_URL']);assert parsed.hostname in ('127.0.0.1','localhost') and parsed.username=='postgres' and parsed.path=='/postgres'
+    pg_port=parsed.port;pg_env=env.copy();pg_env['PGPASSWORD']=urllib.parse.unquote(parsed.password or '')
+    check('Independent target starts without application data',sql("SELECT to_regclass('public.applications') IS NULL;")=='t')
+    target_admin=[str(pg_bin/'psql'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','-X','-d','postgres','-At','-v','ON_ERROR_STOP=1']
+    target_id=run(target_admin,input=b'SELECT system_identifier FROM pg_control_system();',env=pg_env).decode().strip()
+    check('Independent PostgreSQL cluster identifier differs',source_id!=target_id)
+    run(target_admin,input=b'GRANT supabase_auth_admin,authenticated,service_role TO postgres;',env=pg_env)
+    stage='independent_pg_restore'
+    run(target_admin,input=(ROOT/'tools/native-runner/reset-fixture-default-acl.sql').read_bytes(),env=pg_env)
+    check('Fresh target creator default ACLs neutralized before restore',True)
+    pgtool('pg_restore',['--clean','--if-exists','--single-transaction','--exit-on-error','-d','postgres'],portable,timeout=180,admin=True)
+    target_catalog=json.loads(sql(catalog));sc=normalize(source_catalog);tc=normalize(target_catalog)
+    if sc!=tc:report['independent_catalog_diff']={k:{'source_only':sorted(set(sc[k])-set(tc[k]))[:3],'target_only':sorted(set(tc[k])-set(sc[k]))[:3]} for k in sc if sc[k]!=tc[k]}
+    check('Independent application catalog restored',sc==tc)
+    target_security=normalize(json.loads(sql(security_catalog)))
+    if source_security!=target_security:report['independent_security_diff']={k:{'source_only':sorted(set(source_security[k])-set(target_security[k]))[:3],'target_only':sorted(set(target_security[k])-set(source_security[k]))[:3]} for k in source_security if source_security[k]!=target_security[k]}
+    check('Independent private schema function column sequence and Auth trigger privileges restored',source_security==target_security)
+    check('Independent all application rows and Auth hashes match',source_rows==row_fingerprint())
+    check('Independent identity sequence values restored',source_sequences==json.loads(sql("SELECT json_agg(json_build_object('name',sequencename,'value',last_value) ORDER BY sequencename) FROM pg_sequences WHERE schemaname='public';")))
+    check('Independent object metadata absent before file restore',sql('SELECT count(*) FROM storage.objects;')=='0')
+    run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
+    run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','functions,studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
+    target_status=json.loads(run(cli+['stack','status','--workdir',str(work),'--output-format','json'],env=env));target_values=target_status.get('env',target_status)
+    assert re.match(r'^http://(?:127\.0\.0\.1|localhost):\d+/?$',target_values['API_URL'])
+    check('Independent service restart preserves application ACLs',sc==normalize(json.loads(sql(catalog))) and source_security==normalize(json.loads(sql(security_catalog))))
+    stage='independent_auth_storage'
+    spec=importlib.util.spec_from_file_location('fault_proxy',ROOT/'tools/native-runner/fault-proxy.py');fault=importlib.util.module_from_spec(spec);spec.loader.exec_module(fault)
+    loss_server,loss_url,loss_state=fault.start(target_values['API_URL'])
+    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer'],'today':sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;"),'loss_proxy_url':loss_url,'next_ids':{name:int(next(x['value'] for x in source_sequences if x['name']==name))+1 for name in ['jobs_id_seq','applications_id_seq']}}
+    independent=json.loads(run(['node','tools/native-runner/independent-api.mjs'],json.dumps(payload).encode(),timeout=180,check=False));report['checks']+=independent['checks'];assert not independent.get('error'),independent.get('error')
+    check('Proxy dropped exactly one successful upstream commit reply',loss_state['committed_responses_dropped']==1 and loss_state['upstream_status']==201)
+    report['http_response_loss']={'status':'PASS_COMMIT_ACK_LOSS_RECONCILIATION','committed_job_count':1,'retry_was_read_only':True}
+    loss_server.shutdown();loss_server.server_close();loss_server=None
+    report['business_flow']=independent['business']
+    report['independent_cluster_restore']={'status':independent['status'],'source_stopped':True,'separate_state':work!=source_work,'cluster_identifier_differs':source_id!=target_id,'public_and_auth_row_hashes_equal':True,'sequence_values_equal':True,'storage_files':3,'original_object_uuids_preserved':False,'same_runner_host':True}
+    stage='native_edge_functions'
+    run(cli+['functions','serve','--help'],env=env)
+    shutil.copytree(ROOT/'supabase/functions',work/'supabase/functions',ignore=shutil.ignore_patterns('.env','.env.*','node_modules'))
+    # Match the observed production JWT settings: nine handlers self-authorize; retired diagnostic stays gateway-protected.
+    config_path=work/'supabase/config.toml'
+    with config_path.open('a') as handle:
+        for path in sorted((work/'supabase/functions').glob('*/index.ts')):handle.write('\n[functions.'+path.parent.name+']\nverify_jwt='+('true' if path.parent.name=='line-setup-once' else 'false')+'\n')
+    run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
+    run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
+    edge_status=json.loads(run(cli+['stack','status','--workdir',str(work),'--output-format','json'],env=env));edge_values=edge_status.get('env',edge_status)
+    functions_url=edge_values.get('FUNCTIONS_URL',target_values['API_URL']+'/functions/v1').rstrip('/')
+    parsed_functions=urllib.parse.urlsplit(functions_url);assert parsed_functions.scheme=='http' and parsed_functions.hostname in ('127.0.0.1','localhost') and parsed_functions.path=='/functions/v1'
+    report['edge_endpoint']=functions_url;report['edge_status_env_names']=sorted(edge_values.keys())
+    edge_env_file=work/'native-drill.env';edge_env_file.write_text('SPODORA_SYNTHETIC_DRILL=1\n');edge_env_file.chmod(0o600)
+    edge_log=tempfile.TemporaryFile()
+    edge_process=subprocess.Popen(cli+['functions','serve','--workdir',str(work),'--env-file',str(edge_env_file)],cwd=ROOT,env=env,stdout=edge_log,stderr=edge_log)
+    edge_ready=False;edge_codes={}
+    for _ in range(100):
+        req=urllib.request.Request(functions_url+'/share-driver-spot-email',data=b'{}',headers={'Content-Type':'application/json','apikey':target_values['ANON_KEY']})
+        try:
+            response=urllib.request.urlopen(req,timeout=5);response.close()
+        except urllib.error.HTTPError as error:
+            edge_codes[str(error.code)]=edge_codes.get(str(error.code),0)+1
+            if error.code==410:edge_ready=True;break
+        except (urllib.error.URLError,TimeoutError):pass
+        time.sleep(.2)
+    if not edge_ready:
+        edge_log.seek(0);lines=edge_log.read().decode(errors='replace').splitlines()
+        report['edge_diagnostics']=[re.sub(r'\x1b\[[0-9;]*m','',line)[:200] for line in lines if re.search('error|failed|fatal|docker|unsupported|not found',line,re.I) and not re.search('key|secret|token|jwt|authorization',line,re.I)][-4:]
+        report['edge_process_exit_code']=edge_process.poll();report['edge_readiness_codes']=edge_codes
+    check('Native Edge runtime starts actual copied Functions',edge_ready)
+    edge_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'user':context['users']['company'],'functions_url':functions_url}
+    edge=json.loads(run(['node','tools/native-runner/edge-smoke.mjs'],json.dumps(edge_input).encode(),timeout=240,check=False));report['checks']+=edge['checks'];assert not edge.get('error'),edge.get('error')
+    report['edge_runtime']={k:v for k,v in edge.items() if k!='checks'}
     report['dump_bytes']=len(dump);report['dump_sha256']=hashlib.sha256(dump).hexdigest();report['status']='PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE';report['native_auth_storage_api_tested']=True
 except Exception as error:
     report['failed_stage']=stage;report['error_type']=type(error).__name__;report['error']=str(error)[:900]
 finally:
+    if loss_server:loss_server.shutdown();loss_server.server_close()
+    if edge_process and edge_process.poll() is None:
+        edge_process.terminate()
+        try:edge_process.wait(timeout=10)
+        except subprocess.TimeoutExpired:edge_process.kill();edge_process.wait(timeout=5)
+    if edge_log:edge_log.close()
     if started and work:
         try:run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
         except Exception:report['cleanup_failed']=True

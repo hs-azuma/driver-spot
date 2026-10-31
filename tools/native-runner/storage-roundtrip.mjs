@@ -25,5 +25,5 @@ export async function storageRoundtrip({admin,owner,outsider,anon,check}){
   const publicRead=await anon.storage.from(target).download(f.path);check('Anonymous denied restored '+f.path,!!publicRead.error);
  }
  const metadata=await admin.storage.getBucket(target);check('Restored bucket remains private',!metadata.error&&metadata.data.public===false);
- return {status:'PASS_SYNTHETIC_STORAGE_BUCKET_RESTORE',files:files.map(({path,type,bytes,sha256})=>({path,type,bytes,sha256})),ciphertext_sha256:hash(ciphertext),key_stored:false,archive_stored:false,independent_host:false,owner_mapping:'original synthetic user JWT re-upload; original object UUIDs not preserved'};
+ return {transfer:{key,ciphertext:ciphertext.toString('base64')},status:'PASS_SYNTHETIC_STORAGE_BUCKET_RESTORE',files:files.map(({path,type,bytes,sha256})=>({path,type,bytes,sha256})),ciphertext_sha256:hash(ciphertext),key_stored:false,archive_stored:false,independent_host:false,owner_mapping:'original synthetic user JWT re-upload; original object UUIDs not preserved'};
 }

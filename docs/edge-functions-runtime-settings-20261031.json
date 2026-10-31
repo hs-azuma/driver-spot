@@ -1,0 +1,78 @@
+{
+  "date_jst": "2026-10-31",
+  "project": "wyxuekjikvflpcmlliwn",
+  "read_only": true,
+  "production_changed": false,
+  "functions": [
+    {
+      "name": "account-auth",
+      "version": 6,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "b310354b78a41c980044d7048e197164a50d50b3063b2abd586f39b5f6b218cf"
+    },
+    {
+      "name": "application-result-email",
+      "version": 19,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "90b25849c9387f1358c102caf6de5ed3e232b889544cdecc1178b60e059eacdd"
+    },
+    {
+      "name": "company-job-invite",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "300e4d6a205a1872244b29eeaa8b1c5bf0a789504865c815680bde854c59731d"
+    },
+    {
+      "name": "delete-account",
+      "version": 4,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "049808528becef739bf829aa8d95b92958b29666e6a6d7ebd43deeaf225f8594"
+    },
+    {
+      "name": "email-unsubscribe",
+      "version": 1,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "2e527001462de13ff13517ec32bf236e7403d8007ad8109b819e766e00bb24bf"
+    },
+    {
+      "name": "line-account",
+      "version": 5,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "49135492342bee05dfa1392011a3528bd80041b9003e41c377f0447d7ddeb495"
+    },
+    {
+      "name": "line-notifications",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "0442d09218d40ed71a987eda1517a09b078abf7b33a9666d1c9005c2cc87d627"
+    },
+    {
+      "name": "line-setup-once",
+      "version": 4,
+      "status": "ACTIVE",
+      "verify_jwt": true,
+      "bundle_sha256": "bd8077d52ba41156a201c0cf7e9b967da45a74c1a69267fe3111c2742aa34f49"
+    },
+    {
+      "name": "line-webhook",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "b208fe59b80c36a331f9b70bf31c81a04e2f12ad13068a7220e53f52eeabe2a6"
+    },
+    {
+      "name": "share-driver-spot-email",
+      "version": 5,
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "bundle_sha256": "31161e835ddfefbdc0998929ff0bf8be1892f8d168859ef580b6a3ed31726cdd"
+    }
+  ]
+}
