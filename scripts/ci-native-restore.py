@@ -40,8 +40,12 @@ try:
     for name in ['SUPABASE_ACCESS_TOKEN','SUPABASE_SERVICE_ROLE_KEY','RESEND_API_KEY','LINE_CHANNEL_ACCESS_TOKEN']:
         assert not os.environ.get(name),'Production secret environment forbidden'
     stage='public_repository_guard'
-    metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
-    report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
+    report['source_commit']=os.environ['GITHUB_SHA'];assert re.fullmatch('[0-9a-f]{40}',report['source_commit'])
+    read_token=os.environ.pop('REPO_READ_TOKEN','');headers={'User-Agent':'spodora-public-fixture-guard'}
+    if read_token:headers['Authorization']='Bearer '+read_token
+    metadata=json.load(urllib.request.urlopen(urllib.request.Request('https://api.github.com/repos/hs-azuma/driver-spot',headers=headers),timeout=20));assert metadata['private'] is False
+    read_token='';headers={}
+    report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
     report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/fault-proxy.py','tools/native-runner/crash-recovery.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*.ts'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
@@ -103,6 +107,11 @@ try:
     catalog=(ROOT/'docs/database/read-catalog.sql').read_text();before=json.loads(sql(catalog));after=json.loads(sql(catalog,'v4_fixture_restore'));normalize=lambda d:{k:sorted(json.dumps(row,sort_keys=True) for row in (v or [])) for k,v in d.items()};check('Restored application catalog equals source',normalize(before)==normalize(after))
     counts="SELECT json_build_object('auth',(SELECT count(*) FROM auth.users),'drivers',(SELECT count(*) FROM public.drivers),'companies',(SELECT count(*) FROM public.companies),'jobs',(SELECT count(*) FROM public.jobs),'applications',(SELECT count(*) FROM public.applications),'storage',(SELECT count(*) FROM storage.objects));"
     check('Auth and application and Storage metadata rows restored',json.loads(sql(counts))==json.loads(sql(counts,'v4_fixture_restore')))
+    stage='corrupt_restore_failure'
+    pgtool('createdb',['v4_corrupt_restore'],admin=True)
+    bad=subprocess.run([str(pg_bin/'pg_restore'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','--single-transaction','--exit-on-error','-d','v4_corrupt_restore'],input=restored[:len(restored)//2],capture_output=True,env=pg_env,timeout=120)
+    check('Truncated native dump causes restore failure',bad.returncode!=0)
+    check('Failed native restore rolls back application schema',sql("SELECT to_regclass('public.applications') IS NULL;",'v4_corrupt_restore')=='t')
     stage='independent_backup'
     portable=pgtool('pg_dump',['-Fc','--exclude-table-data=storage.objects','postgres'],timeout=180,admin=True)
     portable=run(['node','tools/native-runner/roundtrip.mjs'],portable,timeout=90)
@@ -158,7 +167,7 @@ try:
     stage='independent_auth_storage'
     spec=importlib.util.spec_from_file_location('fault_proxy',ROOT/'tools/native-runner/fault-proxy.py');fault=importlib.util.module_from_spec(spec);spec.loader.exec_module(fault)
     loss_server,loss_url,loss_state=fault.start(target_values['API_URL'])
-    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer'],'today':sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;"),'loss_proxy_url':loss_url}
+    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer'],'today':sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;"),'loss_proxy_url':loss_url,'next_ids':{name:int(next(x['value'] for x in source_sequences if x['name']==name))+1 for name in ['jobs_id_seq','applications_id_seq']}}
     independent=json.loads(run(['node','tools/native-runner/independent-api.mjs'],json.dumps(payload).encode(),timeout=180,check=False));report['checks']+=independent['checks'];assert not independent.get('error'),independent.get('error')
     check('Proxy dropped exactly one successful upstream commit reply',loss_state['committed_responses_dropped']==1 and loss_state['upstream_status']==201)
     report['http_response_loss']={'status':'PASS_COMMIT_ACK_LOSS_RECONCILIATION','committed_job_count':1,'retry_was_read_only':True}

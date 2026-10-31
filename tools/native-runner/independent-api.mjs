@@ -24,7 +24,9 @@ try{
  }
  const retained=await admin.rpc('withdrawal_preflight',{p_user_id:p.users.storage.id});check('Independent restored ownership blocks withdrawal',!retained.error&&retained.data.reason==='storage_objects');
  const job=await clients.company.from('jobs').insert({company_id:p.company_id,work_date:'2099-12-01',location:'Synthetic independent site',start_time:'09:00',end_time:'17:00',pay_guarantee:true,pay_amount:2000,pay_type:'時給'}).select('id').single();diagnostic=JSON.stringify({code:job.error?.code,message:job.error?.message,status:job.status});check('Independent company publishes new job',!job.error&&!!job.data?.id);
+ check('Independent job identity continues after restored sequence',job.data.id===p.next_ids.jobs_id_seq);
  const application=await clients.driver.from('applications').insert({job_id:job.data.id,driver_id:own.data[0].id,status:'応募中'}).select('id').single();check('Independent restored driver submits new application',!application.error&&!!application.data?.id);
+ check('Independent application identity continues after restored sequence',application.data.id===p.next_ids.applications_id_seq);
  const protectedRpc=await clients.driver.rpc('withdrawal_preflight',{p_user_id:p.users.other.id});check('Independent client cannot call privileged withdrawal RPC',!!protectedRpc.error);
  const anonymousClaim=await make().rpc('claim_company_application_emails');check('Independent anonymous cannot claim notification queue',!!anonymousClaim.error);
  if(p.loss_proxy_url){assert(['127.0.0.1','localhost'].includes(new URL(p.loss_proxy_url).hostname));const {data:{session}}=await clients.company.auth.getSession();let lost=false;

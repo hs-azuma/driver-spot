@@ -31,6 +31,8 @@ jobs:
           npm ci --prefix tools/sdk-lab --ignore-scripts --no-audit --no-fund
       - name: Native synthetic Auth Storage RLS and encrypted database restore
         id: native
+        env:
+          REPO_READ_TOKEN: ${{ github.token }}
         run: python3 -B scripts/ci-native-restore.py
   record:
     if: always() && needs.native.outputs.report_b64 != ''
