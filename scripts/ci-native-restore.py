@@ -48,7 +48,7 @@ try:
     report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
     report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/fault-proxy.py','tools/native-runner/crash-recovery.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*.ts'))]}
-    stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
+    stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-',dir=Path.home()));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
     config=work/'supabase/config.toml'
@@ -133,7 +133,7 @@ try:
     source_id=run(admin_prefix,input=b'SELECT system_identifier FROM pg_control_system();',env=pg_env).decode().strip()
     run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env);started=False
     check('Source stack stopped before independent restore',True)
-    stage='independent_initialize';work=Path(tempfile.mkdtemp(prefix='spodora-independent-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
+    stage='independent_initialize';work=Path(tempfile.mkdtemp(prefix='spodora-independent-ci-',dir=Path.home()));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
     (work/'supabase/config.toml').write_text(config.read_text().replace(PROJECT,'spodora-v4-independent-ci'))
     started=True
@@ -180,7 +180,7 @@ try:
     # Match the observed production JWT settings: nine handlers self-authorize; retired diagnostic stays gateway-protected.
     config_path=work/'supabase/config.toml'
     with config_path.open('a') as handle:
-        for path in sorted((work/'supabase/functions').glob('*/index.ts')):handle.write('\n[functions.'+path.parent.name+']\nverify_jwt='+('true' if path.parent.name=='line-setup-once' else 'false')+'\n')
+        for path in sorted((work/'supabase/functions').glob('*/index.ts')):handle.write('\n[functions.'+path.parent.name+']\nenabled=true\nentrypoint="./functions/'+path.parent.name+'/index.ts"\nverify_jwt='+('true' if path.parent.name=='line-setup-once' else 'false')+'\n')
     run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
     run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
     edge_status=json.loads(run(cli+['stack','status','--workdir',str(work),'--output-format','json'],env=env));edge_values=edge_status.get('env',edge_status)
@@ -190,20 +190,24 @@ try:
     edge_env_file=work/'native-drill.env';edge_env_file.write_text('SPODORA_SYNTHETIC_DRILL=1\n');edge_env_file.chmod(0o600)
     edge_log=tempfile.TemporaryFile()
     edge_process=subprocess.Popen(cli+['functions','serve','--workdir',str(work),'--env-file',str(edge_env_file)],cwd=ROOT,env=env,stdout=edge_log,stderr=edge_log)
-    edge_ready=False;edge_codes={}
+    edge_ready=False;edge_codes={};edge_last_body=''
+    report['edge_sources_present']=sorted(p.parent.name for p in (work/'supabase/functions').glob('*/index.ts'))
     for _ in range(100):
         req=urllib.request.Request(functions_url+'/share-driver-spot-email',data=b'{}',headers={'Content-Type':'application/json','apikey':target_values['ANON_KEY']})
         try:
             response=urllib.request.urlopen(req,timeout=5);response.close()
         except urllib.error.HTTPError as error:
             edge_codes[str(error.code)]=edge_codes.get(str(error.code),0)+1
+            edge_last_body=error.read(500).decode(errors='replace')
+            if re.search('eyJ|bearer|secret|password',edge_last_body,re.I):edge_last_body='redacted'
             if error.code==410:edge_ready=True;break
         except (urllib.error.URLError,TimeoutError):pass
         time.sleep(.2)
     if not edge_ready:
         edge_log.seek(0);lines=edge_log.read().decode(errors='replace').splitlines()
         report['edge_diagnostics']=[re.sub(r'\x1b\[[0-9;]*m','',line)[:200] for line in lines if re.search('error|failed|fatal|docker|unsupported|not found',line,re.I) and not re.search('key|secret|token|jwt|authorization',line,re.I)][-4:]
-        report['edge_process_exit_code']=edge_process.poll();report['edge_readiness_codes']=edge_codes
+        report['edge_process_exit_code']=edge_process.poll();report['edge_readiness_codes']=edge_codes;report['edge_last_body']=edge_last_body
+        report['edge_log_context']=[line[:200] for line in lines if re.search('Serving|function|runtime|ready',line,re.I) and not re.search('key|secret|token|jwt|authorization|eyJ',line,re.I)][-8:]
     check('Native Edge runtime starts actual copied Functions',edge_ready)
     edge_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'user':context['users']['company'],'functions_url':functions_url}
     edge=json.loads(run(['node','tools/native-runner/edge-smoke.mjs'],json.dumps(edge_input).encode(),timeout=240,check=False));report['checks']+=edge['checks'];assert not edge.get('error'),edge.get('error')

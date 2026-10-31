@@ -22,7 +22,7 @@ python3 -B scripts/native-preflight.py
 ただしPostgres initdbはrootで動かず、rootの場合は非rootアカウントの実行が必要。
 このホストの制約ではその条件を満たせないため、CLI/サービス本体を大容量取得して強行しない。
 CLI2.122.0の導入、--versionと実コマンドの--helpを確認済み。
-別の無料標準GitHubランナーで公式nativeサービスとPostgreSQL17.11の起動まで確認した。
+別の無料標準GitHubランナーで、独立クラスタへの復元・実Auth/Storage/Functions・競合・障害を含む181項目が成功した。
 復元の最終結果は[専用手順](../native-runner/README.md)と最新進捗を参照する。
 
 ## 別の対応環境で確認する順序

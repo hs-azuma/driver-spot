@@ -1,7 +1,9 @@
 {
   "status": "PASS_PREPARATION_AUDIT_WITH_BLOCKERS",
-  "date_jst": "2026-10-29",
-  "checked_at": "2026-10-29T15:24:20.722717+00:00",
+  "date_jst": "2026-10-31",
+  "checked_at": "2026-10-31T12:53:47.447105+00:00",
+  "source_sha256": "541381ab43445accabfe7b09f3fbfe4750863e47e6b0269d6ca9703cd51806e3",
+  "native_test_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
   "production_modified": false,
   "production_ready": false,
   "independent_human_acceptance": false,
@@ -11,8 +13,8 @@
       "name": "local_document_links",
       "pass": true,
       "detail": {
-        "files": 41,
-        "links": 120,
+        "files": 44,
+        "links": 142,
         "missing": []
       }
     },
@@ -65,8 +67,8 @@
       "name": "native_synthetic_restore",
       "pass": true,
       "detail": {
-        "source_commit": "75ea456e7f10fbd62681f0385695b880fd00e888",
-        "checks": 69
+        "source_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
+        "checks": 181
       }
     },
     {
@@ -76,6 +78,36 @@
     },
     {
       "name": "native_storage_bytes_restore",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_independent_cluster_restore",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_concurrency",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_business_flow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_crash_recovery",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_http_response_loss",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_edge_runtime",
       "pass": true,
       "detail": null
     }
@@ -90,10 +122,10 @@
       "id": "full_service_restore",
       "complete": false,
       "blockers": [
-        "Independent-host Storage bytes/configuration/owner mapping restore",
-        "Global roles and service configuration restore",
-        "Exact production build and service version provenance",
-        "Native concurrency and Edge Functions"
+        "Separate physical host/cloud migration and old Storage object UUID/URL mapping",
+        "Managed global roles and secret custody",
+        "Exact production build and full service/transitive dependency pinning",
+        "Real provider delivery and external configuration"
       ],
       "local_host_blockers": [
         "native_postgres_nonroot_execution_unavailable"

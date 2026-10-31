@@ -1,0 +1,140 @@
+{
+  "date_jst": "2026-10-31",
+  "status": "ALL_SIXTEEN_SYNTHETIC_SCOPES_VERIFIED",
+  "production_changed": false,
+  "production_ready": false,
+  "native_sources_current": true,
+  "all_source_sha256": "541381ab43445accabfe7b09f3fbfe4750863e47e6b0269d6ca9703cd51806e3",
+  "native_overall_status": "PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE",
+  "native_checks": 181,
+  "native_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "別の新規環境",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 2,
+      "title": "DB定義/権限/データ/採番",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 3,
+      "title": "認証の別環境復元",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 4,
+      "title": "Storage本体/所有者/非公開",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 5,
+      "title": "Functionsと設定",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 6,
+      "title": "復元後の一連の業務",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 7,
+      "title": "同時応募/同時採用",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 8,
+      "title": "取消/夜勤/QRの競合",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 9,
+      "title": "通知リース/再試行",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 10,
+      "title": "通信応答喪失の照合",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 11,
+      "title": "強制停止からの復旧",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 12,
+      "title": "不完全バックアップの拒否",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 13,
+      "title": "復元後の権限/認証点検",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": 14,
+      "title": "復元手順書",
+      "technical_scope_complete": true,
+      "status": "PREPARED_NOT_PRODUCTION_APPROVED",
+      "evidence": "docs/v4-sixteen/recovery-runbook.md"
+    },
+    {
+      "id": 15,
+      "title": "本番適用/切り戻し判断資料",
+      "technical_scope_complete": true,
+      "status": "PREPARED_NOT_PRODUCTION_APPROVED",
+      "evidence": "docs/release/v4-current-candidate-20261031.json"
+    },
+    {
+      "id": 16,
+      "title": "現行ソースと引き継ぎ証拠",
+      "technical_scope_complete": true,
+      "status": "VERIFIED_SYNTHETIC",
+      "evidence": "docs/third-party-readiness-20261029.json"
+    }
+  ],
+  "complete_count": 16,
+  "total": 16,
+  "count_is_not_weighted_completion_percentage": true,
+  "remaining_external_gates": [
+    "Actual production-data backup and owner key/retention/RPO/RTO decisions",
+    "Independent human acceptance, individual rights and MFA handover",
+    "Scoped production approval and operator",
+    "Separate physical host/cloud migration, object UUID/old signed URLs, managed platform secrets",
+    "Real iPhone/Android camera/biometrics and email/LINE delivery"
+  ],
+  "limits": [
+    "Synthetic verification and documentation preparation only",
+    "Some behaviors combine native DB/API checks with existing synthetic browser/provider contract tests",
+    "No production-data export, message send, paid resource or production apply"
+  ]
+}

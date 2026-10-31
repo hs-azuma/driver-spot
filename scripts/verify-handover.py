@@ -15,7 +15,7 @@ import time
 
 ROOT=Path(__file__).resolve().parents[1]
 REPORT=ROOT/'docs/handover-cleanroom-20261029.json'
-OUTPUTS={'docs/handover-cleanroom-20261029.json','docs/database/restore-candidate/lab-result.json','docs/dependency-inventory-20261029.json','docs/native-preflight-20261029.json','docs/third-party-readiness-20261029.json'}
+OUTPUTS={'docs/v4-sixteen/status.json','docs/release/v4-current-candidate-20261031.json','docs/functions-runtime-inventory-20261031.json','docs/handover-cleanroom-20261029.json','docs/database/restore-candidate/lab-result.json','docs/dependency-inventory-20261029.json','docs/native-preflight-20261029.json','docs/third-party-readiness-20261029.json'}
 GENERATED_PREFIXES=('docs/browser-lab-20261029/','docs/sdk-lab-20261029/','docs/business-lab-20261029/','docs/native-ci-20261029/')
 
 

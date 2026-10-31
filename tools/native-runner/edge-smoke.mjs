@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';import {createRequire} from 'node:module
 const {createClient}=createRequire(new URL('../sdk-lab/package.json',import.meta.url))('@supabase/supabase-js');
 let s='';for await(const c of process.stdin)s+=c;const p=JSON.parse(s);assert.equal(process.env.GITHUB_ACTIONS,'true');assert(['localhost','127.0.0.1'].includes(new URL(p.url).hostname));
 const checks=[];let attempted='initialization';const check=(n,ok)=>{attempted=n;assert(ok);checks.push(n)};
-async function request(name,method,expected,body,token=p.anon){const r=await fetch(p.functions_url+'/'+name,{method,headers:{apikey:p.anon,...(token?{Authorization:'Bearer '+token}:{}),'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000)});await r.text();check('Native Edge '+name+' '+expected,r.status===expected)}
+async function request(name,method,expected,body,token=p.anon){const r=await fetch(p.functions_url+'/'+name,{method,headers:{...(token?{apikey:p.anon,Authorization:'Bearer '+token}:{}),'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000)});await r.text();check('Native Edge '+name+' expected '+expected+' actual '+r.status,r.status===expected)}
 try{
  await request('share-driver-spot-email','POST',410,{});
  await request('line-setup-once','GET',401,undefined,null);

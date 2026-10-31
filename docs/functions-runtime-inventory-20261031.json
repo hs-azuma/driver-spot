@@ -1,0 +1,167 @@
+{
+  "date_jst": "2026-10-31",
+  "status": "INVENTORIED_WITH_NATIVE_SMOKE",
+  "functions": [
+    {
+      "name": "account-auth",
+      "verify_jwt": false,
+      "observed_production_version": 6,
+      "environment_names": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/account-auth/index.ts": "8fc2022bc2c3bf84cc0a25acd9677a3f3599889ec2ecde85ee4665cb050e8c27"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "application-result-email",
+      "verify_jwt": false,
+      "observed_production_version": 19,
+      "environment_names": [
+        "RESEND_API_KEY",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/application-result-email/common.ts": "8db743ba726bbc186bb32974bee425839ea2224092c0e64623797bfc5eaac0c9",
+        "supabase/functions/application-result-email/index.ts": "30e7f195475cb1a6d0f7b4c5c0e684050e869bcff16228c3378126cb03708c26"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "company-job-invite",
+      "verify_jwt": false,
+      "observed_production_version": 3,
+      "environment_names": [
+        "RESEND_API_KEY",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/company-job-invite/common.ts": "8db743ba726bbc186bb32974bee425839ea2224092c0e64623797bfc5eaac0c9",
+        "supabase/functions/company-job-invite/index.ts": "1a61f57de3b498791bae4ae6a326c22fe1928c4a78fe5e6a1d515f1cf817b1e3"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "delete-account",
+      "verify_jwt": false,
+      "observed_production_version": 4,
+      "environment_names": [
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/delete-account/handler.ts": "6166fde61cdc1d5026988e36da0d08b58e82e314ae0f0cc7a173a287dbedefcb",
+        "supabase/functions/delete-account/index.ts": "9a5853250424033c17827a934fcb4e924cdf20ffa49e955bbe1ad99b694490eb"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "email-unsubscribe",
+      "verify_jwt": false,
+      "observed_production_version": 1,
+      "environment_names": [
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/email-unsubscribe/common.ts": "8db743ba726bbc186bb32974bee425839ea2224092c0e64623797bfc5eaac0c9",
+        "supabase/functions/email-unsubscribe/index.ts": "c20ee77e4a3cf5c37844fbffbbcdf3532698599959ea4f5ecd72406c78e35835"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "line-account",
+      "verify_jwt": false,
+      "observed_production_version": 5,
+      "environment_names": [
+        "LINE_CHANNEL_ACCESS_TOKEN",
+        "LINE_CHANNEL_SECRET",
+        "SUPABASE_ANON_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/line-account/common.ts": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
+        "supabase/functions/line-account/index.ts": "e1e2ffe2bbcec492fdf569f798f4e94047f2e971bfa54eecfe6d211834fc5b3e"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "line-notifications",
+      "verify_jwt": false,
+      "observed_production_version": 2,
+      "environment_names": [
+        "LINE_CHANNEL_ACCESS_TOKEN",
+        "RESEND_API_KEY",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/line-notifications/application-email.ts": "d1fc05cda58dd133da74c888e04af2fdee7222d06c1d4bb14f7d49d3b496c837",
+        "supabase/functions/line-notifications/common.ts": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
+        "supabase/functions/line-notifications/index.ts": "755d0cf19d7f38a3372a9362b434b51d7e4e971cc88ed09bc517a0c7fe7210a4"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "line-setup-once",
+      "verify_jwt": true,
+      "observed_production_version": 4,
+      "environment_names": [],
+      "source_sha256": {
+        "supabase/functions/line-setup-once/index.ts": "d70d2b4e40ceb1df2bf6d0812a971f88ffa87a727e750566a43d5ceb443f00b9"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "line-webhook",
+      "verify_jwt": false,
+      "observed_production_version": 3,
+      "environment_names": [
+        "LINE_CHANNEL_ACCESS_TOKEN",
+        "LINE_CHANNEL_SECRET",
+        "SUPABASE_SERVICE_ROLE_KEY",
+        "SUPABASE_URL"
+      ],
+      "source_sha256": {
+        "supabase/functions/line-webhook/common.ts": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
+        "supabase/functions/line-webhook/index.ts": "422d6d56d452b3c943fb2f826bb30cf57ccea17abf092dcd8fcf81749a9a1feb"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    },
+    {
+      "name": "share-driver-spot-email",
+      "verify_jwt": false,
+      "observed_production_version": 5,
+      "environment_names": [],
+      "source_sha256": {
+        "supabase/functions/share-driver-spot-email/index.ts": "6c3032f76a7a4d7fe188373533b54621ecdaa2c90277393aeaaf6dd4c2d8a42e"
+      },
+      "native_smoke_verified": true,
+      "secrets_values_included": false
+    }
+  ],
+  "limits": [
+    "Gateway JWT flags and handler authorization are different",
+    "Worker x-spodora-worker-key preimage is managed separately; source stores a hash only",
+    "Service URLs/domain links, provider secrets, webhook setup and secret custody require separate verification",
+    "A successful smoke test is not a full Deno typecheck or real provider delivery"
+  ]
+}

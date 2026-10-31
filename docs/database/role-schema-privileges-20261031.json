@@ -293,5 +293,71 @@
       "name": "reviews_id_seq",
       "owner": "postgres"
     }
+  ],
+  "server_version": "17.6",
+  "role_flags": [
+    {
+      "name": "anon",
+      "login": false,
+      "inherit": true,
+      "create_db": false,
+      "superuser": false,
+      "bypass_rls": false,
+      "create_role": false
+    },
+    {
+      "name": "authenticated",
+      "login": false,
+      "inherit": true,
+      "create_db": false,
+      "superuser": false,
+      "bypass_rls": false,
+      "create_role": false
+    },
+    {
+      "name": "authenticator",
+      "login": true,
+      "inherit": false,
+      "create_db": false,
+      "superuser": false,
+      "bypass_rls": false,
+      "create_role": false
+    },
+    {
+      "name": "postgres",
+      "login": true,
+      "inherit": true,
+      "create_db": true,
+      "superuser": false,
+      "bypass_rls": true,
+      "create_role": true
+    },
+    {
+      "name": "service_role",
+      "login": false,
+      "inherit": true,
+      "create_db": false,
+      "superuser": false,
+      "bypass_rls": true,
+      "create_role": false
+    },
+    {
+      "name": "supabase_auth_admin",
+      "login": true,
+      "inherit": false,
+      "create_db": false,
+      "superuser": false,
+      "bypass_rls": false,
+      "create_role": true
+    },
+    {
+      "name": "supabase_storage_admin",
+      "login": true,
+      "inherit": false,
+      "create_db": false,
+      "superuser": false,
+      "bypass_rls": false,
+      "create_role": true
+    }
   ]
 }

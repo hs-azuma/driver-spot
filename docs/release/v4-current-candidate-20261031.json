@@ -1,0 +1,208 @@
+{
+  "status": "PREPARED_APPROVAL_REQUIRED",
+  "date_jst": "2026-10-31",
+  "observed_main_commit": "41d6223854a780713686d02ae73d028eb17aa2c4",
+  "native_test_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
+  "native_sources_current": true,
+  "production_changed": false,
+  "production_ready": false,
+  "approval": null,
+  "real_backup_verified": false,
+  "scope": "review inventory only; never a deployment command",
+  "files": [
+    {
+      "path": "apply-confirm.html",
+      "sha256": "8e6ce7a00dc8b3fca8cc489ae4db034906f5cd740455b9975910eef91903163b",
+      "base_sha256": "161a3fc97b651e8571495d9f5ea38a70d7ee4e74dd2e356cef15ad03b17e04e6",
+      "rollback_review": false
+    },
+    {
+      "path": "assets/intro-email.js",
+      "sha256": "ac36d52a343827c361fd7ee440eacca689be8b0da522a08c929f821235121d00",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "attendance.html",
+      "sha256": "743f11fe7356730c972f21979b24e3bb2f5abbd7899821252ce3933652e070c2",
+      "base_sha256": "b205339274a596d22a5b2d7e79e6da05fbe99121186cd6b172ad23fc5d8fabcb",
+      "rollback_review": false
+    },
+    {
+      "path": "company-applicants.html",
+      "sha256": "b0fc317ea4a76bc84769f9decc8489041a808d22e01adf7f5b718714ca08f25d",
+      "base_sha256": "92668514342e64c7f9d2b6f77e9f934dfa3e95e4d6905b3f84e79f847379489b",
+      "rollback_review": false
+    },
+    {
+      "path": "company-attendance-qr.html",
+      "sha256": "856a3792a9d7d38d9f7124bf2dc234ef8e2b17976c34a99ef503235ffefde0f7",
+      "base_sha256": "7bd7b534f10aa05f8089fe7f78310f7ed38d4fc2833585b2db1c52fda99ffbdc",
+      "rollback_review": false
+    },
+    {
+      "path": "company-workforce.html",
+      "sha256": "933aaeb3d4562ecebedec77b8c24f83551ca6a20afb283668d0586055f564b71",
+      "base_sha256": "a17b3fca6724546a9a6c1e95f96c8cb958e38712794f42364f1975ae6ce24fbb",
+      "rollback_review": false
+    },
+    {
+      "path": "company.html",
+      "sha256": "4cb9bb3b66af7068cb0951348c10e9ba2702a2df9dc9b4a5de1fc8884ee494d3",
+      "base_sha256": "f146c543d68fdbc1929cf43f2d05a6ab2ebf3f54dd0075e1149266f4e8c01636",
+      "rollback_review": false
+    },
+    {
+      "path": "driver-attendance.html",
+      "sha256": "6d4e65ae38c2c16ef16394b14057ecdfba60f73e5074b6a4ae9cd0b67e609078",
+      "base_sha256": "0b45d2407de37af74d161a4047a6e40912e6d68769c4e3c5c6fe76c9351045a5",
+      "rollback_review": false
+    },
+    {
+      "path": "driver.html",
+      "sha256": "4fc3cd30cf4beaf62e745bd4ef496e3884b00a08b2df32f5233f4e4d8f370b7c",
+      "base_sha256": "5fecc5c4b3373ab272da89f586c46f8a3398fe16659a4678302492c2f365cfbf",
+      "rollback_review": false
+    },
+    {
+      "path": "index.html",
+      "sha256": "70e43532d313e31e359626af9e07fdbd80f0030b18de079325c79672ae355001",
+      "base_sha256": "eab82a94b367e69d78b5cade611b22b2b1f654bba1e3c4bc949003a8628476fc",
+      "rollback_review": false
+    },
+    {
+      "path": "job-create.html",
+      "sha256": "3dce1322d7d0060d89acab7161591351c31bce743b1315acb10abfdc64777e85",
+      "base_sha256": "4bd6d0c9dc237ceb96a8b3bdebf8226da7ac3946d0fbceffb0917c56aeca42ff",
+      "rollback_review": false
+    },
+    {
+      "path": "sql/review-v4-application-delete-guard.sql",
+      "sha256": "1ae919cd76b2cbf95f23e43a671f8ddbf3691350998b11c04d284b209d82e285",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "sql/review-v4-application-entry-access.sql",
+      "sha256": "0617668b72d632382cc0684a3bdc3bdb31e274e2154193bf1eb30880518423bb",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "sql/review-v4-application-entry-rollback.sql",
+      "sha256": "8c1be297da2fa87977d56ece830ce9a221c83d8e819bb2ace0c0f78c97c0d4af",
+      "base_sha256": null,
+      "rollback_review": true
+    },
+    {
+      "path": "sql/review-v4-hardening-rollback.sql",
+      "sha256": "588c522b60f86770c0d6ab2e00324a2851e01ca32b9f197296184e76e6269376",
+      "base_sha256": null,
+      "rollback_review": true
+    },
+    {
+      "path": "sql/review-v4-hiring-capacity-rollback.sql",
+      "sha256": "6ded31416377596e105e7d430b1948948d794969d7f08a5fa985288ee4cb950e",
+      "base_sha256": null,
+      "rollback_review": true
+    },
+    {
+      "path": "sql/review-v4-hiring-capacity.sql",
+      "sha256": "bf4a90bf112b855bce0fc02570ed6de57860c9aa83bf1d12551a405ef5640eba",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "sql/review-v4-job-insert-hardening.sql",
+      "sha256": "0ce0c0dbb3c7f0c4b26910be8549e98c1f789880e893cfca34dc93060162d889",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "sql/review-v4-legacy-and-rounding-access.sql",
+      "sha256": "5da24b4333e68ce1ed4af9f6eb258f47733540c836ff9b427898d2b8657582e5",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "sql/review-v4-legacy-and-rounding-rollback.sql",
+      "sha256": "9e6acde8100285de73ee6e6b522ab59a7de01ef63542e13e63edbe2c7bad38c1",
+      "base_sha256": null,
+      "rollback_review": true
+    },
+    {
+      "path": "sql/review-v4-overnight-overlap-rollback.sql",
+      "sha256": "1fc84ad1a55d9c07d27828824be55676efa28b8f45067ddc3a91b45ad148028c",
+      "base_sha256": null,
+      "rollback_review": true
+    },
+    {
+      "path": "sql/review-v4-overnight-overlap.sql",
+      "sha256": "c306d4fd157cc43699c3a9100a5da470193aa58b4a014c671bd63cc60706baa7",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "sql/review-v4-withdrawal-retention-rollback.sql",
+      "sha256": "5c721520986958ee3c53dd120dfd326e93dd6b5c69ace4b4607f36490a6c25a6",
+      "base_sha256": null,
+      "rollback_review": true
+    },
+    {
+      "path": "sql/review-v4-withdrawal-retention.sql",
+      "sha256": "f656f89bf235b047cdc09600b55d22fbb1f43d1ecb937a6ba4b590a024b6c79e",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/application-result-email/index.ts",
+      "sha256": "30e7f195475cb1a6d0f7b4c5c0e684050e869bcff16228c3378126cb03708c26",
+      "base_sha256": "dbb97858bdd100c320332016353d5788a40b36be86bd87e7af06228a36310714",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/company-job-invite/index.ts",
+      "sha256": "1a61f57de3b498791bae4ae6a326c22fe1928c4a78fe5e6a1d515f1cf817b1e3",
+      "base_sha256": "db0258d738876681370bbb6cd52a0513775033a2042a715735877de8e95a1971",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/delete-account/handler.ts",
+      "sha256": "6166fde61cdc1d5026988e36da0d08b58e82e314ae0f0cc7a173a287dbedefcb",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/delete-account/index.ts",
+      "sha256": "9a5853250424033c17827a934fcb4e924cdf20ffa49e955bbe1ad99b694490eb",
+      "base_sha256": "aeacca65091f84be4097240602d7c626ddbd20f5b812a552f6d4d0909478b649",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/email-unsubscribe/index.ts",
+      "sha256": "c20ee77e4a3cf5c37844fbffbbcdf3532698599959ea4f5ecd72406c78e35835",
+      "base_sha256": "e2d21db14ee74101ffb3e90ebcf714d702c98aaab6da61fcdc7debe4a10da1f9",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-notifications/index.ts",
+      "sha256": "755d0cf19d7f38a3372a9362b434b51d7e4e971cc88ed09bc517a0c7fe7210a4",
+      "base_sha256": "7502d760371c7bbeb1dc9f263b24bf1f156e9aeeddb1dd946b6c9feb96f88770",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/share-driver-spot-email/index.ts",
+      "sha256": "6c3032f76a7a4d7fe188373533b54621ecdaa2c90277393aeaaf6dd4c2d8a42e",
+      "base_sha256": "2d17aa67b7512fc17bb6c8d858037f3d6fa8c05dc1989161f0854256b935ffaa",
+      "rollback_review": false
+    }
+  ],
+  "runbook": "docs/v4-sixteen/production-review.md",
+  "gates": [
+    "Current-source native and cleanroom checks",
+    "Real backup custody, retention, recovery objectives and restore verification",
+    "Scoped owner approval and named operator",
+    "Production delta and legacy mutating workflow review",
+    "Real device, notification and external configuration checks"
+  ]
+}

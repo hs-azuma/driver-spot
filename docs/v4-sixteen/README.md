@@ -30,8 +30,13 @@
 - [本番スキーマ/既定権限/採番権限の追加取得](../database/role-schema-privileges-20261031.json)。メタデータだけの読み取り。パスワード・Authユーザー行は取得していない。
 - [本番Functions設定の再確認](../edge-functions-runtime-settings-20261031.json)。9件verify_jwt=false、無効化済み診断1件だけtrue。関数内部の認可とは別。
 
-現行コードはさらに検証中。古い成功記録のsource_sha256が現行と異なる場合、その記録で現行を合格にしない。
-最終状態は後続の進捗JSONと最新native結果で更新する。
+最新のnative試験は181項目成功。独立復元、実SQL並列処理、障害復旧、Functionsを含む。
+古い成功記録のsource_sha256が現行と異なる場合、その記録で現行を合格にしない。
+最終状態は[進捗JSON](status.json)と最新native結果で更新する。
+機械判定は `python3 -B scripts/v4-progress.py`。項目数は作業量の割合ではない。
+[現行適用候補のハッシュ](../release/v4-current-candidate-20261031.json)と[Functions設定/環境名](../functions-runtime-inventory-20261031.json)も再生成する。
+
+[復旧検証の実行手順](recovery-runbook.md)と[最新の本番適用判断](production-review.md)を参照する。
 
 ## 新たに見つかったこと
 
@@ -54,3 +59,12 @@ pg_restoreを行っただけでは、新環境のオブジェクト作成者のd
 実データ保管の鍵/保持/復旧目標、受取人本人の実演・権限/MFA移管、本番への反映、実機カメラ/生体認証と実メール・LINE配信。
 別クラスタでも同じホスト内の架空データ検証であり、別クラウドへの実データ完全移行ではない。
 Storage object UUID・作成時刻・旧署名URL・外部契約や鍵の移管は自動的には再現しない。
+
+## Functions起動の解決
+
+Linux nativeでは公式CLIのE2Eと同じくホーム配下の専用作業領域を使い、各entrypointを明記して実行を確認した。
+/tmp配置ではファイル検出が404になった。JWT設定を緩めて回避していない。
+APIキーも認証情報として扱われるため、無認証の拒否試験ではapikey/Authorizationの両方を省く。
+本番設定は読み取りで再確認し、診断1件verify_jwt=true、他9件falseを維持した。
+
+公式CLI2.122.0の対応検証: https://github.com/supabase/cli/blob/v2.122.0/apps/cli/src/commands/functions/serve/serve.stack.e2e.test.ts
