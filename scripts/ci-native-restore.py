@@ -5,7 +5,7 @@ ROOT=Path(__file__).resolve().parents[1]
 PROJECT='spodora-v4-native-ci';pg_bin=None;pg_port=None;pg_env=None
 REPORT=ROOT/'docs/native-ci-20261029/result.json'
 report={'status':'FAIL','production_access':False,'real_data_used':False,'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':[],'limitations':['Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export','Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested','Native Edge smoke does not verify real email/LINE delivery, webhooks or production deployment','Native processes share the isolated runner host; there is no container egress network guard','Ephemeral synthetic fixtures only; not a production backup']}
-cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js')];stage='guard';work=None;started=False;edge_process=None;edge_log=None
+cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js')];stage='guard';work=None;started=False;edge_process=None;edge_log=None;loss_server=None
 
 def run(args,input=None,timeout=90,check=True,env=None):
     r=subprocess.run(args,input=input,capture_output=True,timeout=timeout,cwd=ROOT,env=env)
@@ -43,7 +43,7 @@ try:
     metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
     report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
-    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*.ts'))]}
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/fault-proxy.py','tools/native-runner/crash-recovery.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*.ts'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -93,6 +93,9 @@ try:
     stage='native_multi_connection'
     spec=importlib.util.spec_from_file_location('native_concurrency',ROOT/'tools/native-runner/concurrency.py');concurrency=importlib.util.module_from_spec(spec);spec.loader.exec_module(concurrency)
     report['concurrency']=concurrency.run_checks(sql,pg_bin,pg_port,pg_env,check,apply,context)
+    stage='native_crash_recovery'
+    spec=importlib.util.spec_from_file_location('crash_recovery',ROOT/'tools/native-runner/crash-recovery.py');crash=importlib.util.module_from_spec(spec);spec.loader.exec_module(crash)
+    report['crash_recovery']=crash.run_check(sql,run,cli,work,env,pg_bin,pg_port,pg_env,context,check)
     stage='encrypted_database_restore';dump=pgtool('pg_dump',['-Fc','postgres'],timeout=180,admin=True)
     restored=run(['node','tools/native-runner/roundtrip.mjs'],dump,timeout=90);check('Native pg_dump encrypted, decrypted, wrong-key and tamper checked',restored==dump)
     pgtool('createdb',['v4_fixture_restore'],admin=True)
@@ -153,13 +156,20 @@ try:
     assert re.match(r'^http://(?:127\.0\.0\.1|localhost):\d+/?$',target_values['API_URL'])
     check('Independent service restart preserves application ACLs',sc==normalize(json.loads(sql(catalog))) and source_security==normalize(json.loads(sql(security_catalog))))
     stage='independent_auth_storage'
-    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer'],'today':sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;")}
+    spec=importlib.util.spec_from_file_location('fault_proxy',ROOT/'tools/native-runner/fault-proxy.py');fault=importlib.util.module_from_spec(spec);spec.loader.exec_module(fault)
+    loss_server,loss_url,loss_state=fault.start(target_values['API_URL'])
+    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer'],'today':sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;"),'loss_proxy_url':loss_url}
     independent=json.loads(run(['node','tools/native-runner/independent-api.mjs'],json.dumps(payload).encode(),timeout=180,check=False));report['checks']+=independent['checks'];assert not independent.get('error'),independent.get('error')
+    check('Proxy dropped exactly one successful upstream commit reply',loss_state['committed_responses_dropped']==1 and loss_state['upstream_status']==201)
+    report['http_response_loss']={'status':'PASS_COMMIT_ACK_LOSS_RECONCILIATION','committed_job_count':1,'retry_was_read_only':True}
+    loss_server.shutdown();loss_server.server_close();loss_server=None
     report['business_flow']=independent['business']
     report['independent_cluster_restore']={'status':independent['status'],'source_stopped':True,'separate_state':work!=source_work,'cluster_identifier_differs':source_id!=target_id,'public_and_auth_row_hashes_equal':True,'sequence_values_equal':True,'storage_files':3,'original_object_uuids_preserved':False,'same_runner_host':True}
     stage='native_edge_functions'
     run(cli+['functions','serve','--help'],env=env)
     shutil.copytree(ROOT/'supabase/functions',work/'supabase/functions',ignore=shutil.ignore_patterns('.env','.env.*','node_modules'))
+    run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
+    run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
     edge_env_file=work/'native-drill.env';edge_env_file.write_text('SPODORA_SYNTHETIC_DRILL=1\n');edge_env_file.chmod(0o600)
     edge_log=tempfile.TemporaryFile()
     edge_process=subprocess.Popen(cli+['functions','serve','--workdir',str(work),'--env-file',str(edge_env_file)],cwd=ROOT,env=env,stdout=edge_log,stderr=edge_log)
@@ -172,6 +182,10 @@ try:
             if error.code==410:edge_ready=True;break
         except (urllib.error.URLError,TimeoutError):pass
         time.sleep(.2)
+    if not edge_ready:
+        edge_log.seek(0);lines=edge_log.read().decode(errors='replace').splitlines()
+        report['edge_diagnostics']=[re.sub(r'\x1b\[[0-9;]*m','',line)[:200] for line in lines if re.search('error|failed|fatal|docker|unsupported|not found',line,re.I) and not re.search('key|secret|token|jwt|authorization',line,re.I)][-4:]
+        report['edge_process_exit_code']=edge_process.poll()
     check('Native Edge runtime starts actual copied Functions',edge_ready)
     edge_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'user':context['users']['company']}
     edge=json.loads(run(['node','tools/native-runner/edge-smoke.mjs'],json.dumps(edge_input).encode(),timeout=240,check=False));report['checks']+=edge['checks'];assert not edge.get('error'),edge.get('error')
@@ -180,6 +194,7 @@ try:
 except Exception as error:
     report['failed_stage']=stage;report['error_type']=type(error).__name__;report['error']=str(error)[:900]
 finally:
+    if loss_server:loss_server.shutdown();loss_server.server_close()
     if edge_process and edge_process.poll() is None:
         edge_process.terminate()
         try:edge_process.wait(timeout=10)

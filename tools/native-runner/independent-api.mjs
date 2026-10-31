@@ -25,6 +25,14 @@ try{
  const retained=await admin.rpc('withdrawal_preflight',{p_user_id:p.users.storage.id});check('Independent restored ownership blocks withdrawal',!retained.error&&retained.data.reason==='storage_objects');
  const job=await clients.company.from('jobs').insert({company_id:p.company_id,work_date:'2099-12-01',location:'Synthetic independent site',start_time:'09:00',end_time:'17:00',pay_guarantee:true,pay_amount:2000,pay_type:'時給'}).select('id').single();diagnostic=JSON.stringify({code:job.error?.code,message:job.error?.message,status:job.status});check('Independent company publishes new job',!job.error&&!!job.data?.id);
  const application=await clients.driver.from('applications').insert({job_id:job.data.id,driver_id:own.data[0].id,status:'応募中'}).select('id').single();check('Independent restored driver submits new application',!application.error&&!!application.data?.id);
+ const protectedRpc=await clients.driver.rpc('withdrawal_preflight',{p_user_id:p.users.other.id});check('Independent client cannot call privileged withdrawal RPC',!!protectedRpc.error);
+ const anonymousClaim=await make().rpc('claim_company_application_emails');check('Independent anonymous cannot claim notification queue',!!anonymousClaim.error);
+ if(p.loss_proxy_url){assert(['127.0.0.1','localhost'].includes(new URL(p.loss_proxy_url).hostname));const {data:{session}}=await clients.company.auth.getSession();let lost=false;
+  try{await fetch(p.loss_proxy_url+'/rest/v1/jobs',{method:'POST',headers:{apikey:p.anon,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({company_id:p.company_id,job_description:'synthetic-response-loss',location:'Synthetic lost-response site',work_date:'2103-01-01',start_time:'09:00',end_time:'17:00',pay_guarantee:true}),signal:AbortSignal.timeout(25000)})}catch{lost=true}
+  check('Actual HTTP commit reply is lost to the client',lost);
+  const recovered=await clients.company.from('jobs').select('id').eq('job_description','synthetic-response-loss');check('Lost reply recovery finds exactly one committed job',!recovered.error&&recovered.data.length===1);
+  const repeat=await clients.company.from('jobs').select('id').eq('id',recovered.data[0].id);check('Lost reply is reconciled by reading instead of re-inserting',!repeat.error&&repeat.data.length===1);
+ }
  const business=await businessFlow({company:clients.company,driver:clients.other,outsider:clients.driver,companyId:p.company_id,today:p.today,check});
  process.stdout.write(JSON.stringify({checks,status:'PASS_INDEPENDENT_CLUSTER_AUTH_STORAGE',object_ids_preserved:false,business}));
 }catch{process.stdout.write(JSON.stringify({checks,error:'Independent API failed: '+attempted+' '+diagnostic}));process.exitCode=1}
