@@ -2,7 +2,7 @@
   "status": "FAIL",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-10-31T12:28:30.398851+00:00",
+  "started_at": "2026-10-31T12:37:31.498829+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -170,7 +170,9 @@
     "Business repeated payroll approval refused",
     "Business QR regeneration changes token",
     "Business invalidated QR token refused",
-    "Proxy dropped exactly one successful upstream commit reply"
+    "Proxy dropped exactly one successful upstream commit reply",
+    "Native Edge runtime starts actual copied Functions",
+    "Native Edge share-driver-spot-email 410"
   ],
   "limitations": [
     "Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export",
@@ -179,11 +181,11 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "f57a8efbc3a20a6c0bcc014275b85943e5909ff8",
+  "source_commit": "49678dd789ebf6429cb310aa473b9055010c5127",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "source_sha256": {
-    "scripts/ci-native-restore.py": "eb2ace09d6c5ab0579144734eacbea47255e6d5aaabc32073760fbc6d26467cb",
+    "scripts/ci-native-restore.py": "510454c0492f9703d7bfbc2c88c453fc06caa98b55791f9f93e08df759f9cb4d",
     "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
     "tools/native-runner/roundtrip.mjs": "85903b2eec54045202e105ae788018054acfe2bc4a0d256e2411c9a1ecf1c4e9",
     "tools/native-runner/storage-roundtrip.mjs": "9f05f83cf84f1fe838b5425854b73b85c3cafdd807dfb74986575ab501a74d4e",
@@ -273,7 +275,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "2125371a41c774c57e1b107554abc74358376c96ec72d103fbe80241f04a98ff",
+    "ciphertext_sha256": "64898ef1dcf19b65f40b497eddef74264096a30b5c3cdd3953eab33a41f1a8d8",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
@@ -316,7 +318,7 @@
     "original_object_uuids_preserved": false,
     "same_runner_host": true
   },
-  "edge_endpoint": "http://127.0.0.1:25742/functions/v1",
+  "edge_endpoint": "http://127.0.0.1:30083/functions/v1",
   "edge_status_env_names": [
     "ANON_KEY",
     "API_URL",
@@ -331,13 +333,20 @@
     "SERVICE_ROLE_KEY",
     "STORAGE_S3_URL"
   ],
-  "edge_diagnostics": [],
-  "edge_process_exit_code": null,
-  "edge_readiness_codes": {
-    "404": 100
-  },
+  "edge_sources_present": [
+    "account-auth",
+    "application-result-email",
+    "company-job-invite",
+    "delete-account",
+    "email-unsubscribe",
+    "line-account",
+    "line-notifications",
+    "line-setup-once",
+    "line-webhook",
+    "share-driver-spot-email"
+  ],
   "failed_stage": "native_edge_functions",
-  "error_type": "RuntimeError",
-  "error": "Native Edge runtime starts actual copied Functions",
-  "completed_at": "2026-10-31T12:30:02.446231+00:00"
+  "error_type": "AssertionError",
+  "error": "Native Edge failed: Native Edge line-setup-once 401",
+  "completed_at": "2026-10-31T12:38:31.248794+00:00"
 }
