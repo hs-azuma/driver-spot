@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
+import {businessFlow} from './business-flow.mjs';
 import {decodeStorageTransfer} from './storage-bundle.mjs';
 const {createClient}=createRequire(new URL('../sdk-lab/package.json',import.meta.url))('@supabase/supabase-js');
 let input='';for await(const c of process.stdin)input+=c;const p=JSON.parse(input);assert.equal(process.env.GITHUB_ACTIONS,'true');assert(['127.0.0.1','localhost'].includes(new URL(p.url).hostname));
@@ -24,5 +25,6 @@ try{
  const retained=await admin.rpc('withdrawal_preflight',{p_user_id:p.users.storage.id});check('Independent restored ownership blocks withdrawal',!retained.error&&retained.data.reason==='storage_objects');
  const job=await clients.company.from('jobs').insert({company_id:p.company_id,work_date:'2099-12-01',location:'Synthetic independent site',start_time:'09:00',end_time:'17:00',pay_guarantee:true,pay_amount:2000,pay_type:'時給'}).select('id').single();diagnostic=JSON.stringify({code:job.error?.code,message:job.error?.message,status:job.status});check('Independent company publishes new job',!job.error&&!!job.data?.id);
  const application=await clients.driver.from('applications').insert({job_id:job.data.id,driver_id:own.data[0].id,status:'応募中'}).select('id').single();check('Independent restored driver submits new application',!application.error&&!!application.data?.id);
- process.stdout.write(JSON.stringify({checks,status:'PASS_INDEPENDENT_CLUSTER_AUTH_STORAGE',object_ids_preserved:false}));
+ const business=await businessFlow({company:clients.company,driver:clients.other,outsider:clients.driver,companyId:p.company_id,today:p.today,check});
+ process.stdout.write(JSON.stringify({checks,status:'PASS_INDEPENDENT_CLUSTER_AUTH_STORAGE',object_ids_preserved:false,business}));
 }catch{process.stdout.write(JSON.stringify({checks,error:'Independent API failed: '+attempted+' '+diagnostic}));process.exitCode=1}

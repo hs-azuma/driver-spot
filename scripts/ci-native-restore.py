@@ -1,11 +1,11 @@
 """Fresh public CI only. Creates a dedicated synthetic native Supabase, then stops only that fixture."""
-import base64,datetime,hashlib,json,os,re,secrets,shutil,subprocess,tempfile,time,urllib.request,urllib.parse
+import base64,datetime,hashlib,importlib.util,json,os,re,secrets,shutil,subprocess,tempfile,time,urllib.request,urllib.parse,urllib.error
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PROJECT='spodora-v4-native-ci';pg_bin=None;pg_port=None;pg_env=None
 REPORT=ROOT/'docs/native-ci-20261029/result.json'
-report={'status':'FAIL','production_access':False,'real_data_used':False,'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':[],'limitations':['Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export','Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested','Native API tests do not deploy Edge Functions or send email/LINE','Native processes share the isolated runner host; there is no container egress network guard','Ephemeral synthetic fixtures only; not a production backup']}
-cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js')];stage='guard';work=None;started=False
+report={'status':'FAIL','production_access':False,'real_data_used':False,'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':[],'limitations':['Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export','Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested','Native Edge smoke does not verify real email/LINE delivery, webhooks or production deployment','Native processes share the isolated runner host; there is no container egress network guard','Ephemeral synthetic fixtures only; not a production backup']}
+cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js')];stage='guard';work=None;started=False;edge_process=None;edge_log=None
 
 def run(args,input=None,timeout=90,check=True,env=None):
     r=subprocess.run(args,input=input,capture_output=True,timeout=timeout,cwd=ROOT,env=env)
@@ -43,7 +43,7 @@ try:
     metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
     report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
-    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*.ts'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -73,7 +73,7 @@ try:
     # Native service bootstrap owns auth.users with a service role. A fresh local-only
     # migration role needs membership to install the captured Auth triggers.
     admin_prefix=[str(pg_bin/'psql'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','-X','-d','postgres','-At','-v','ON_ERROR_STOP=1']
-    run(admin_prefix,input=b'GRANT supabase_auth_admin TO postgres;',env=pg_env)
+    run(admin_prefix,input=b'GRANT supabase_auth_admin,authenticated,service_role TO postgres;',env=pg_env)
     check('Fresh fixture grants Auth ownership role to migration role only',True)
     stage='application_ddl';check('Fresh target has no application tables',sql("SELECT to_regclass('public.applications') IS NULL;")=='t')
     apply('docs/database/restore-candidate/application-review.sql')
@@ -90,6 +90,9 @@ try:
     context['company_id']=int(sql("INSERT INTO public.companies(company_name,user_id,email) VALUES('Synthetic native company','"+uid+"','v4-company@example.invalid') RETURNING id;").splitlines()[0])
     sql("CREATE POLICY v4_lab_storage_insert ON storage.objects FOR INSERT TO authenticated WITH CHECK(bucket_id IN ('v4-synthetic','v4-restored')); CREATE POLICY v4_lab_storage_read ON storage.objects FOR SELECT TO authenticated USING(bucket_id IN ('v4-synthetic','v4-restored') AND owner_id=auth.uid()::text);")
     stage='native_api_rls_storage';context['phase']='verify';verified=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=120,check=False));report['checks']+=verified['checks'];assert not verified.get('error'),verified.get('error');report['storage_restore']=verified['storage_restore']
+    stage='native_multi_connection'
+    spec=importlib.util.spec_from_file_location('native_concurrency',ROOT/'tools/native-runner/concurrency.py');concurrency=importlib.util.module_from_spec(spec);spec.loader.exec_module(concurrency)
+    report['concurrency']=concurrency.run_checks(sql,pg_bin,pg_port,pg_env,check,apply,context)
     stage='encrypted_database_restore';dump=pgtool('pg_dump',['-Fc','postgres'],timeout=180,admin=True)
     restored=run(['node','tools/native-runner/roundtrip.mjs'],dump,timeout=90);check('Native pg_dump encrypted, decrypted, wrong-key and tamper checked',restored==dump)
     pgtool('createdb',['v4_fixture_restore'],admin=True)
@@ -130,7 +133,7 @@ try:
     target_admin=[str(pg_bin/'psql'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','-X','-d','postgres','-At','-v','ON_ERROR_STOP=1']
     target_id=run(target_admin,input=b'SELECT system_identifier FROM pg_control_system();',env=pg_env).decode().strip()
     check('Independent PostgreSQL cluster identifier differs',source_id!=target_id)
-    run(target_admin,input=b'GRANT supabase_auth_admin TO postgres;',env=pg_env)
+    run(target_admin,input=b'GRANT supabase_auth_admin,authenticated,service_role TO postgres;',env=pg_env)
     stage='independent_pg_restore'
     run(target_admin,input=(ROOT/'tools/native-runner/reset-fixture-default-acl.sql').read_bytes(),env=pg_env)
     check('Fresh target creator default ACLs neutralized before restore',True)
@@ -150,13 +153,38 @@ try:
     assert re.match(r'^http://(?:127\.0\.0\.1|localhost):\d+/?$',target_values['API_URL'])
     check('Independent service restart preserves application ACLs',sc==normalize(json.loads(sql(catalog))) and source_security==normalize(json.loads(sql(security_catalog))))
     stage='independent_auth_storage'
-    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer']}
+    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer'],'today':sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;")}
     independent=json.loads(run(['node','tools/native-runner/independent-api.mjs'],json.dumps(payload).encode(),timeout=180,check=False));report['checks']+=independent['checks'];assert not independent.get('error'),independent.get('error')
+    report['business_flow']=independent['business']
     report['independent_cluster_restore']={'status':independent['status'],'source_stopped':True,'separate_state':work!=source_work,'cluster_identifier_differs':source_id!=target_id,'public_and_auth_row_hashes_equal':True,'sequence_values_equal':True,'storage_files':3,'original_object_uuids_preserved':False,'same_runner_host':True}
+    stage='native_edge_functions'
+    run(cli+['functions','serve','--help'],env=env)
+    shutil.copytree(ROOT/'supabase/functions',work/'supabase/functions',ignore=shutil.ignore_patterns('.env','.env.*','node_modules'))
+    edge_env_file=work/'native-drill.env';edge_env_file.write_text('SPODORA_SYNTHETIC_DRILL=1\n');edge_env_file.chmod(0o600)
+    edge_log=tempfile.TemporaryFile()
+    edge_process=subprocess.Popen(cli+['functions','serve','--workdir',str(work),'--env-file',str(edge_env_file)],cwd=ROOT,env=env,stdout=edge_log,stderr=edge_log)
+    edge_ready=False
+    for _ in range(100):
+        req=urllib.request.Request(target_values['API_URL']+'/functions/v1/line-setup-once',headers={'Authorization':'Bearer '+target_values['ANON_KEY'],'apikey':target_values['ANON_KEY']})
+        try:
+            response=urllib.request.urlopen(req,timeout=5);response.close()
+        except urllib.error.HTTPError as error:
+            if error.code==410:edge_ready=True;break
+        except (urllib.error.URLError,TimeoutError):pass
+        time.sleep(.2)
+    check('Native Edge runtime starts actual copied Functions',edge_ready)
+    edge_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'user':context['users']['company']}
+    edge=json.loads(run(['node','tools/native-runner/edge-smoke.mjs'],json.dumps(edge_input).encode(),timeout=240,check=False));report['checks']+=edge['checks'];assert not edge.get('error'),edge.get('error')
+    report['edge_runtime']={k:v for k,v in edge.items() if k!='checks'}
     report['dump_bytes']=len(dump);report['dump_sha256']=hashlib.sha256(dump).hexdigest();report['status']='PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE';report['native_auth_storage_api_tested']=True
 except Exception as error:
     report['failed_stage']=stage;report['error_type']=type(error).__name__;report['error']=str(error)[:900]
 finally:
+    if edge_process and edge_process.poll() is None:
+        edge_process.terminate()
+        try:edge_process.wait(timeout=10)
+        except subprocess.TimeoutExpired:edge_process.kill();edge_process.wait(timeout=5)
+    if edge_log:edge_log.close()
     if started and work:
         try:run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
         except Exception:report['cleanup_failed']=True
