@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PROJECT='spodora-v4-native-ci';pg_bin=None;pg_port=None;pg_env=None
 REPORT=ROOT/'docs/native-ci-20261029/result.json'
-report={'status':'FAIL','production_access':False,'real_data_used':False,'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':[],'limitations':['Database dump restored to a second database; global roles and service configs not independently restored','Synthetic Storage bytes restored into a separate bucket; independent host, service configuration and original object UUID restore remain untested','Native API tests do not deploy Edge Functions or send email/LINE','Native processes share the isolated runner host; there is no container egress network guard','Ephemeral synthetic fixtures only; not a production backup']}
+report={'status':'FAIL','production_access':False,'real_data_used':False,'started_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'checks':[],'limitations':['Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export','Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested','Native API tests do not deploy Edge Functions or send email/LINE','Native processes share the isolated runner host; there is no container egress network guard','Ephemeral synthetic fixtures only; not a production backup']}
 cli=['node',str(ROOT/'tools/native-runner/node_modules/supabase/dist/supabase.js')];stage='guard';work=None;started=False
 
 def run(args,input=None,timeout=90,check=True,env=None):
@@ -43,7 +43,7 @@ try:
     metadata=json.load(urllib.request.urlopen('https://api.github.com/repos/hs-azuma/driver-spot',timeout=20));assert metadata['private'] is False
     report['source_commit']=os.environ['GITHUB_SHA'];report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
-    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -97,6 +97,54 @@ try:
     catalog=(ROOT/'docs/database/read-catalog.sql').read_text();before=json.loads(sql(catalog));after=json.loads(sql(catalog,'v4_fixture_restore'));normalize=lambda d:{k:sorted(json.dumps(row,sort_keys=True) for row in (v or [])) for k,v in d.items()};check('Restored application catalog equals source',normalize(before)==normalize(after))
     counts="SELECT json_build_object('auth',(SELECT count(*) FROM auth.users),'drivers',(SELECT count(*) FROM public.drivers),'companies',(SELECT count(*) FROM public.companies),'jobs',(SELECT count(*) FROM public.jobs),'applications',(SELECT count(*) FROM public.applications),'storage',(SELECT count(*) FROM storage.objects));"
     check('Auth and application and Storage metadata rows restored',json.loads(sql(counts))==json.loads(sql(counts,'v4_fixture_restore')))
+    stage='independent_backup'
+    portable=pgtool('pg_dump',['-Fc','--exclude-table-data=storage.objects','postgres'],timeout=180,admin=True)
+    portable=run(['node','tools/native-runner/roundtrip.mjs'],portable,timeout=90)
+    source_catalog=before;source_counts=json.loads(sql(counts));source_work=work;source_env=env
+    # Hash every application row plus Auth users/identities. Values never enter public logs.
+    def row_fingerprint():
+        tables=json.loads(sql("SELECT json_agg(tablename ORDER BY tablename) FROM pg_tables WHERE schemaname='public';"))
+        result={}
+        for name in tables:
+            assert re.fullmatch('[a-z_]+',name)
+            rows=json.loads(sql("SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM public."+name+" t;"))
+            result['public.'+name]=hashlib.sha256(json.dumps(sorted(json.dumps(r,sort_keys=True) for r in rows)).encode()).hexdigest()
+        for name in ['users','identities']:
+            rows=json.loads(sql("SELECT coalesce(json_agg(row_to_json(t)),'[]'::json) FROM auth."+name+" t;"))
+            result['auth.'+name]=hashlib.sha256(json.dumps(sorted(json.dumps(r,sort_keys=True) for r in rows)).encode()).hexdigest()
+        return result
+    source_rows=row_fingerprint()
+    source_sequences=json.loads(sql("SELECT json_agg(json_build_object('name',sequencename,'value',last_value) ORDER BY sequencename) FROM pg_sequences WHERE schemaname='public';"))
+    source_id=run(admin_prefix,input=b'SELECT system_identifier FROM pg_control_system();',env=pg_env).decode().strip()
+    run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env);started=False
+    check('Source stack stopped before independent restore',True)
+    stage='independent_initialize';work=Path(tempfile.mkdtemp(prefix='spodora-independent-ci-'));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
+    run(cli+['init','--workdir',str(work),'--yes'],env=env)
+    (work/'supabase/config.toml').write_text(config.read_text().replace(PROJECT,'spodora-v4-independent-ci'))
+    started=True
+    run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','rest,auth,storage,functions,studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
+    target_status=json.loads(run(cli+['stack','status','--workdir',str(work),'--output-format','json'],env=env));target_values=target_status.get('env',target_status)
+    parsed=urllib.parse.urlsplit(target_values['DB_URL']);assert parsed.hostname in ('127.0.0.1','localhost') and parsed.username=='postgres' and parsed.path=='/postgres'
+    pg_port=parsed.port;pg_env=env.copy();pg_env['PGPASSWORD']=urllib.parse.unquote(parsed.password or '')
+    check('Independent target starts without application data',sql("SELECT to_regclass('public.applications') IS NULL;")=='t')
+    target_admin=[str(pg_bin/'psql'),'-h','127.0.0.1','-p',str(pg_port),'-U','supabase_admin','-X','-d','postgres','-At','-v','ON_ERROR_STOP=1']
+    target_id=run(target_admin,input=b'SELECT system_identifier FROM pg_control_system();',env=pg_env).decode().strip()
+    check('Independent PostgreSQL cluster identifier differs',source_id!=target_id)
+    run(target_admin,input=b'GRANT supabase_auth_admin TO postgres;',env=pg_env)
+    stage='independent_pg_restore'
+    pgtool('pg_restore',['--clean','--if-exists','--single-transaction','--exit-on-error','-d','postgres'],portable,timeout=180,admin=True)
+    check('Independent application catalog restored',normalize(source_catalog)==normalize(json.loads(sql(catalog))))
+    check('Independent all application rows and Auth hashes match',source_rows==row_fingerprint())
+    check('Independent identity sequence values restored',source_sequences==json.loads(sql("SELECT json_agg(json_build_object('name',sequencename,'value',last_value) ORDER BY sequencename) FROM pg_sequences WHERE schemaname='public';")))
+    check('Independent object metadata absent before file restore',sql('SELECT count(*) FROM storage.objects;')=='0')
+    run(cli+['stack','stop','--workdir',str(work)],timeout=120,env=env)
+    run(cli+['stack','start','--workdir',str(work),'--runtime','native','--eager','--exclude','functions,studio,mail,analytics,pooler,realtime','--output-format','json'],timeout=720,env=env)
+    target_status=json.loads(run(cli+['stack','status','--workdir',str(work),'--output-format','json'],env=env));target_values=target_status.get('env',target_status)
+    assert re.match(r'^http://(?:127\.0\.0\.1|localhost):\d+/?$',target_values['API_URL'])
+    stage='independent_auth_storage'
+    payload={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'users':context['users'],'company_id':context['company_id'],'transfer':verified['storage_transfer']}
+    independent=json.loads(run(['node','tools/native-runner/independent-api.mjs'],json.dumps(payload).encode(),timeout=180,check=False));report['checks']+=independent['checks'];assert not independent.get('error'),independent.get('error')
+    report['independent_cluster_restore']={'status':independent['status'],'source_stopped':True,'separate_state':work!=source_work,'cluster_identifier_differs':source_id!=target_id,'public_and_auth_row_hashes_equal':True,'sequence_values_equal':True,'storage_files':3,'original_object_uuids_preserved':False,'same_runner_host':True}
     report['dump_bytes']=len(dump);report['dump_sha256']=hashlib.sha256(dump).hexdigest();report['status']='PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE';report['native_auth_storage_api_tested']=True
 except Exception as error:
     report['failed_stage']=stage;report['error_type']=type(error).__name__;report['error']=str(error)[:900]

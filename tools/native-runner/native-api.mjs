@@ -17,7 +17,7 @@ try{
    check('GoTrue admin creates confirmed synthetic '+kind,!created.error&&!!created.data.user?.id);
    const signed=await createClient(input.url,input.anon,{auth:{persistSession:false,autoRefreshToken:false}}).auth.signInWithPassword({email,password});
    check('Real password sign-in '+kind,!signed.error&&!!signed.data.session?.access_token);
-   users[kind]={id:created.data.user.id,token:signed.data.session.access_token};
+   users[kind]={id:created.data.user.id,email,password,token:signed.data.session.access_token};
   }
   process.stdout.write(JSON.stringify({checks,users}));
  }else{
@@ -42,8 +42,8 @@ try{
   const ownedDelete=await admin.auth.admin.deleteUser(u.storage.id,false);check('Owned Storage prevents Auth user deletion',!!ownedDelete.error);
   const ownedAfter=await admin.from('drivers').select('id').eq('user_id',u.storage.id);check('Storage ownership refusal retains driver profile',!ownedAfter.error&&ownedAfter.data.length===1);
   const downloaded=await storage.storage.from('v4-synthetic').download('fixture.txt');check('Storage bytes remain readable after refused deletion',!downloaded.error&&(await downloaded.data.text())==='synthetic-native-storage-only');
-  const storage_restore=await storageRoundtrip({admin,owner:storage,outsider:other,anon,check});
+  const {transfer:storage_transfer,...storage_restore}=await storageRoundtrip({admin,owner:storage,outsider:other,anon,check});
   const restoredPreflight=await admin.rpc('withdrawal_preflight',{p_user_id:u.storage.id});check('Restored owned files still block withdrawal',!restoredPreflight.error&&restoredPreflight.data.reason==='storage_objects');
-  process.stdout.write(JSON.stringify({checks,storage_restore}));
+  process.stdout.write(JSON.stringify({checks,storage_restore,storage_transfer}));
  }
 }catch{process.stdout.write(JSON.stringify({checks,error:'Native API contract failed: '+attempted+'; '+diagnostic}));process.exitCode=1}
