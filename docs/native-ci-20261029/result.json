@@ -2,7 +2,7 @@
   "status": "FAIL",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-10-31T12:04:47.593495+00:00",
+  "started_at": "2026-10-31T12:07:46.354039+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -78,6 +78,7 @@
     "Independent PostgreSQL cluster identifier differs",
     "Fresh target creator default ACLs neutralized before restore",
     "Independent application catalog restored",
+    "Independent private schema function column sequence and Auth trigger privileges restored",
     "Independent all application rows and Auth hashes match",
     "Independent identity sequence values restored",
     "Independent object metadata absent before file restore",
@@ -119,16 +120,17 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "c2e70ae604c558ebbed5285fc5af16f51d65f691",
+  "source_commit": "6c319dca7e1c7eeb16e5604269f7a1b4da9e416b",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "source_sha256": {
-    "scripts/ci-native-restore.py": "fc2cd5b1dc9d606ad7e85a676d7eadefc18a44682774948a94d1284e8cdaca0f",
+    "scripts/ci-native-restore.py": "c0c5b65cb6f4f82a875973717a60922ad874291870837c8aca8d3d80ba73fefa",
     "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
     "tools/native-runner/roundtrip.mjs": "85903b2eec54045202e105ae788018054acfe2bc4a0d256e2411c9a1ecf1c4e9",
     "tools/native-runner/storage-roundtrip.mjs": "9f05f83cf84f1fe838b5425854b73b85c3cafdd807dfb74986575ab501a74d4e",
-    "tools/native-runner/independent-api.mjs": "f46828bd82e064a686c2d4f6b77cd5aa4ac8da7028ca222e9f8890edc9e02b69",
+    "tools/native-runner/independent-api.mjs": "522683f08e19a23fca010a0ace224736cea1a0e95bb8b59c36c7037e5ac4dba0",
     "tools/native-runner/reset-fixture-default-acl.sql": "7f8cb6bb0a841835b06766548835175ef7704061f99b70d3207ab0f29d7d6c49",
+    "tools/native-runner/read-security-catalog.sql": "2b74fab9d6fb8529f1017be109ae1886abeaaa6421b561fe2153e4bfbb8050f7",
     "tools/restore-lab/backup-envelope.mjs": "d8de0360cc7f990935ce83dccb8381a8e0badc1ac3b4dadca6b4a9468fb0f374",
     "tools/native-runner/package-lock.json": "d30e28d162c34aa1844322366a8869f1bc0b6e283a19135b9d012a56a1f4aee9",
     "docs/database/restore-candidate/application-review.sql": "cd1708d9d22e8177b58aa502831c1997fa5757152d23c5add6f2d4fe69e8ecd5",
@@ -186,7 +188,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "ee03df4f001ed84e3f0ea7fca3f26a0ae8627db13a9461f35f6cda96c6e28459",
+    "ciphertext_sha256": "1ca9ed9c2455f439daf3be74ebf569be3f08ffa7c8f142a73e5bec9a81916cf3",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
@@ -194,6 +196,6 @@
   },
   "failed_stage": "independent_auth_storage",
   "error_type": "AssertionError",
-  "error": "Independent API failed: Independent company publishes new job",
-  "completed_at": "2026-10-31T12:05:34.969939+00:00"
+  "error": "Independent API failed: Independent company publishes new job {\"code\":\"23502\",\"message\":\"null value in column \\\"location\\\" of relation \\\"jobs\\\" violates not-null constraint\",\"status\":400}",
+  "completed_at": "2026-10-31T12:08:29.086639+00:00"
 }
