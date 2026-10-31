@@ -133,7 +133,9 @@ try:
     run(target_admin,input=b'GRANT supabase_auth_admin TO postgres;',env=pg_env)
     stage='independent_pg_restore'
     pgtool('pg_restore',['--clean','--if-exists','--single-transaction','--exit-on-error','-d','postgres'],portable,timeout=180,admin=True)
-    check('Independent application catalog restored',normalize(source_catalog)==normalize(json.loads(sql(catalog))))
+    target_catalog=json.loads(sql(catalog));sc=normalize(source_catalog);tc=normalize(target_catalog)
+    if sc!=tc:report['independent_catalog_diff']={k:{'source_only':sorted(set(sc[k])-set(tc[k]))[:3],'target_only':sorted(set(tc[k])-set(sc[k]))[:3]} for k in sc if sc[k]!=tc[k]}
+    check('Independent application catalog restored',sc==tc)
     check('Independent all application rows and Auth hashes match',source_rows==row_fingerprint())
     check('Independent identity sequence values restored',source_sequences==json.loads(sql("SELECT json_agg(json_build_object('name',sequencename,'value',last_value) ORDER BY sequencename) FROM pg_sequences WHERE schemaname='public';")))
     check('Independent object metadata absent before file restore',sql('SELECT count(*) FROM storage.objects;')=='0')
