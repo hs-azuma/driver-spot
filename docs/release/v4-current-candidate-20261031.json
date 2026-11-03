@@ -1,8 +1,8 @@
 {
   "status": "PREPARED_APPROVAL_REQUIRED",
-  "date_jst": "2026-10-31",
+  "date_jst": "2026-11-04",
   "observed_main_commit": "41d6223854a780713686d02ae73d028eb17aa2c4",
-  "native_test_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
+  "native_test_commit": "dd3957dad3455f8a4671945046e55ba40624e2e4",
   "native_sources_current": true,
   "production_changed": false,
   "production_ready": false,
@@ -155,15 +155,63 @@
       "rollback_review": false
     },
     {
+      "path": "supabase/functions/account-auth/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/account-auth/deno.lock",
+      "sha256": "1446e13d2e9fdcd2aeac9f9ce47edb7dbf22f5b6e8bf6030e4529c2b3647d161",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/application-result-email/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/application-result-email/deno.lock",
+      "sha256": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
       "path": "supabase/functions/application-result-email/index.ts",
-      "sha256": "30e7f195475cb1a6d0f7b4c5c0e684050e869bcff16228c3378126cb03708c26",
+      "sha256": "3eb903aa6ba47cfdda38a4763307b1879fe517500fc3ba84f79cc724b54b87f8",
       "base_sha256": "dbb97858bdd100c320332016353d5788a40b36be86bd87e7af06228a36310714",
       "rollback_review": false
     },
     {
+      "path": "supabase/functions/company-job-invite/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/company-job-invite/deno.lock",
+      "sha256": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
       "path": "supabase/functions/company-job-invite/index.ts",
-      "sha256": "1a61f57de3b498791bae4ae6a326c22fe1928c4a78fe5e6a1d515f1cf817b1e3",
+      "sha256": "5993353805fc07479526748c55e59a23db2741bde9db6a15a5798ecc1d7da13f",
       "base_sha256": "db0258d738876681370bbb6cd52a0513775033a2042a715735877de8e95a1971",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/delete-account/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/delete-account/deno.lock",
+      "sha256": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
+      "base_sha256": null,
       "rollback_review": false
     },
     {
@@ -174,20 +222,128 @@
     },
     {
       "path": "supabase/functions/delete-account/index.ts",
-      "sha256": "9a5853250424033c17827a934fcb4e924cdf20ffa49e955bbe1ad99b694490eb",
+      "sha256": "67d74fcb89549c60d60522b9e3525350be1c58198d3797cc8f04c4cce33ed902",
       "base_sha256": "aeacca65091f84be4097240602d7c626ddbd20f5b812a552f6d4d0909478b649",
       "rollback_review": false
     },
     {
+      "path": "supabase/functions/email-unsubscribe/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/email-unsubscribe/deno.lock",
+      "sha256": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
       "path": "supabase/functions/email-unsubscribe/index.ts",
-      "sha256": "c20ee77e4a3cf5c37844fbffbbcdf3532698599959ea4f5ecd72406c78e35835",
+      "sha256": "649178a740720bd91484e671cac5410dabe18caca0df4051814c2e8db52e9e3e",
       "base_sha256": "e2d21db14ee74101ffb3e90ebcf714d702c98aaab6da61fcdc7debe4a10da1f9",
       "rollback_review": false
     },
     {
+      "path": "supabase/functions/line-account/common.ts",
+      "sha256": "6622d32a6036593f6dec3d41da3379db06710638e566f0ab087432910b662876",
+      "base_sha256": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-account/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-account/deno.lock",
+      "sha256": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-account/index.ts",
+      "sha256": "991347ee9663693ca10f7f9b0e78d2ac2ac059466ad0f7b662db62c5c3e8ef8c",
+      "base_sha256": "e1e2ffe2bbcec492fdf569f798f4e94047f2e971bfa54eecfe6d211834fc5b3e",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-notifications/application-email.ts",
+      "sha256": "bd18ee7ec15083c4c8ba9650726fcea8977ba1d61377321535f86ff9b86d3aa1",
+      "base_sha256": "d1fc05cda58dd133da74c888e04af2fdee7222d06c1d4bb14f7d49d3b496c837",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-notifications/common.ts",
+      "sha256": "6622d32a6036593f6dec3d41da3379db06710638e566f0ab087432910b662876",
+      "base_sha256": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-notifications/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-notifications/deno.lock",
+      "sha256": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
       "path": "supabase/functions/line-notifications/index.ts",
-      "sha256": "755d0cf19d7f38a3372a9362b434b51d7e4e971cc88ed09bc517a0c7fe7210a4",
+      "sha256": "282b8bf0ee1323332c0d2c379d008ace1faeea00cc948500e6f4d8b51f030ecc",
       "base_sha256": "7502d760371c7bbeb1dc9f263b24bf1f156e9aeeddb1dd946b6c9feb96f88770",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-setup-once/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-setup-once/deno.lock",
+      "sha256": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-webhook/common.ts",
+      "sha256": "6622d32a6036593f6dec3d41da3379db06710638e566f0ab087432910b662876",
+      "base_sha256": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-webhook/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-webhook/deno.lock",
+      "sha256": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/line-webhook/index.ts",
+      "sha256": "c6e2a55418861a866f09d9442f7f4f8a8450c62fe54bcc05c42c62f4c7288162",
+      "base_sha256": "422d6d56d452b3c943fb2f826bb30cf57ccea17abf092dcd8fcf81749a9a1feb",
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/share-driver-spot-email/deno.json",
+      "sha256": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+      "base_sha256": null,
+      "rollback_review": false
+    },
+    {
+      "path": "supabase/functions/share-driver-spot-email/deno.lock",
+      "sha256": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+      "base_sha256": null,
       "rollback_review": false
     },
     {

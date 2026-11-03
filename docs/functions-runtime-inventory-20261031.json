@@ -1,5 +1,5 @@
 {
-  "date_jst": "2026-10-31",
+  "date_jst": "2026-11-04",
   "status": "INVENTORIED_WITH_NATIVE_SMOKE",
   "functions": [
     {
@@ -12,9 +12,13 @@
         "SUPABASE_URL"
       ],
       "source_sha256": {
+        "supabase/functions/account-auth/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/account-auth/deno.lock": "1446e13d2e9fdcd2aeac9f9ce47edb7dbf22f5b6e8bf6030e4529c2b3647d161",
         "supabase/functions/account-auth/index.ts": "8fc2022bc2c3bf84cc0a25acd9677a3f3599889ec2ecde85ee4665cb050e8c27"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -29,9 +33,13 @@
       ],
       "source_sha256": {
         "supabase/functions/application-result-email/common.ts": "8db743ba726bbc186bb32974bee425839ea2224092c0e64623797bfc5eaac0c9",
-        "supabase/functions/application-result-email/index.ts": "30e7f195475cb1a6d0f7b4c5c0e684050e869bcff16228c3378126cb03708c26"
+        "supabase/functions/application-result-email/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/application-result-email/deno.lock": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
+        "supabase/functions/application-result-email/index.ts": "3eb903aa6ba47cfdda38a4763307b1879fe517500fc3ba84f79cc724b54b87f8"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -46,9 +54,13 @@
       ],
       "source_sha256": {
         "supabase/functions/company-job-invite/common.ts": "8db743ba726bbc186bb32974bee425839ea2224092c0e64623797bfc5eaac0c9",
-        "supabase/functions/company-job-invite/index.ts": "1a61f57de3b498791bae4ae6a326c22fe1928c4a78fe5e6a1d515f1cf817b1e3"
+        "supabase/functions/company-job-invite/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/company-job-invite/deno.lock": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
+        "supabase/functions/company-job-invite/index.ts": "5993353805fc07479526748c55e59a23db2741bde9db6a15a5798ecc1d7da13f"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -61,10 +73,14 @@
         "SUPABASE_URL"
       ],
       "source_sha256": {
+        "supabase/functions/delete-account/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/delete-account/deno.lock": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
         "supabase/functions/delete-account/handler.ts": "6166fde61cdc1d5026988e36da0d08b58e82e314ae0f0cc7a173a287dbedefcb",
-        "supabase/functions/delete-account/index.ts": "9a5853250424033c17827a934fcb4e924cdf20ffa49e955bbe1ad99b694490eb"
+        "supabase/functions/delete-account/index.ts": "67d74fcb89549c60d60522b9e3525350be1c58198d3797cc8f04c4cce33ed902"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -77,9 +93,13 @@
       ],
       "source_sha256": {
         "supabase/functions/email-unsubscribe/common.ts": "8db743ba726bbc186bb32974bee425839ea2224092c0e64623797bfc5eaac0c9",
-        "supabase/functions/email-unsubscribe/index.ts": "c20ee77e4a3cf5c37844fbffbbcdf3532698599959ea4f5ecd72406c78e35835"
+        "supabase/functions/email-unsubscribe/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/email-unsubscribe/deno.lock": "ddb9933848b28763efa0d8aa9f98e6d797003482087b04e15425745d5d8304d4",
+        "supabase/functions/email-unsubscribe/index.ts": "649178a740720bd91484e671cac5410dabe18caca0df4051814c2e8db52e9e3e"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -94,10 +114,14 @@
         "SUPABASE_URL"
       ],
       "source_sha256": {
-        "supabase/functions/line-account/common.ts": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
-        "supabase/functions/line-account/index.ts": "e1e2ffe2bbcec492fdf569f798f4e94047f2e971bfa54eecfe6d211834fc5b3e"
+        "supabase/functions/line-account/common.ts": "6622d32a6036593f6dec3d41da3379db06710638e566f0ab087432910b662876",
+        "supabase/functions/line-account/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/line-account/deno.lock": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+        "supabase/functions/line-account/index.ts": "991347ee9663693ca10f7f9b0e78d2ac2ac059466ad0f7b662db62c5c3e8ef8c"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -111,11 +135,15 @@
         "SUPABASE_URL"
       ],
       "source_sha256": {
-        "supabase/functions/line-notifications/application-email.ts": "d1fc05cda58dd133da74c888e04af2fdee7222d06c1d4bb14f7d49d3b496c837",
-        "supabase/functions/line-notifications/common.ts": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
-        "supabase/functions/line-notifications/index.ts": "755d0cf19d7f38a3372a9362b434b51d7e4e971cc88ed09bc517a0c7fe7210a4"
+        "supabase/functions/line-notifications/application-email.ts": "bd18ee7ec15083c4c8ba9650726fcea8977ba1d61377321535f86ff9b86d3aa1",
+        "supabase/functions/line-notifications/common.ts": "6622d32a6036593f6dec3d41da3379db06710638e566f0ab087432910b662876",
+        "supabase/functions/line-notifications/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/line-notifications/deno.lock": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+        "supabase/functions/line-notifications/index.ts": "282b8bf0ee1323332c0d2c379d008ace1faeea00cc948500e6f4d8b51f030ecc"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -124,9 +152,13 @@
       "observed_production_version": 4,
       "environment_names": [],
       "source_sha256": {
+        "supabase/functions/line-setup-once/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/line-setup-once/deno.lock": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
         "supabase/functions/line-setup-once/index.ts": "d70d2b4e40ceb1df2bf6d0812a971f88ffa87a727e750566a43d5ceb443f00b9"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -140,10 +172,14 @@
         "SUPABASE_URL"
       ],
       "source_sha256": {
-        "supabase/functions/line-webhook/common.ts": "32688ad69681273273897dc2b9c3f0bb385715cab81dde82868ac9a7e399cfec",
-        "supabase/functions/line-webhook/index.ts": "422d6d56d452b3c943fb2f826bb30cf57ccea17abf092dcd8fcf81749a9a1feb"
+        "supabase/functions/line-webhook/common.ts": "6622d32a6036593f6dec3d41da3379db06710638e566f0ab087432910b662876",
+        "supabase/functions/line-webhook/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/line-webhook/deno.lock": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
+        "supabase/functions/line-webhook/index.ts": "c6e2a55418861a866f09d9442f7f4f8a8450c62fe54bcc05c42c62f4c7288162"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     },
     {
@@ -152,9 +188,13 @@
       "observed_production_version": 5,
       "environment_names": [],
       "source_sha256": {
+        "supabase/functions/share-driver-spot-email/deno.json": "021c69a6a858b2cb5240c0ba69b72bcb865e492918009ffaba233ce9e3218bc8",
+        "supabase/functions/share-driver-spot-email/deno.lock": "ce66ef296f79e6a5ea78d735edc9326a8fa851133b91fa1138ed7a90718caa6f",
         "supabase/functions/share-driver-spot-email/index.ts": "6c3032f76a7a4d7fe188373533b54621ecdaa2c90277393aeaaf6dd4c2d8a42e"
       },
       "native_smoke_verified": true,
+      "strict_application_typecheck_verified": true,
+      "dependency_declarations_rechecked": false,
       "secrets_values_included": false
     }
   ],

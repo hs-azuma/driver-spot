@@ -1,34 +1,34 @@
 {
-  "status": "IN_PROGRESS",
+  "status": "ALL_EIGHT_PREPARATION_SCOPES_COMPLETE",
   "date_jst": "2026-11-04",
   "production_changed": false,
   "production_ready": false,
   "real_data_exported": false,
   "paid_resources_created": false,
-  "native_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
-  "native_checks": 181,
-  "native_sources_current": false,
-  "source_sha256": "94c26cb809a2e040bbfafe308b4cd57fc040fe38912abd06bb97b1ea24ab8bca",
+  "native_commit": "dd3957dad3455f8a4671945046e55ba40624e2e4",
+  "native_checks": 199,
+  "native_sources_current": true,
+  "source_sha256": "b5fc44a418ac1f4d9cc1c36da458e8a761003aed64b0d32ce4e7a13341534825",
   "tasks": [
     {
       "id": 1,
       "title": "画面から実DBまでの自動テスト",
-      "complete": false,
-      "status": "IN_PROGRESS",
+      "complete": true,
+      "status": "VERIFIED_PREPARATION",
       "evidence": "docs/native-ci-20261029/result.json#browser_e2e"
     },
     {
       "id": 2,
       "title": "10 Functionsの厳密型チェック",
-      "complete": false,
-      "status": "IN_PROGRESS",
+      "complete": true,
+      "status": "VERIFIED_PREPARATION",
       "evidence": "docs/native-ci-20261029/result.json#edge_typecheck"
     },
     {
       "id": 3,
       "title": "依存関係の固定",
-      "complete": false,
-      "status": "IN_PROGRESS",
+      "complete": true,
+      "status": "VERIFIED_PREPARATION",
       "evidence": "docs/dependency-inventory-20261029.json"
     },
     {
@@ -48,8 +48,8 @@
     {
       "id": 6,
       "title": "本番適用前の診断ツール",
-      "complete": false,
-      "status": "IN_PROGRESS",
+      "complete": true,
+      "status": "VERIFIED_PREPARATION",
       "evidence": "docs/v4-eight/predeploy.md"
     },
     {
@@ -67,7 +67,7 @@
       "evidence": "docs/v4-eight/resume.md"
     }
   ],
-  "complete_count": 4,
+  "complete_count": 8,
   "total": 8,
   "count_is_not_weighted_completion_percentage": true,
   "known_limits": [

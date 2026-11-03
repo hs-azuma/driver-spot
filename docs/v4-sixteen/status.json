@@ -1,13 +1,13 @@
 {
-  "date_jst": "2026-10-31",
+  "date_jst": "2026-11-04",
   "status": "ALL_SIXTEEN_SYNTHETIC_SCOPES_VERIFIED",
   "production_changed": false,
   "production_ready": false,
   "native_sources_current": true,
-  "all_source_sha256": "541381ab43445accabfe7b09f3fbfe4750863e47e6b0269d6ca9703cd51806e3",
+  "all_source_sha256": "b5fc44a418ac1f4d9cc1c36da458e8a761003aed64b0d32ce4e7a13341534825",
   "native_overall_status": "PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE",
-  "native_checks": 181,
-  "native_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
+  "native_checks": 198,
+  "native_commit": "dd3957dad3455f8a4671945046e55ba40624e2e4",
   "tasks": [
     {
       "id": 1,
