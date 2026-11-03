@@ -1,8 +1,8 @@
 {
-  "status": "FAIL",
+  "status": "PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-11-03T23:07:24.008987+00:00",
+  "started_at": "2026-11-03T23:12:59.962613+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -195,8 +195,14 @@
     "Application checkbox and submit UI commit one actual application",
     "Actual duplicate or overlap guard refuses a second UI application",
     "Company hiring UI updates real application despite unavailable email provider",
+    "Authenticated company shifts synthetic fixture schedule without mocking clocks",
     "QR attendance UI commits actual check-in",
-    "QR attendance UI commits actual check-out"
+    "QR attendance UI commits actual check-out",
+    "Driver payroll confirmation modal commits actual request",
+    "Company payroll approval modal commits actual amount",
+    "All browser external requests blocked",
+    "Native browser registration through payroll UI succeeds",
+    "All ten Functions strict Deno typechecks pass"
   ],
   "limitations": [
     "Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export",
@@ -205,7 +211,7 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "ac46c705dcd72562a4ef8d04eb294615ce949ac0",
+  "source_commit": "7a4bb6ab5f6df4f9aa8231d05f427fa7a5314862",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "edge_typecheck": {
@@ -326,7 +332,7 @@
   "source_sha256": {
     "scripts/ci-native-restore.py": "0ec2fd80469cda8f43906623b3b70b0136fafc7a9ec5e6ce47c93b06e985b7e3",
     "docs/database/predeploy-read-only.sql": "15cf0803a71258ed8977cc186f6f3e8df0ba9c8ee71b8be61b98d2374e421573",
-    "tools/native-runner/browser-e2e.mjs": "c8e8103705d62c36019f1c177a841fe1801b164db6294645938a1699fa558eff",
+    "tools/native-runner/browser-e2e.mjs": "fee77500484336420a1c406e54d31a94ba3d57da15e271781b678bb8c4bf31f7",
     "tools/edge-check/verify.mjs": "9f083251f97d4e4c7412515e27944ebdd38c08def21a22118a05af30dc9f533d",
     "tools/edge-check/package-lock.json": "1c35656bad397a6ad8a3fb0f39e548484367b98f21199e585768800fc4ec6434",
     "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
@@ -455,7 +461,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "1a48424555a918631a72e1124400aa94f5ebb5aa62f40ff58652a08c398a03e3",
+    "ciphertext_sha256": "f3b7b3ade25f12ae747e2d646c64472e9836c81ca07475501662c8f13c72124a",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
@@ -498,7 +504,7 @@
     "original_object_uuids_preserved": false,
     "same_runner_host": true
   },
-  "edge_endpoint": "http://127.0.0.1:20362/functions/v1",
+  "edge_endpoint": "http://127.0.0.1:25953/functions/v1",
   "edge_status_env_names": [
     "ANON_KEY",
     "API_URL",
@@ -541,7 +547,7 @@
         "message": "この時間帯は別の求人に応募済みです。重複する求人には応募できません。"
       }
     ],
-    "status": "FAIL",
+    "status": "PASS_NATIVE_BROWSER_REGISTRATION_TO_PAYROLL",
     "production_access": false,
     "real_data_used": false,
     "checks": [
@@ -554,21 +560,25 @@
       "Application checkbox and submit UI commit one actual application",
       "Actual duplicate or overlap guard refuses a second UI application",
       "Company hiring UI updates real application despite unavailable email provider",
+      "Authenticated company shifts synthetic fixture schedule without mocking clocks",
       "QR attendance UI commits actual check-in",
-      "QR attendance UI commits actual check-out"
+      "QR attendance UI commits actual check-out",
+      "Driver payroll confirmation modal commits actual request",
+      "Company payroll approval modal commits actual amount",
+      "All browser external requests blocked"
     ],
     "source_sha256": {
       "driver-register.html": "adb20d3b3c0d7ab9a3859da395979e63cd03fc66d55831f48f68317515183824",
-      "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
       "assets/name-kana.js": "a897399e068a134df6c214106fb1151a6859c91650ffb098db2bceddaa582b2c",
+      "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
       "assets/auth-session.js": "04a591c89d63d28ac3e1e8bb94d0cd3479bbff3e8b35eb17b9c449aa22daa34d",
       "assets/account-auth.js": "c105f9737661ca1b5400731968209fc785102b6168393993f970a487e13c085e",
       "assets/supodora-logo-final.png": "7773929be8a776bb582e89233169a0cd899f8456c927d7f017d68d0347f1df63",
       "job-create.html": "3dce1322d7d0060d89acab7161591351c31bce743b1315acb10abfdc64777e85",
       "assets/job-draft.js": "47a90f3ef965d4de37d53da7c5ce34e493eb0bf0535d3965b5295ea8c486877c",
+      "assets/job-copy.js": "d83b7fc20ad642cd5dde8191006699827cc3e4e678086eac2192ffc0b3ea1696",
       "assets/attendance-summary.js": "7c5eb61f7aefb96c35c889e7cfef51498bc0b27ca9510efb70d9a35d9bbb9dfc",
       "assets/job-preview.js": "f4fb3c0bf6075770633cab363ef4a09e98182bd5a0d51b9459f0630ded928405",
-      "assets/job-copy.js": "d83b7fc20ad642cd5dde8191006699827cc3e4e678086eac2192ffc0b3ea1696",
       "company.html": "4cb9bb3b66af7068cb0951348c10e9ba2702a2df9dc9b4a5de1fc8884ee494d3",
       "assets/page-state.js": "4707217e94fd9bdf1eec5ba9f2425aad7bbd51a23b8a23b2eb22ec3f0c360290",
       "apply-confirm.html": "8e6ce7a00dc8b3fca8cc489ae4db034906f5cd740455b9975910eef91903163b",
@@ -584,21 +594,22 @@
       "assets/applicant-summary.js": "ac3e378b90f345f7a89c56e0530b3fe358b32309ba65de82d0ec216ba4d07deb",
       "attendance.html": "743f11fe7356730c972f21979b24e3bb2f5abbd7899821252ce3933652e070c2",
       "assets/attendance-qr.css": "c6e89a210f6e6adb0b66290b8e5378f7615b3d864c0ddcd80defbaf376df284a",
-      "assets/attendance-qr.js": "419ae4a1c691241dc3fffa8c70d30611c528a33e65ff492cc91519ca375e94da"
+      "assets/attendance-qr.js": "419ae4a1c691241dc3fffa8c70d30611c528a33e65ff492cc91519ca375e94da",
+      "company-workforce.html": "933aaeb3d4562ecebedec77b8c24f83551ca6a20afb283668d0586055f564b71",
+      "assets/attendance-export.js": "077e7ad5954b19488c4e50a94bad187be03c1bc0b02495611a3c6a1a2d73dff1"
     },
     "limits": [
       "Test-only URL/key substitution, CSP and CORS bridging; no production deployment",
       "Synthetic company provisioned by fixture; driver registration uses actual account-auth UI",
       "QR token is transferred in test; physical camera and biometrics are not exercised",
+      "After hire the authenticated company shifts only the synthetic job schedule to current time; browser/server clocks are real",
       "Missing provider configuration returns failure; no real email or LINE delivery"
     ],
     "browser": "153.0.8010.0",
-    "failed_stage": "pay_request_ui",
-    "error": "Browser/native integration failed; no page contents, credentials or recovery codes included",
     "external_requests_blocked": 0
   },
-  "failed_stage": "native_browser_e2e",
-  "error_type": "RuntimeError",
-  "error": "Native browser registration through payroll UI succeeds",
-  "completed_at": "2026-11-03T23:09:10.910160+00:00"
+  "dump_bytes": 533185,
+  "dump_sha256": "b379084b3543b4349bd0c6c10649e4ae086aa4fbc9a9706eb5e804d754afc89e",
+  "native_auth_storage_api_tested": true,
+  "completed_at": "2026-11-03T23:14:36.567931+00:00"
 }
