@@ -47,7 +47,10 @@ try:
     read_token='';headers={}
     report['runner']='standard ubuntu-24.04';report['cli_version']=run(cli+['--version']).decode().strip();assert report['cli_version']=='2.122.0'
     for command in ['init','start','status','stop']:run(cli+[command,'--help'])
-    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/fault-proxy.py','tools/native-runner/crash-recovery.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*.ts'))]}
+
+    stage='strict_deno_typecheck'
+    edge_types=json.loads(run(['node','tools/edge-check/verify.mjs','--update-lock'],timeout=600,check=False));report['edge_typecheck']=edge_types
+    report['source_sha256']={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in ['scripts/ci-native-restore.py','docs/database/predeploy-read-only.sql','tools/native-runner/browser-e2e.mjs','tools/edge-check/verify.mjs','tools/edge-check/package-lock.json','tools/native-runner/native-api.mjs','tools/native-runner/roundtrip.mjs','tools/native-runner/storage-roundtrip.mjs','tools/native-runner/independent-api.mjs','tools/native-runner/storage-bundle.mjs','tools/native-runner/business-flow.mjs','tools/native-runner/edge-smoke.mjs','tools/native-runner/concurrency.py','tools/native-runner/fault-proxy.py','tools/native-runner/crash-recovery.py','tools/native-runner/reset-fixture-default-acl.sql','tools/native-runner/read-security-catalog.sql','tools/restore-lab/backup-envelope.mjs','tools/native-runner/package-lock.json','docs/database/restore-candidate/application-review.sql',*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'sql').glob('review-v4-*.sql')),*sorted(str(p.relative_to(ROOT)) for p in (ROOT/'supabase/functions').rglob('*') if p.is_file() and p.suffix in ('.ts','.json','.lock'))]}
     stage='initialize_fixture';work=Path(tempfile.mkdtemp(prefix='spodora-native-ci-',dir=Path.home()));env=os.environ.copy();env['SUPABASE_HOME']=str(work/'state');env['SUPABASE_EXPERIMENTAL_STACK']='1'
     run(cli+['stack','start','--help'],env=env);run(cli+['stack','status','--help'],env=env);run(cli+['stack','stop','--help'],env=env)
     run(cli+['init','--workdir',str(work),'--yes'],env=env)
@@ -87,6 +90,10 @@ try:
     # No worker or external cron is installed; API keys never leave the in-memory controller.
     sql("NOTIFY pgrst, 'reload schema';")
     time.sleep(2)
+    stage='read_only_predeploy'
+    predeploy=json.loads(pgtool('psql',['-X','-q','-d','postgres','-At','-v','ON_ERROR_STOP=1'],(ROOT/'docs/database/predeploy-read-only.sql').read_bytes()).decode())
+    report['predeploy_read_only']=predeploy
+    check('Predeploy diagnostics run inside read-only transaction',predeploy['transaction_read_only'] is True and predeploy['application_tables']==22)
     stage='native_auth';context={'url':api,'anon':anon,'service':service,'phase':'users'}
     users=json.loads(run(['node','tools/native-runner/native-api.mjs'],json.dumps(context).encode(),timeout=90,check=False));report['checks']+=users['checks'];assert not users.get('error'),users.get('error');context['users']=users['users']
     for u in users['users'].values():assert re.fullmatch('[0-9a-f-]{36}',u['id'])
@@ -212,6 +219,11 @@ try:
     edge_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'user':context['users']['company'],'functions_url':functions_url}
     edge=json.loads(run(['node','tools/native-runner/edge-smoke.mjs'],json.dumps(edge_input).encode(),timeout=240,check=False));report['checks']+=edge['checks'];assert not edge.get('error'),edge.get('error')
     report['edge_runtime']={k:v for k,v in edge.items() if k!='checks'}
+    stage='native_browser_e2e'
+    browser_input={'url':target_values['API_URL'],'anon':target_values['ANON_KEY'],'service':target_values['SERVICE_ROLE_KEY'],'company':context['users']['company'],'today':sql("SELECT (now() AT TIME ZONE 'Asia/Tokyo')::date;")}
+    ui=json.loads(run(['node','tools/native-runner/browser-e2e.mjs'],json.dumps(browser_input).encode(),timeout=300,check=False));report['browser_e2e']=ui;report['checks']+=ui['checks']
+    check('Native browser registration through payroll UI succeeds',ui['status']=='PASS_NATIVE_BROWSER_REGISTRATION_TO_PAYROLL')
+    check('All ten Functions strict Deno typechecks pass',edge_types['status']=='PASS_STRICT_DENO_ALL_TEN_FUNCTIONS')
     report['dump_bytes']=len(dump);report['dump_sha256']=hashlib.sha256(dump).hexdigest();report['status']='PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE';report['native_auth_storage_api_tested']=True
 except Exception as error:
     report['failed_stage']=stage;report['error_type']=type(error).__name__;report['error']=str(error)[:900]

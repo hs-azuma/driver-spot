@@ -6,6 +6,7 @@ on:
       - .github/workflows/v4-native-validation.yml
       - scripts/ci-native-restore.py
       - tools/native-runner/**
+      - tools/edge-check/**
 permissions:
   contents: read
 concurrency:
@@ -29,6 +30,8 @@ jobs:
         run: |
           npm ci --prefix tools/native-runner --ignore-scripts --no-audit --no-fund
           npm ci --prefix tools/sdk-lab --ignore-scripts --no-audit --no-fund
+          npm ci --prefix tools/browser-lab --ignore-scripts --no-audit --no-fund
+          npm ci --prefix tools/edge-check --ignore-scripts --no-audit --no-fund
       - name: Native synthetic Auth Storage RLS and encrypted database restore
         id: native
         env:

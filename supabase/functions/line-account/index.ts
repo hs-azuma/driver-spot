@@ -1,7 +1,7 @@
 import {hash, randomToken, rest, site} from './common.ts';
 const cors = {'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info, x-region, x-retry-count, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, traceparent, tracestate, baggage', 'Access-Control-Allow-Methods':'POST, OPTIONS', 'Cache-Control':'no-store'};
-const out = (body, status=200) => new Response(JSON.stringify(body), {status, headers:{...cors, 'Content-Type':'application/json'}});
-export async function handle(req) {
+const out = (body: unknown, status=200) => new Response(JSON.stringify(body), {status, headers:{...cors, 'Content-Type':'application/json'}});
+export async function handle(req: Request) {
   if (req.method === 'OPTIONS') {
     console.info('LINE account preflight', JSON.stringify({origin:req.headers.get('origin'), headers:req.headers.get('access-control-request-headers')}));
     return new Response(null, {status:204, headers:cors});
@@ -10,11 +10,11 @@ export async function handle(req) {
   const auth = req.headers.get('Authorization') || '';
   if (!/^Bearer .+/.test(auth)) return out({error:'ログインしてください。'},401);
   try {
-    const response = await fetch(Deno.env.get('SUPABASE_URL') + '/auth/v1/user', {headers:{apikey:Deno.env.get('SUPABASE_ANON_KEY'), Authorization:auth}, signal:AbortSignal.timeout(10000)});
+    const response = await fetch(Deno.env.get('SUPABASE_URL') + '/auth/v1/user', {headers:{apikey:Deno.env.get('SUPABASE_ANON_KEY') || '', Authorization:auth}, signal:AbortSignal.timeout(10000)});
     if (!response.ok) return out({error:'ログインし直してください。'},401);
     const user = await response.json();
     if (!user.id) return out({error:'ログインしてください。'},401);
-    const [drivers, companies] = await Promise.all(['drivers','companies'].map(table => rest(table + '?select=id&user_id=eq.' + encodeURIComponent(user.id), {headers:{apikey:Deno.env.get('SUPABASE_ANON_KEY'), Authorization:auth}})));
+    const [drivers, companies] = await Promise.all(['drivers','companies'].map(table => rest(table + '?select=id&user_id=eq.' + encodeURIComponent(user.id), {headers:{apikey:Deno.env.get('SUPABASE_ANON_KEY') || '', Authorization:auth}})));
     if (!drivers.length && !companies.length) return out({error:'スポドラの登録を完了してください。'},403);
     const body = await req.json();
     if (body.action === 'status') {

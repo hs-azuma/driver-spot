@@ -3,7 +3,7 @@ import base64,json,os,re,urllib.request,urllib.error
 REPO='hs-azuma/driver-spot';BRANCH='ci/v4-native-results-20261029';PATH='docs/native-ci-20261029/result.json'
 assert os.environ.get('GITHUB_REPOSITORY')==REPO
 assert os.environ.get('GITHUB_REF')=='refs/heads/ci/v4-native-validation-20261029'
-raw=base64.b64decode(os.environ['NATIVE_RESULT_B64'],validate=True);assert len(raw)<32768
+raw=base64.b64decode(os.environ['NATIVE_RESULT_B64'],validate=True);assert len(raw)<524288
 report=json.loads(raw);assert report.get('production_access') is False and report.get('real_data_used') is False
 assert report['source_commit']==os.environ['GITHUB_SHA'] and re.fullmatch('[0-9a-f]{40}',report['source_commit'])
 assert report['status'] in ('FAIL','PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE')

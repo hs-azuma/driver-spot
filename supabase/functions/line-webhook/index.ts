@@ -1,5 +1,5 @@
 import {hash, randomToken, verifySignature, rest, line, site} from './common.ts';
-export async function handle(req) {
+export async function handle(req: Request) {
   if (req.method !== 'POST') return new Response('Method not allowed', {status:405});
   const secret = Deno.env.get('LINE_CHANNEL_SECRET');
   if (!secret) return new Response('LINE configuration incomplete', {status:503});

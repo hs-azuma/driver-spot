@@ -1,5 +1,5 @@
 import {rest} from './common.ts';
-export async function deliverApplicationEmail(row){
+export async function deliverApplicationEmail(row: {id: string; recipient: string; subject: string; message: string}){
  const key=Deno.env.get('RESEND_API_KEY');
  if(!key)return {accepted:false,retry:true,status:503};
  const response=await fetch('https://api.resend.com/emails',{

@@ -1,0 +1,48 @@
+{
+  "status": "IN_PROGRESS",
+  "date_jst": "2026-11-04",
+  "production_changed": false,
+  "production_ready": false,
+  "real_data_exported": false,
+  "paid_resources_created": false,
+  "tasks": [
+    {
+      "id": 1,
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": 2,
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": 3,
+      "status": "IN_PROGRESS"
+    },
+    {
+      "id": 4,
+      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+    },
+    {
+      "id": 5,
+      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+    },
+    {
+      "id": 6,
+      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+    },
+    {
+      "id": 7,
+      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+    },
+    {
+      "id": 8,
+      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+    }
+  ],
+  "current_ci_commit": "48ea143f81883ad0f5369009dd7dd8310c677594",
+  "latest_attempt": "First run: 184 native checks including browser registration pass; browser publishing and strict types require fixes. Failure preserved, not counted as success.",
+  "limits": [
+    "Preparation and synthetic validation only",
+    "Real backup, independent acceptance and production approval remain pending"
+  ]
+}
