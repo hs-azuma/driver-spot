@@ -1,8 +1,8 @@
 import {rest,hash} from './common.ts';
 import {processApplicationEmails} from './application-email.ts';
 const AUTH_HASH='75cbb095859e324db519f753aa0e5d6b70cbacdd3ff66323d023b8d01070dc7d';
-const out=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
-export async function deliver(row){
+const out=(body: unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+export async function deliver(row: {id: string; destination: string; message: string}){
  const token=Deno.env.get('LINE_CHANNEL_ACCESS_TOKEN');
  if(!token)throw new Error('LINE not configured');
  const response=await fetch('https://api.line.me/v2/bot/message/push',{
@@ -29,7 +29,7 @@ export async function processLineNotifications(){
  }
  return {processed:rows.length,accepted,failed};
 }
-export async function handle(req){
+export async function handle(req: Request){
  if(req.method!=='POST')return out({error:'Method not allowed'},405);
  const key=req.headers.get('x-spodora-worker-key')||'';
  if(await hash(key)!==AUTH_HASH)return out({error:'Unauthorized'},401);

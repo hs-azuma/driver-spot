@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
-    "strict": true
+    "strict": true,
+    "lib": [
+      "deno.ns",
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ]
   },
   "lock": {
     "path": "./deno.lock",
