@@ -6,6 +6,9 @@
       "dom",
       "dom.iterable",
       "esnext"
+    ],
+    "types": [
+      "npm:@types/node@26.6.6"
     ]
   },
   "lock": {

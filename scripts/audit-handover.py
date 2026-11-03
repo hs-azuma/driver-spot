@@ -42,13 +42,15 @@ def main():
 
     for name,status in [('independent_cluster_restore','PASS_INDEPENDENT_CLUSTER_AUTH_STORAGE'),('concurrency','PASS_NATIVE_MULTI_CONNECTION_SYNTHETIC'),('business_flow','PASS_RESTORED_NATIVE_BUSINESS_FLOW'),('crash_recovery','PASS_IMMEDIATE_STOP_WAL_RECOVERY'),('http_response_loss','PASS_COMMIT_ACK_LOSS_RECONCILIATION'),('edge_runtime','PASS_NATIVE_EDGE_SMOKE')]:
         check('native_'+name,native_ci.get(name,{}).get('status')==status)
+    check('strict_edge_application_typecheck',native_current and native_ci.get('edge_typecheck',{}).get('status')=='PASS_STRICT_DENO_ALL_TEN_FUNCTIONS')
+    check('native_browser_registration_to_payroll',native_current and native_ci.get('browser_e2e',{}).get('status')=='PASS_NATIVE_BROWSER_REGISTRATION_TO_PAYROLL')
     result={'status':'PASS_PREPARATION_AUDIT_WITH_BLOCKERS' if all(c['pass'] for c in checks) else 'FAIL_PREPARATION_AUDIT','date_jst':datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9))).date().isoformat(),'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'source_sha256':fingerprint.hexdigest(),'native_test_commit':native_ci.get('source_commit'),'production_modified':False,'production_ready':False,'independent_human_acceptance':False,'signed_by':None,'checks':checks,'remaining_gates':[
       {'id':'native_synthetic_database_restore','complete':native_ok and native_current,'evidence':'docs/native-ci-20261029/result.json'},
-      {'id':'full_service_restore','complete':False,'blockers':['Separate physical host/cloud migration and old Storage object UUID/URL mapping','Managed global roles and secret custody','Exact production build and full service/transitive dependency pinning','Real provider delivery and external configuration'],'local_host_blockers':native['native_blockers']},
+      {'id':'full_service_restore','complete':False,'blockers':['Separate physical host/cloud migration and old Storage object UUID/URL mapping','Managed global roles and secret custody','Exact production service builds and platform-managed configuration','Real provider delivery and external configuration'],'local_host_blockers':native['native_blockers']},
       {'id':'real_backup_custody_and_restore','complete':False,'evidence':'docs/backup-recovery-plan.json','status':backup['status']},
       {'id':'ownership_MFA_backup_admin_external_contracts','complete':False},
       {'id':'retention_anonymization_and_withdrawal_operations','complete':False},
-      {'id':'real_device_notifications_Deno_and_native_concurrency','complete':False},
+      {'id':'real_device_and_real_notification_delivery','complete':False},
       {'id':'scoped_production_approval','complete':False},
       {'id':'independent_third_person_demonstration','complete':False}],
       'limits':['This is an automated source/evidence audit, not a third person acceptance','Local link existence does not verify external URLs, owners, credentials, or permissions','No real personal-data export, production change, message delivery or paid resource']}

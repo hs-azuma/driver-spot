@@ -1,0 +1,18 @@
+{
+  "production_access": false,
+  "attempts": [
+    {
+      "source_commit": "d7574070c60510ae8ae319f66bdeaf161db1d434",
+      "status": "FAIL",
+      "native_checks_passed_before_failure": 184,
+      "finding": "Driver registration UI passed; company session setup, form controls and strict types needed further work."
+    },
+    {
+      "source_commit": "48ea143f81883ad0f5369009dd7dd8310c677594",
+      "status": "FAIL",
+      "native_checks_passed_before_failure": 187,
+      "finding": "Read-only SQL, registration and empty job validation passed; break field is a select, and upstream declaration compatibility requires separate reporting."
+    }
+  ],
+  "full_reports": "Git history of ci/v4-native-results-20261029 preserves each actual failed result; failures are not replaced by successful evidence."
+}
