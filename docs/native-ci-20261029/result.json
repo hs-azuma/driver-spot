@@ -2,7 +2,7 @@
   "status": "FAIL",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-11-03T23:03:45.945749+00:00",
+  "started_at": "2026-11-03T23:07:24.008987+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -192,7 +192,11 @@
     "Browser real password authentication",
     "Empty job form refuses publication",
     "Job preview and publish UI creates exactly one actual job",
-    "Application checkbox and submit UI commit one actual application"
+    "Application checkbox and submit UI commit one actual application",
+    "Actual duplicate or overlap guard refuses a second UI application",
+    "Company hiring UI updates real application despite unavailable email provider",
+    "QR attendance UI commits actual check-in",
+    "QR attendance UI commits actual check-out"
   ],
   "limitations": [
     "Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export",
@@ -201,7 +205,7 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "8ab49e8fbc64e064bcae5445e29ebab0e43a0364",
+  "source_commit": "ac46c705dcd72562a4ef8d04eb294615ce949ac0",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "edge_typecheck": {
@@ -322,7 +326,7 @@
   "source_sha256": {
     "scripts/ci-native-restore.py": "0ec2fd80469cda8f43906623b3b70b0136fafc7a9ec5e6ce47c93b06e985b7e3",
     "docs/database/predeploy-read-only.sql": "15cf0803a71258ed8977cc186f6f3e8df0ba9c8ee71b8be61b98d2374e421573",
-    "tools/native-runner/browser-e2e.mjs": "b2327bc7b36e9641ef02f5a6498b37792977717e99d34b4f7b728071632fb39a",
+    "tools/native-runner/browser-e2e.mjs": "c8e8103705d62c36019f1c177a841fe1801b164db6294645938a1699fa558eff",
     "tools/edge-check/verify.mjs": "9f083251f97d4e4c7412515e27944ebdd38c08def21a22118a05af30dc9f533d",
     "tools/edge-check/package-lock.json": "1c35656bad397a6ad8a3fb0f39e548484367b98f21199e585768800fc4ec6434",
     "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
@@ -451,7 +455,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "327357f067092792de9099b34de0cd281198b846d8e272693957fa205d089a8a",
+    "ciphertext_sha256": "1a48424555a918631a72e1124400aa94f5ebb5aa62f40ff58652a08c398a03e3",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
@@ -494,7 +498,7 @@
     "original_object_uuids_preserved": false,
     "same_runner_host": true
   },
-  "edge_endpoint": "http://127.0.0.1:25345/functions/v1",
+  "edge_endpoint": "http://127.0.0.1:20362/functions/v1",
   "edge_status_env_names": [
     "ANON_KEY",
     "API_URL",
@@ -547,7 +551,11 @@
       "Browser real password authentication",
       "Empty job form refuses publication",
       "Job preview and publish UI creates exactly one actual job",
-      "Application checkbox and submit UI commit one actual application"
+      "Application checkbox and submit UI commit one actual application",
+      "Actual duplicate or overlap guard refuses a second UI application",
+      "Company hiring UI updates real application despite unavailable email provider",
+      "QR attendance UI commits actual check-in",
+      "QR attendance UI commits actual check-out"
     ],
     "source_sha256": {
       "driver-register.html": "adb20d3b3c0d7ab9a3859da395979e63cd03fc66d55831f48f68317515183824",
@@ -565,13 +573,18 @@
       "assets/page-state.js": "4707217e94fd9bdf1eec5ba9f2425aad7bbd51a23b8a23b2eb22ec3f0c360290",
       "apply-confirm.html": "8e6ce7a00dc8b3fca8cc489ae4db034906f5cd740455b9975910eef91903163b",
       "driver.html": "4fc3cd30cf4beaf62e745bd4ef496e3884b00a08b2df32f5233f4e4d8f370b7c",
-      "assets/job-preferences.js": "766f204f29215196407e5272f8b846539f09b1de1418875f13324563333ab1d2",
       "assets/attendance-review.js": "1b9c6b60e700d9de28f84184a4a15bfe927f7a237fa1c021375a61aa8f18ca42",
-      "assets/driver-work-view.js": "a6e50a245d2b2a33f23c1150de95ca99ecf8d61c01e5ddb29d6f1dcf200ddd1e",
+      "assets/job-preferences.js": "766f204f29215196407e5272f8b846539f09b1de1418875f13324563333ab1d2",
       "assets/job-browse.js": "bed125183ed2c7ce298a900efdbdd3caa938162e3636b18bfdff87bc7df55981",
-      "assets/work-rating.css": "f52fa19ac022b5b885722c160111a0affc5207e46edbcb9fc4814d3413f7221f",
+      "assets/driver-work-view.js": "a6e50a245d2b2a33f23c1150de95ca99ecf8d61c01e5ddb29d6f1dcf200ddd1e",
       "assets/work-rating.js": "4ba265a643ee6e492896e83e8312458850e3711cbef617ed8675d2e4ade98b9f",
-      "assets/login-autofill.js": "9b607a01f4dd242d21595bbcacfc45598525e4c9ff0bfe6ee7bbf38c8a4ec81d"
+      "assets/work-rating.css": "f52fa19ac022b5b885722c160111a0affc5207e46edbcb9fc4814d3413f7221f",
+      "assets/login-autofill.js": "9b607a01f4dd242d21595bbcacfc45598525e4c9ff0bfe6ee7bbf38c8a4ec81d",
+      "company-applicants.html": "b0fc317ea4a76bc84769f9decc8489041a808d22e01adf7f5b718714ca08f25d",
+      "assets/applicant-summary.js": "ac3e378b90f345f7a89c56e0530b3fe358b32309ba65de82d0ec216ba4d07deb",
+      "attendance.html": "743f11fe7356730c972f21979b24e3bb2f5abbd7899821252ce3933652e070c2",
+      "assets/attendance-qr.css": "c6e89a210f6e6adb0b66290b8e5378f7615b3d864c0ddcd80defbaf376df284a",
+      "assets/attendance-qr.js": "419ae4a1c691241dc3fffa8c70d30611c528a33e65ff492cc91519ca375e94da"
     },
     "limits": [
       "Test-only URL/key substitution, CSP and CORS bridging; no production deployment",
@@ -580,12 +593,12 @@
       "Missing provider configuration returns failure; no real email or LINE delivery"
     ],
     "browser": "153.0.8010.0",
-    "failed_stage": "duplicate_ui",
+    "failed_stage": "pay_request_ui",
     "error": "Browser/native integration failed; no page contents, credentials or recovery codes included",
     "external_requests_blocked": 0
   },
   "failed_stage": "native_browser_e2e",
   "error_type": "RuntimeError",
   "error": "Native browser registration through payroll UI succeeds",
-  "completed_at": "2026-11-03T23:05:51.710909+00:00"
+  "completed_at": "2026-11-03T23:09:10.910160+00:00"
 }
