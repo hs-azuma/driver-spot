@@ -18,3 +18,10 @@ for(const mode of ['traversal','absolute','windows','duplicate','oversize','hash
  if(mode==='traversal')entry.name='../escape';if(mode==='absolute')entry.name='/escape';if(mode==='windows')entry.name='C:\\escape';if(mode==='duplicate')entries=[entry,{...entry}];if(mode==='oversize')entry.bytes=Number.MAX_SAFE_INTEGER;if(mode==='hash')entry.sha256='0'.repeat(64);if(mode==='prefix-conflict')entries=[{...entry,name:'a'},{...entry,name:'a/b'}];
  await maliciousBundle(d+'/malformed.spbk',entries);await assert.rejects(restore(d+'/malformed.spbk',d+'/restored',key));await assert.rejects(fs.stat(d+'/restored'));await assert.rejects(fs.stat(d+'/escape'));
 }));
+test('CLI reads key only on fd3 and prints no key or input names',()=>fixture(async(d)=>{
+ const {spawn}=require('node:child_process');
+ async function cli(command,source,target,passphrase){return new Promise((resolve,reject)=>{const c=spawn(process.execPath,[path.resolve('tools/backup-kit/backup.mjs'),command,source,target],{stdio:['ignore','pipe','pipe','pipe']});let out='',err='';c.stdout.on('data',b=>out+=b);c.stderr.on('data',b=>err+=b);c.on('error',reject);c.on('close',code=>resolve({code,out,err}));c.stdio[3].end(passphrase+'\n')})}
+ const first=await cli('seal',d+'/input',d+'/cli.spbk',key);assert.equal(first.code,0);assert.equal(JSON.parse(first.out).files,3);assert(!first.out.includes(key));assert(!first.out.includes('日本語'));
+ const restored=await cli('restore',d+'/cli.spbk',d+'/cli-restored',key);assert.equal(restored.code,0);assert.equal(JSON.parse(restored.out).database_restored,false);
+ const bad=await cli('restore',d+'/cli.spbk',d+'/bad',key+'bad');assert.equal(bad.code,1);assert(!bad.err.includes(key));await assert.rejects(fs.stat(d+'/bad'));
+}));

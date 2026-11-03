@@ -151,56 +151,56 @@
     },
     {
       "path": "supabase/functions/application-result-email/index.ts",
-      "specifier": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+      "specifier": "jsr:@supabase/functions-js@2.118.0/edge-runtime.d.ts",
       "kind": "type_import",
-      "version": null,
-      "pinned": false
+      "version": "2.118.0",
+      "pinned": true
     },
     {
       "path": "supabase/functions/application-result-email/index.ts",
-      "specifier": "https://esm.sh/@supabase/supabase-js@2.105.0",
+      "specifier": "npm:@supabase/supabase-js@2.105.0",
       "kind": "runtime",
       "version": "2.105.0",
       "pinned": true
     },
     {
       "path": "supabase/functions/company-job-invite/index.ts",
-      "specifier": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+      "specifier": "jsr:@supabase/functions-js@2.118.0/edge-runtime.d.ts",
       "kind": "type_import",
-      "version": null,
-      "pinned": false
+      "version": "2.118.0",
+      "pinned": true
     },
     {
       "path": "supabase/functions/company-job-invite/index.ts",
-      "specifier": "https://esm.sh/@supabase/supabase-js@2.105.0",
+      "specifier": "npm:@supabase/supabase-js@2.105.0",
       "kind": "runtime",
       "version": "2.105.0",
       "pinned": true
     },
     {
       "path": "supabase/functions/delete-account/index.ts",
-      "specifier": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+      "specifier": "jsr:@supabase/functions-js@2.118.0/edge-runtime.d.ts",
       "kind": "type_import",
-      "version": null,
-      "pinned": false
+      "version": "2.118.0",
+      "pinned": true
     },
     {
       "path": "supabase/functions/delete-account/index.ts",
-      "specifier": "https://esm.sh/@supabase/supabase-js@2.105.0",
+      "specifier": "npm:@supabase/supabase-js@2.105.0",
       "kind": "runtime",
       "version": "2.105.0",
       "pinned": true
     },
     {
       "path": "supabase/functions/email-unsubscribe/index.ts",
-      "specifier": "jsr:@supabase/functions-js/edge-runtime.d.ts",
+      "specifier": "jsr:@supabase/functions-js@2.118.0/edge-runtime.d.ts",
       "kind": "type_import",
-      "version": null,
-      "pinned": false
+      "version": "2.118.0",
+      "pinned": true
     },
     {
       "path": "supabase/functions/email-unsubscribe/index.ts",
-      "specifier": "https://esm.sh/@supabase/supabase-js@2.105.0",
+      "specifier": "npm:@supabase/supabase-js@2.105.0",
       "kind": "runtime",
       "version": "2.105.0",
       "pinned": true
@@ -234,6 +234,18 @@
       "lockfile_present": false,
       "lockfile_required": false,
       "dependencies": []
+    },
+    {
+      "path": "tools/edge-check/package.json",
+      "lockfile_present": true,
+      "lockfile_required": true,
+      "dependencies": [
+        {
+          "package": "deno",
+          "version": "2.9.6",
+          "exact": true
+        }
+      ]
     },
     {
       "path": "tools/native-runner/package.json",
@@ -332,12 +344,11 @@
   "summary": {
     "imports": 29,
     "floating_runtime_imports": 0,
-    "floating_type_imports": 4,
+    "floating_type_imports": 0,
     "unfixed_action_refs": 2
   },
   "deferred": [
-    "JSR edge-runtime type imports require native Deno resolution before pinning",
-    "Legacy mutating workflow changes require separate scoped production review"
+    "Legacy mutating workflow changes require separate scoped production review; candidates in docs/review/workflows"
   ],
   "limits": [
     "Exact version is not a security audit or a guarantee of CDN availability",

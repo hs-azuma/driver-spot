@@ -30,3 +30,11 @@ reset-fixture-default-acl.sql、Auth所有者ロールの移行担当への付�
 
 実バックアップ未確認、対象ソースと試験が不一致、受取人/実施者/承認者未指定、実機/実通知未確認、外部設定/秘密の保管未決定。
 新規Functions環境は実送信の鍵を持たないため、実際のメール/LINE配信が成功したとは扱わない。
+
+## 2026-11-04の追加候補
+
+[8項目の整備](../v4-eight/README.md)ではFunctionsの型注釈・SDKの同一バージョンnpm参照・Function別deno.json/deno.lockを追加しています。
+適用候補の正確なファイル範囲は[現行manifest](../release/v4-current-candidate-20261031.json)を再生成して確認します。
+型検査で使うDenoと本番Edge Runtimeのビルド一致は別確認です。新しい依存解決と全Functionの起動smokeの成功証拠を照合してください。
+[旧自動更新2件の改善案](../review/workflows/README.md)は別の承認単位で、現行workflowには未適用です。
+バックアップ用ツールや読み取り診断を用意しただけでは、実バックアップや本番診断を実行済みとは扱いません。

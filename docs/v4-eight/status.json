@@ -5,44 +5,76 @@
   "production_ready": false,
   "real_data_exported": false,
   "paid_resources_created": false,
+  "native_commit": "ad658b7e299429fded988ecf742bb16580c45b0e",
+  "native_checks": 181,
+  "native_sources_current": false,
+  "source_sha256": "94c26cb809a2e040bbfafe308b4cd57fc040fe38912abd06bb97b1ea24ab8bca",
   "tasks": [
     {
       "id": 1,
-      "status": "IN_PROGRESS"
+      "title": "画面から実DBまでの自動テスト",
+      "complete": false,
+      "status": "IN_PROGRESS",
+      "evidence": "docs/native-ci-20261029/result.json#browser_e2e"
     },
     {
       "id": 2,
-      "status": "IN_PROGRESS"
+      "title": "10 Functionsの厳密型チェック",
+      "complete": false,
+      "status": "IN_PROGRESS",
+      "evidence": "docs/native-ci-20261029/result.json#edge_typecheck"
     },
     {
       "id": 3,
-      "status": "IN_PROGRESS"
+      "title": "依存関係の固定",
+      "complete": false,
+      "status": "IN_PROGRESS",
+      "evidence": "docs/dependency-inventory-20261029.json"
     },
     {
       "id": 4,
-      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+      "title": "旧自動更新2件の改善案",
+      "complete": true,
+      "status": "PREPARED_NOT_APPLIED",
+      "evidence": "docs/review/workflows/README.md"
     },
     {
       "id": 5,
-      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+      "title": "バックアップ用ツール",
+      "complete": true,
+      "status": "VERIFIED_PREPARATION",
+      "evidence": "tools/backup-kit/README.md"
     },
     {
       "id": 6,
-      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+      "title": "本番適用前の診断ツール",
+      "complete": false,
+      "status": "IN_PROGRESS",
+      "evidence": "docs/v4-eight/predeploy.md"
     },
     {
       "id": 7,
-      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+      "title": "保存・退会・匿名化の運用案",
+      "complete": true,
+      "status": "PREPARED_NOT_APPLIED",
+      "evidence": "docs/v4-eight/data-lifecycle.md"
     },
     {
       "id": 8,
-      "status": "PREPARED_AWAITING_FINAL_VERIFICATION"
+      "title": "引き継ぎ資料の最終整理",
+      "complete": true,
+      "status": "VERIFIED_PREPARATION",
+      "evidence": "docs/v4-eight/resume.md"
     }
   ],
-  "current_ci_commit": "48ea143f81883ad0f5369009dd7dd8310c677594",
-  "latest_attempt": "First run: 184 native checks including browser registration pass; browser publishing and strict types require fixes. Failure preserved, not counted as success.",
-  "limits": [
-    "Preparation and synthetic validation only",
-    "Real backup, independent acceptance and production approval remain pending"
+  "complete_count": 4,
+  "total": 8,
+  "count_is_not_weighted_completion_percentage": true,
+  "known_limits": [
+    "Upstream SDK WebAuthn declarations conflict with TypeScript6 DOM under --all; default strict application checking is used, not a passing dependency-declaration audit",
+    "Corporate email confirmation, actual camera/biometrics and real notification delivery are not tested",
+    "Backup kit is filesystem-only; no real data exported, private cloud upload or production restore executed",
+    "Legacy mutating workflow candidates and data lifecycle policy remain unapplied/unapproved",
+    "Real backup custody, owner decisions, independent human handover and production approval remain pending"
   ]
 }

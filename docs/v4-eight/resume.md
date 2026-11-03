@@ -16,5 +16,6 @@
 未成功ならstatus.jsonの項目とnative結果のfailed_stageを先に確認します。失敗も記録し、成功と混ぜません。
 ネットワーク取得失敗を型の成功扱いにしません。型検査ではハンドラーを起動する必要はありません。
 修正後は関係する検査だけを再実行し、成功したソースのSHAと結果を同時に保存します。
+最終整合点検は`python3 -B scripts/audit-dependencies.py`、`python3 -B scripts/verify-handover.py`、`python3 -B scripts/audit-handover.py`、`python3 -B scripts/v4-progress.py`、`python3 -B scripts/check-eight.py`の順に実施します。失敗を無視しないでください。
 文書の「準備完了」は、本番適用・実バックアップ・第三者本人の受け入れを意味しません。
 特定のAIアカウント・個人のローカルファイル・チャットだけに依存する秘密保管を作りません。

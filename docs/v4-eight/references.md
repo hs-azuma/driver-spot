@@ -9,3 +9,5 @@
 
 今回の型宣言互換性の発見は、当該固定バージョンに対する実行結果に基づく。上流の最新修正状況を推測してSDKを変更しない。
 固定バージョンは再現性のための指定であり、脆弱性がないことや本番Edge Runtimeと一致することの保証ではない。
+
+- [GitHub Actions billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions)：公開リポジトリの標準ホストランナーが無料である条件を確認。今回のCIは標準ubuntu-24.04のみ、成果物/キャッシュ保存なし。有料ランナーや有料リソースを作成しない。

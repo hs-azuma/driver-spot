@@ -1,5 +1,7 @@
 # 残る16項目の実行台帳
 
+現在の入口は[無料8項目の追加整備](../v4-eight/README.md)。以下の固定件数は2026-10-31の履歴です。最新の結果は各進捗JSONとsource_sha256で確認してください。
+
 更新: 2026-10-31（日本時間）。本番への変更や実データ輸出をせず、標準の無料公開CIで検証する。
 正本: `docs/v4-restore-readiness-20261029`。実行専用: `ci/v4-native-validation-20261029`。
 
@@ -30,7 +32,7 @@
 - [本番スキーマ/既定権限/採番権限の追加取得](../database/role-schema-privileges-20261031.json)。メタデータだけの読み取り。パスワード・Authユーザー行は取得していない。
 - [本番Functions設定の再確認](../edge-functions-runtime-settings-20261031.json)。9件verify_jwt=false、無効化済み診断1件だけtrue。関数内部の認可とは別。
 
-最新のnative試験は181項目成功。独立復元、実SQL並列処理、障害復旧、Functionsを含む。
+2026-10-31時点のnative試験は181項目成功。独立復元、実SQL並列処理、障害復旧、Functionsを含む。
 古い成功記録のsource_sha256が現行と異なる場合、その記録で現行を合格にしない。
 最終状態は[進捗JSON](status.json)と最新native結果で更新する。
 機械判定は `python3 -B scripts/v4-progress.py`。項目数は作業量の割合ではない。

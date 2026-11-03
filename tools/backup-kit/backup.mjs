@@ -53,7 +53,7 @@ export async function retentionPlan(folder,days,now=Date.now()){
 }
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  try{const [command,source,target]=process.argv.slice(2);if(command==='retention-plan'){console.log(JSON.stringify(await retentionPlan(source,Number(target))))}else if(['seal','restore'].includes(command)&&source&&target){
-  let password='';for await(const chunk of createReadStream(null,{fd:3,autoClose:false}))password+=chunk;if(password.endsWith('\n'))password=password.slice(0,-1);console.log(JSON.stringify(await (command==='seal'?seal:restore)(source,target,password)));password='';
+  let password='';const keyInput=createReadStream(null,{fd:3,autoClose:false});keyInput.setEncoding('utf8');for await(const chunk of keyInput){password+=chunk;if(Buffer.byteLength(password)>1025)throw Error('passphrase_length')}if(password.endsWith('\n'))password=password.slice(0,-1);console.log(JSON.stringify(await (command==='seal'?seal:restore)(source,target,password)));password='';
  }else throw Error('usage: seal|restore source destination (passphrase on private fd 3), or retention-plan folder days')}
  catch{console.error('Backup operation refused or failed. Check private paths, key and file integrity; no credentials are logged.');process.exitCode=1}
 }

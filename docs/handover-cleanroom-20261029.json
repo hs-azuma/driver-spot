@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-10-31T12:51:44.225274+00:00",
+  "started_at": "2026-11-03T23:12:09.345362+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.741,
-      "output_sha256": "adf240fbcbe15488a76ec0a91e9e1c7b81794cc682b3c64e8e331121b4beadbe"
+      "seconds": 0.469,
+      "output_sha256": "cef986528d1821ea26a475139c5433189a3009ef8849681ffabfae669acd0e7b"
     },
     {
       "name": "install_browser_pinned_offline",
@@ -33,8 +33,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 3.301,
-      "output_sha256": "7514f897a60e85e40121ef5160fee759851d2e20eee664cc411d03b032be6cd2"
+      "seconds": 1.652,
+      "output_sha256": "9de28642a2f7030e46fe92aa2c04ce90db49412add2c5561f01b797048000950"
     },
     {
       "name": "install_sdk_pinned_offline",
@@ -49,8 +49,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.719,
-      "output_sha256": "4a354dbfa9be6361d5d8cd85f204760eaaebc35654e12a9b057ce911a62b3e03"
+      "seconds": 0.499,
+      "output_sha256": "73e48d0d12660bb793c96e4f8e0a5b211fb1c56baa6c35da37f24fddea0a44ea"
     },
     {
       "name": "offline_regression",
@@ -59,14 +59,15 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 3.085,
-      "output_sha256": "d2113256d3c21813635681fc68557c72715a849b4ec93de96a5142397bc55c5e",
-      "node_tests": 171,
+      "seconds": 4.538,
+      "output_sha256": "48e773668c6d22f6238b1566ae4f4c350af7d8ddafc2a5ae5ec9bbc0a081d8c3",
+      "node_tests": 189,
       "python_suites": [
         6,
         16,
         7,
-        4
+        4,
+        5
       ]
     },
     {
@@ -78,7 +79,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 5.734,
+      "seconds": 3.783,
       "output_sha256": "b8945e672adb9150c513b0ad1f5ebd557dec249138d1ff6ac1472587efb79294"
     },
     {
@@ -90,7 +91,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 49.218,
+      "seconds": 33.014,
       "output_sha256": "420050d8328bd9e573c5ab270de948510f5393c2952cd2cb1db55d35a199df4d"
     },
     {
@@ -102,8 +103,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 10.708,
-      "output_sha256": "3677148b33875929ff74a75cf5f071744b6afad3a0328094a6cc83748325cd87"
+      "seconds": 7.313,
+      "output_sha256": "79ef681ce997aacfb5c1bd8e601af32d3747ffb6b6876095dd683011a82aef14"
     },
     {
       "name": "business_actions_and_modal_qr",
@@ -114,7 +115,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 9.768,
+      "seconds": 7.365,
       "output_sha256": "b94f8848948c5073ef1877213839390d52e31bf061eea220947113424fbd6c97"
     }
   ],
@@ -128,9 +129,9 @@
     "node": "v24.22.1",
     "npm": "11.9.0"
   },
-  "source_files": 278,
-  "source_sha256": "541381ab43445accabfe7b09f3fbfe4750863e47e6b0269d6ca9703cd51806e3",
-  "base_commit": "d89b0ebb85223b18cc45d9f7a40b3a3db437fc1d",
+  "source_files": 320,
+  "source_sha256": "b5fc44a418ac1f4d9cc1c36da458e8a761003aed64b0d32ce4e7a13341534825",
+  "base_commit": "ed93b76d44b78db3c3fb71668cadb29944ef6503",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
@@ -160,7 +161,7 @@
     "checks": 51,
     "real_backend": false
   },
-  "completed_at": "2026-10-31T12:53:07.810631+00:00",
+  "completed_at": "2026-11-03T23:13:08.217384+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",
