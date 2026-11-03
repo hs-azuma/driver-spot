@@ -2,7 +2,7 @@
   "status": "FAIL",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-11-03T22:55:36.636393+00:00",
+  "started_at": "2026-11-03T23:00:02.937668+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -199,7 +199,7 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "43bfd3cf038c035cfb425444c42edc6f0c38babe",
+  "source_commit": "c76d0c058843dc1a7c94a36aa088a4f636bf724f",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "edge_typecheck": {
@@ -214,51 +214,61 @@
       {
         "function": "account-auth",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "application-result-email",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "company-job-invite",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "delete-account",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "email-unsubscribe",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "line-account",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "line-notifications",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "line-setup-once",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "line-webhook",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       },
       {
         "function": "share-driver-spot-email",
         "pass": true,
+        "frozen_cached_recheck": true,
         "diagnostics": []
       }
     ],
@@ -310,8 +320,8 @@
   "source_sha256": {
     "scripts/ci-native-restore.py": "0ec2fd80469cda8f43906623b3b70b0136fafc7a9ec5e6ce47c93b06e985b7e3",
     "docs/database/predeploy-read-only.sql": "15cf0803a71258ed8977cc186f6f3e8df0ba9c8ee71b8be61b98d2374e421573",
-    "tools/native-runner/browser-e2e.mjs": "17294acd264aa19782b89d62f4d7d057e16b0f55284755bd317d1b36904f76b7",
-    "tools/edge-check/verify.mjs": "3cce33967ba34c4622d5693b346dce767a26afecf2938fa65b2e0bd73966796c",
+    "tools/native-runner/browser-e2e.mjs": "b39c32c30341ff76834ff942685b418fb8cffab2a52d1e3259b6ca4496aa50e3",
+    "tools/edge-check/verify.mjs": "9f083251f97d4e4c7412515e27944ebdd38c08def21a22118a05af30dc9f533d",
     "tools/edge-check/package-lock.json": "1c35656bad397a6ad8a3fb0f39e548484367b98f21199e585768800fc4ec6434",
     "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
     "tools/native-runner/roundtrip.mjs": "85903b2eec54045202e105ae788018054acfe2bc4a0d256e2411c9a1ecf1c4e9",
@@ -439,7 +449,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "d249cf28f5fb79c7032f384134d82e55e1705f08b683e355451a14f6b96377b0",
+    "ciphertext_sha256": "19ac2398216b21f4e9b6f05b41adad6944c0fbef7d4c6702d8a4a8d9470633c3",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
@@ -482,7 +492,7 @@
     "original_object_uuids_preserved": false,
     "same_runner_host": true
   },
-  "edge_endpoint": "http://127.0.0.1:32638/functions/v1",
+  "edge_endpoint": "http://127.0.0.1:24524/functions/v1",
   "edge_status_env_names": [
     "ANON_KEY",
     "API_URL",
@@ -517,6 +527,7 @@
     "external_messages_sent": 0
   },
   "browser_e2e": {
+    "api_errors": [],
     "status": "FAIL",
     "production_access": false,
     "real_data_used": false,
@@ -530,15 +541,15 @@
     "source_sha256": {
       "driver-register.html": "adb20d3b3c0d7ab9a3859da395979e63cd03fc66d55831f48f68317515183824",
       "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
-      "assets/name-kana.js": "a897399e068a134df6c214106fb1151a6859c91650ffb098db2bceddaa582b2c",
       "assets/auth-session.js": "04a591c89d63d28ac3e1e8bb94d0cd3479bbff3e8b35eb17b9c449aa22daa34d",
+      "assets/name-kana.js": "a897399e068a134df6c214106fb1151a6859c91650ffb098db2bceddaa582b2c",
       "assets/account-auth.js": "c105f9737661ca1b5400731968209fc785102b6168393993f970a487e13c085e",
       "assets/supodora-logo-final.png": "7773929be8a776bb582e89233169a0cd899f8456c927d7f017d68d0347f1df63",
       "job-create.html": "3dce1322d7d0060d89acab7161591351c31bce743b1315acb10abfdc64777e85",
       "assets/job-draft.js": "47a90f3ef965d4de37d53da7c5ce34e493eb0bf0535d3965b5295ea8c486877c",
-      "assets/attendance-summary.js": "7c5eb61f7aefb96c35c889e7cfef51498bc0b27ca9510efb70d9a35d9bbb9dfc",
-      "assets/job-preview.js": "f4fb3c0bf6075770633cab363ef4a09e98182bd5a0d51b9459f0630ded928405",
       "assets/job-copy.js": "d83b7fc20ad642cd5dde8191006699827cc3e4e678086eac2192ffc0b3ea1696",
+      "assets/job-preview.js": "f4fb3c0bf6075770633cab363ef4a09e98182bd5a0d51b9459f0630ded928405",
+      "assets/attendance-summary.js": "7c5eb61f7aefb96c35c889e7cfef51498bc0b27ca9510efb70d9a35d9bbb9dfc",
       "company.html": "4cb9bb3b66af7068cb0951348c10e9ba2702a2df9dc9b4a5de1fc8884ee494d3",
       "assets/page-state.js": "4707217e94fd9bdf1eec5ba9f2425aad7bbd51a23b8a23b2eb22ec3f0c360290"
     },
@@ -549,6 +560,11 @@
       "Missing provider configuration returns failure; no real email or LINE delivery"
     ],
     "browser": "153.0.8010.0",
+    "publish_diagnostic": {
+      "path": "/company.html",
+      "message": null,
+      "button": null
+    },
     "failed_stage": "publish_commit",
     "error": "Browser/native integration failed; no page contents, credentials or recovery codes included",
     "external_requests_blocked": 0
@@ -556,5 +572,5 @@
   "failed_stage": "native_browser_e2e",
   "error_type": "RuntimeError",
   "error": "Native browser registration through payroll UI succeeds",
-  "completed_at": "2026-11-03T22:57:31.508989+00:00"
+  "completed_at": "2026-11-03T23:02:17.453336+00:00"
 }
