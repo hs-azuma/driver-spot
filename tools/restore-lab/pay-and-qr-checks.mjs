@@ -1,6 +1,18 @@
+import {readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+import {createContext, runInContext} from 'node:vm';
+
 export async function payAndQrChecks(ctx) {
-  const {db, check, one, role, rejects, company, otherCompany, driver,
+  const {db, root, check, one, role, rejects, company, driver,
     companyUid, otherCompanyUid, driverUid, otherDriverUid} = ctx;
+  const scripts = createContext({});
+  runInContext('globalThis.window = globalThis', scripts);
+  for (const name of ['attendance-review', 'attendance-summary', 'attendance-export']) {
+    const filename = resolve(root, 'assets', name + '.js');
+    runInContext(readFileSync(filename, 'utf8'), scripts, {filename});
+  }
+  const {SpodoraReview: reviewUI, SpodoraAttendance: summary, SpodoraAttendanceExport: csv} = scripts;
+
   await role('postgres');
   await db.exec('SAVEPOINT pay_qr_suite');
   try {
@@ -20,7 +32,7 @@ export async function payAndQrChecks(ctx) {
       await role('authenticated', driverUid);
       await rejects('Pay confirmation rejects altered transport fee: ' + guaranteed, request,
         [application.id, params[1], params[2], 0, guaranteed], e => e.code === 'P0001' && e.message.includes('交通費'));
-      const review = await one(request, params);
+      let review = await one(request, params);
       await rejects('Pay confirmation prevents duplicate pending request: ' + guaranteed, request, params,
         e => e.code === 'P0001' && e.message.includes('申請中'));
       await role('authenticated', otherCompanyUid);
@@ -31,6 +43,17 @@ export async function payAndQrChecks(ctx) {
       await rejects('Pay approval rejects guarantee mismatch: ' + guaranteed,
         'SELECT public.decide_attendance_review($1,true,\'synthetic\',$2)', [review.id, !guaranteed],
         e => e.code === 'P0001' && e.message.includes('異なります'));
+      if (!guaranteed) {
+        await db.query("SELECT public.decide_attendance_review($1,false,'Confirm break time',false)", [review.id]);
+        await role('authenticated', driverUid);
+        check('Driver can read returned request and reason',
+          await one('SELECT status,review_comment FROM public.attendance_review_requests WHERE id=$1', [review.id]),
+          {status: 'rejected', review_comment: 'Confirm break time'});
+        const resubmitted = await one(request, params);
+        check('Resubmission creates a new request for the same application', resubmitted.id !== review.id, true);
+        review = resubmitted;
+        await role('authenticated', companyUid);
+      }
       if (guaranteed) {
         await db.query('UPDATE public.jobs SET pay_amount=1300 WHERE id=$1', [job.id]);
         await rejects('Pay approval rejects changed job terms',
@@ -45,6 +68,36 @@ export async function payAndQrChecks(ctx) {
         {basic: guaranteed ? 9600 : 6000, fee: 500, total: guaranteed ? 10100 : 6500, status: 'approved'});
       check('Pay approval completes application: ' + guaranteed,
         (await one('SELECT status FROM public.applications WHERE id=$1', [application.id])).status, '勤務完了');
+      const loadVisibleAttendance = async uid => {
+        await role('authenticated', uid);
+        const row = await one(
+          'SELECT a.*,row_to_json(j) AS jobs FROM public.applications a JOIN public.jobs j ON j.id=a.job_id WHERE a.id=$1',
+          [application.id]);
+        // Bridge the actual role-filtered SQL rows into the shared browser loader.
+        const query = {
+          select: () => query,
+          in: () => query,
+          order: () => query,
+          range: async () => ({data: (await db.query(
+            'SELECT * FROM public.attendance_review_requests WHERE application_id=$1 ORDER BY created_at DESC,id DESC',
+            [application.id])).rows})
+        };
+        await reviewUI.load({from: () => query}, [row]);
+        return row;
+      };
+      const driverRow = await loadVisibleAttendance(driverUid);
+      const companyRow = await loadVisibleAttendance(companyUid);
+      const total = guaranteed ? 10100 : 6500;
+      const basic = total - 500;
+      check('Driver and company load the same approved request: ' + guaranteed,
+        [driverRow.approved_request?.id, companyRow.approved_request?.id], [review.id, review.id]);
+      check('Driver renders the DB-approved total: ' + guaranteed,
+        summary.html(driverRow, driverRow.jobs).includes('確認合計 ' + total.toLocaleString('ja-JP') + '円'), true);
+      const monthRows = csv.visible([companyRow], 'month', date.slice(0, 7));
+      check('Company month uses the same DB-approved total: ' + guaranteed,
+        {...csv.totals(monthRows)}, {confirmed: 1, unconfirmed: 0, basic, fee: 500, total, worked: 18000});
+      check('CSV contains the DB-approved basic, transport and total: ' + guaranteed,
+        csv.build(monthRows).includes('"' + basic + '","500","' + total + '"'), true);
       await role('authenticated', companyUid);
       await rejects('Pay approval is not repeatable: ' + guaranteed,
         'SELECT public.decide_attendance_review($1,true,\'synthetic\',$2)', [review.id, guaranteed],

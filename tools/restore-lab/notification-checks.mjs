@@ -14,8 +14,13 @@ export async function notificationChecks(ctx) {
     await db.query("UPDATE public.jobs SET status='募集中' WHERE id=$1", [matchedJob.id]);
     check('Job reopening cannot duplicate LINE event key', await jobQueueCount(), 1);
     await db.query('INSERT INTO public.company_driver_blocks(company_id,driver_id) VALUES($1,$2)', [company.id, driver.id]);
+    const resultNotice = await one(
+      "INSERT INTO public.line_notification_queue(user_id,kind,event_key,message,job_id) VALUES($1,'application_result','fixture-result','synthetic only',$2) RETURNING id",
+      [driverUid, matchedJob.id]);
     await role('service_role');
-    check('Blocked job notification is not claimed', (await db.query('SELECT * FROM public.claim_line_notifications()')).rows, []);
+    const claimedWhileBlocked = await db.query('SELECT id FROM public.claim_line_notifications()');
+    check('Blocked matching job is suppressed while application result remains eligible',
+      claimedWhileBlocked.rows.map(row => row.id), [resultNotice.id]);
     await role('postgres');
     check('Blocked job notification marked skipped', (await one("SELECT state FROM public.line_notification_queue WHERE job_id=$1", [matchedJob.id])).state, 'skipped');
     await db.exec('TRUNCATE public.line_notification_queue');

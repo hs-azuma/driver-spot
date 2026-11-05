@@ -6,7 +6,7 @@ const vm = require('node:vm');
 
 const assets = vm.createContext({});
 vm.runInContext('globalThis.window = globalThis', assets);
-for (const script of ['attendance-summary', 'attendance-export', 'job-browse', 'job-preferences']) {
+for (const script of ['attendance-summary', 'attendance-export', 'job-browse', 'job-preferences', 'applicant-summary']) {
   const filename = path.join(__dirname, '..', 'assets', script + '.js');
   vm.runInContext(fs.readFileSync(filename, 'utf8'), assets, {filename});
 }
@@ -89,4 +89,29 @@ test('job matching accepts slots 1–3 and prefecture-wide areas and respects pr
   assert.equal(matches(driver, {...listing, vehicle_type: '4tトラック'}), false);
   assert.equal(matches(driver, {...listing, work_date: '2026-11-02'}), false);
   assert.equal(matches(driver, {...listing, start_time: '15:00'}), false);
+});
+
+test('company applicant screen distinguishes why a job cannot hire and counts only the selected job', () => {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'company-applicants.html'), 'utf8');
+  const start = html.indexOf('function hireUnavailableReason(');
+  const end = html.indexOf('function render()', start);
+  assert.ok(start >= 0 && end > start);
+  vm.runInContext(html.slice(start, end), assets);
+  const now = new Date('2026-11-01T01:00:00Z');
+  const upcoming = {id: 1, work_date: '2026-11-02', start_time: '08:00', required_headcount: 1};
+  const pending = {jobs: upcoming, status: '応募中'};
+  assets.rows = [pending, {jobs: {id: 2}, status: '勤務確定'}];
+  const applicants = assets.SpodoraApplicants;
+  assert.deepEqual({...applicants.stats(upcoming, assets.rows)},
+    {need: 1, hired: 0, remaining: 1, pending: 1, applications: 1});
+  assert.equal(applicants.accepting(upcoming, assets.rows, now), true);
+  const reason = jobs => assets.hireUnavailableReason({jobs}, now);
+  assert.match(reason({...upcoming, status: 'キャンセル'}), /取り消された/);
+  assert.match(reason({...upcoming, status: '募集終了'}), /募集が終了/);
+  assert.match(reason({...upcoming, work_date: '2026-10-31'}), /勤務日を過ぎた/);
+  assert.match(reason({...upcoming, work_date: '2026-11-01'}), /勤務開始時刻を過ぎた/);
+  assert.match(reason({...upcoming, start_time: ''}), /勤務日時を確認できない/);
+  assets.rows.push({jobs: upcoming, status: '勤務確定'});
+  assert.equal(applicants.accepting(upcoming, assets.rows, now), false);
+  assert.match(reason(upcoming), /募集人数に達した/);
 });
