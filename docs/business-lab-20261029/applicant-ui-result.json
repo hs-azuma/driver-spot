@@ -1,0 +1,165 @@
+{
+  "status": "PASS_APPLICANT_UI_WITH_SYNTHETIC_SDK",
+  "production_access": false,
+  "real_data_used": false,
+  "checks": [
+    {
+      "width": 390,
+      "name": "Closed job is excluded from invitation choices",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Selecting a recipient enables review",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Existing applicant is excluded for that job",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Job switch resets selected count",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Review shows chosen job and recipient",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Invite action submits exactly the reviewed job and recipient",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Already invited driver cannot be selected again",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Blocked driver cannot be selected",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Block and unblock target the signed-in company and driver",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Job filter shows only applications for the selected job",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Status counts belong to the selected job",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Completed history survives the closed job filter",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "Rating UI submits company side and exact completed application",
+      "status": "PASS"
+    },
+    {
+      "width": 390,
+      "name": "No page JavaScript errors",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Closed job is excluded from invitation choices",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Selecting a recipient enables review",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Existing applicant is excluded for that job",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Job switch resets selected count",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Review shows chosen job and recipient",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Invite action submits exactly the reviewed job and recipient",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Already invited driver cannot be selected again",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Blocked driver cannot be selected",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Block and unblock target the signed-in company and driver",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Job filter shows only applications for the selected job",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Status counts belong to the selected job",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Completed history survives the closed job filter",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "Rating UI submits company side and exact completed application",
+      "status": "PASS"
+    },
+    {
+      "width": 1280,
+      "name": "No page JavaScript errors",
+      "status": "PASS"
+    }
+  ],
+  "source_sha256": {
+    "tools/business-lab/applicant-browser.mjs": "f389495f7c1b41a9fff812a6b5be8b66954e9ecb9256bc06c9079fef3398d6d9",
+    "tools/browser-lab/launch.mjs": "8dd2717a1aa3735debd8541b914073642cac44e01136f9ee232c672a4fa0a481",
+    "tools/browser-lab/package-lock.json": "8dee7eb8bc93c57f21b63cc1e99d47f903fe0511d092adbb48020b78c422ebe7",
+    "company-applicants.html": "b0fc317ea4a76bc84769f9decc8489041a808d22e01adf7f5b718714ca08f25d",
+    "assets/attendance-summary.js": "7c5eb61f7aefb96c35c889e7cfef51498bc0b27ca9510efb70d9a35d9bbb9dfc",
+    "assets/applicant-summary.js": "ac3e378b90f345f7a89c56e0530b3fe358b32309ba65de82d0ec216ba4d07deb",
+    "assets/work-rating.js": "4ba265a643ee6e492896e83e8312458850e3711cbef617ed8675d2e4ade98b9f",
+    "assets/work-rating.css": "f52fa19ac022b5b885722c160111a0affc5207e46edbcb9fc4814d3413f7221f",
+    "assets/page-state.js": "4707217e94fd9bdf1eec5ba9f2425aad7bbd51a23b8a23b2eb22ec3f0c360290",
+    "assets/supodora-logo-final.png": "7773929be8a776bb582e89233169a0cd899f8456c927d7f017d68d0347f1df63"
+  },
+  "limitations": [
+    "Synthetic SDK and in-memory state; database authorization is covered separately",
+    "Desktop Linux Chromium at mobile and desktop widths; no physical device or external delivery"
+  ],
+  "browser": "153.0.8010.0",
+  "completed_at": "2026-11-05T14:10:29.383Z"
+}

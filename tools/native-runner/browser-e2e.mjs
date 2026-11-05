@@ -36,6 +36,21 @@ async function context(instance=browser){const c=await instance.newContext({view
  });return c}
 async function pageFor(c){const page=await c.newPage();page.setDefaultTimeout(20000);page.on('dialog',d=>d.accept());return page}
 async function session(page,user){await page.goto(origin+'/__start');const ok=await page.evaluate(async({url,anon,user})=>{const db=supabase.createClient(url,anon);const r=await db.auth.signInWithPassword({email:user.email,password:user.password});return !r.error},{url:p.url,anon:p.anon,user});check('Browser real password authentication',ok)}
+// Parse the actual quoted CSV download, including embedded commas, quotes and newlines.
+function parseCsv(text){
+ const records=[],row=[];let cell='',quoted=false;
+ for(let i=text.charCodeAt(0)===0xfeff?1:0;i<text.length;i++){
+  const char=text[i];
+  if(char==='"'){
+   if(quoted&&text[i+1]==='"'){cell+='"';i++}else quoted=!quoted;
+  }else if(!quoted&&(char===','||char==='\r'||char==='\n')){
+   row.push(cell);cell='';
+   if(char!==','){records.push(row.splice(0));if(char==='\r'&&text[i+1]==='\n')i++}
+  }else cell+=char;
+ }
+ assert(!quoted);if(cell!==''||row.length){row.push(cell);records.push(row)}
+ return records;
+}
 async function poll(fn){for(let i=0;i<100;i++){const r=await fn();if(r)return r;await new Promise(r=>setTimeout(r,100))}throw Error('timeout')}
 try{
  runtime=await provision();browser=await runtime.launch();report.browser=browser.version();driverBrowser=await runtime.launch();const cc=await context(),dc=await context(driverBrowser),cp=await pageFor(cc),dp=await pageFor(dc);companyPage=cp;
@@ -60,6 +75,28 @@ try{
  stage='attendance_ui';await dp.goto(origin+'/attendance.html?company='+qr.data.token);await dp.getByRole('button',{name:'出勤する',exact:true}).click();await dp.getByRole('button',{name:'退勤する',exact:true}).waitFor();check('QR attendance UI commits actual check-in',true);await new Promise(r=>setTimeout(r,1100));await dp.getByRole('button',{name:'退勤する',exact:true}).click();await dp.getByText('退勤済み',{exact:true}).waitFor();check('QR attendance UI commits actual check-out',true);
  stage='pay_request_ui';await dp.goto(origin+'/driver.html?view=work');await dp.getByRole('button',{name:/勤務・応募履歴/}).click();const requestButton=dp.getByRole('button',{name:'勤怠・給与を確認して申請',exact:true});await requestButton.click();await dp.locator('[name="rest"]').fill('0');await dp.locator('[name="reason"]').fill('Synthetic UI verification');await dp.locator('[name="confirmed"]').check();await dp.getByRole('button',{name:'この内容で企業に申請する',exact:true}).click();await poll(async()=>{const r=await companyDb.from('attendance_review_requests').select('id,status').eq('application_id',application.id).single();return r.data?.status==='pending'});check('Driver payroll confirmation modal commits actual request',true);
  stage='pay_approve_ui';await cp.goto(origin+'/company-workforce.html');await cp.getByRole('button',{name:'内容と交通費込みの金額を確認',exact:true}).click();await cp.locator('#reviewConfirmed').check();await cp.getByRole('button',{name:'この金額で承認する',exact:true}).click();const approved=await poll(async()=>{const r=await companyDb.from('attendance_review_requests').select('status,approved_total_amount').eq('application_id',application.id).single();return r.data?.status==='approved'&&r.data});check('Company payroll approval modal commits actual amount',Number(approved.approved_total_amount)===1680);
+ stage='pay_driver_reloaded';await dp.goto(origin+'/driver.html?view=work');await dp.getByRole('button',{name:/勤務・応募履歴/}).click();
+ await dp.locator('.attendance-estimate').filter({hasText:'確認合計 1,680円'}).waitFor();
+ check('Driver reload shows the actual approved total including transport',true);
+ stage='pay_month_csv';const month=jst.toISOString().slice(0,7);
+ await cp.locator('#attendanceMonth').fill(month);await cp.locator('#attendanceMonth').dispatchEvent('change');
+ await cp.locator('#exportAttendance').waitFor();await poll(()=>cp.locator('#exportAttendance').isEnabled());
+ const downloadReady=cp.waitForEvent('download');await cp.locator('#exportAttendance').click();const download=await downloadReady;
+ const chunks=[];for await(const chunk of await download.createReadStream())chunks.push(chunk);
+ const csv=Buffer.concat(chunks).toString('utf8'),records=parseCsv(csv),headers=records.shift();
+ const field=(row,name)=>row[headers.indexOf(name)];
+ const exported=records.filter(row=>field(row,'応募ID')===String(application.id));
+ check('Monthly CSV downloads with the selected month',download.suggestedFilename()==='spodora-attendance-'+month+'.csv');
+ check('Monthly CSV exports the actual application exactly once',exported.length===1);
+ check('Monthly CSV matches the actual approved total',
+  Number(field(exported[0],'承認済み基本報酬（円）'))===1180&&Number(field(exported[0],'確認済み交通費（円）'))===500&&Number(field(exported[0],'確認済み合計（円）'))===1680);
+ check('Every exported row belongs to the selected work month',records.every(row=>field(row,'勤務日').startsWith(month+'-')));
+ const confirmed=records.filter(row=>field(row,'確認済み合計（円）')!=='');
+ const sum=name=>confirmed.reduce((total,row)=>total+Number(field(row,name)),0);
+ const totalsText=await cp.locator('#payTotals').innerText();
+ for(const [label,name] of [['基本報酬','承認済み基本報酬（円）'],['交通費','確認済み交通費（円）'],['確認合計','確認済み合計（円）']]){
+  check('Company month total reconciles downloaded CSV: '+label,totalsText.includes(label+' '+sum(name).toLocaleString('ja-JP')+'円'));
+ }
  check('All browser external requests blocked',external===0);report.status='PASS_NATIVE_BROWSER_REGISTRATION_TO_PAYROLL';
 }catch{if(companyPage&&!companyPage.isClosed()&&stage.startsWith('publish')){report.publish_diagnostic={path:new URL(companyPage.url()).pathname,message:await companyPage.locator('#previewMsg').textContent().catch(()=>null),button:await companyPage.locator('#publishBtn').textContent().catch(()=>null)}}report.failed_stage=stage;report.error='Browser/native integration failed; no page contents, credentials or recovery codes included';process.exitCode=1}
 finally{if(driverBrowser)await driverBrowser.close();if(browser)await browser.close();if(runtime)await runtime.close();report.external_requests_blocked=external;process.stdout.write(JSON.stringify(report))}

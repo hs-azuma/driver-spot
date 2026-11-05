@@ -34,3 +34,10 @@ QRは出勤→退勤、無効URL、拒否、重複クリックのRPC呼出しを
 求人入力フォーム全体と採用一覧全体のクリック試験は未実施。
 RLS/トリガー・JWT署名・同時採用/定員・実メール/LINE・実機カメラ・実GoTrue/PostgRESTは未検証。
 保持ガード・給与・QRのDBロジックは別の架空PGlite試験で扱い、ネイティブSupabaseと同一とはみなさない。
+
+## 応募者・お気に入り・評価画面の追加検証
+
+`node tools/business-lab/applicant-browser.mjs` で、実際のcompany-applicants.htmlを390px/1280pxのChromiumで操作する。
+求人切替と選択の解除、応募済み・案内済み・ブロック中の除外、内容確認と案内登録、ブロックと解除、求人別の件数、募集終了後の履歴と勤務後の評価入力を計28チェックで確認する。
+SDK応答は明示した架空データとメモリー状態で代用する。実DBの権限検査はrestore-lab、HTTP認証から勤怠とCSVの通し確認はnative-runnerで扱う。
+結果は[応募者UIの結果](../../docs/business-lab-20261029/applicant-ui-result.json)。
