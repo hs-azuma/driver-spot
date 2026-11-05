@@ -2,7 +2,7 @@
   "status": "PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-11-03T23:15:49.916421+00:00",
+  "started_at": "2026-11-05T14:04:33.549053+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -200,6 +200,14 @@
     "QR attendance UI commits actual check-out",
     "Driver payroll confirmation modal commits actual request",
     "Company payroll approval modal commits actual amount",
+    "Driver reload shows the actual approved total including transport",
+    "Monthly CSV downloads with the selected month",
+    "Monthly CSV exports the actual application exactly once",
+    "Monthly CSV matches the actual approved total",
+    "Every exported row belongs to the selected work month",
+    "Company month total reconciles downloaded CSV: 基本報酬",
+    "Company month total reconciles downloaded CSV: 交通費",
+    "Company month total reconciles downloaded CSV: 確認合計",
     "All browser external requests blocked",
     "Native browser registration through payroll UI succeeds",
     "All ten Functions strict Deno typechecks pass"
@@ -211,7 +219,7 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "dd3957dad3455f8a4671945046e55ba40624e2e4",
+  "source_commit": "f721c0626add75d6a265635c850785d42a5216da",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "edge_typecheck": {
@@ -332,7 +340,7 @@
   "source_sha256": {
     "scripts/ci-native-restore.py": "0ec2fd80469cda8f43906623b3b70b0136fafc7a9ec5e6ce47c93b06e985b7e3",
     "docs/database/predeploy-read-only.sql": "15cf0803a71258ed8977cc186f6f3e8df0ba9c8ee71b8be61b98d2374e421573",
-    "tools/native-runner/browser-e2e.mjs": "9676b8709123fb7722502901e74ad1013c94c457c9b875ff6ee0d976831be4e5",
+    "tools/native-runner/browser-e2e.mjs": "11744c79d55cf0976c4ea6234c33aefaa204511adaa090e62db233f8c944659c",
     "tools/edge-check/verify.mjs": "9f083251f97d4e4c7412515e27944ebdd38c08def21a22118a05af30dc9f533d",
     "tools/edge-check/package-lock.json": "1c35656bad397a6ad8a3fb0f39e548484367b98f21199e585768800fc4ec6434",
     "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
@@ -461,7 +469,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "9c1f757e3d108ffd26741898d2827ca668e4662243b8728458083c30b5af07cc",
+    "ciphertext_sha256": "4d5e09caf4c42ca74f41115e6361c3e31cbc2935d0d15f0bc8de04f6be618baa",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
@@ -504,7 +512,7 @@
     "original_object_uuids_preserved": false,
     "same_runner_host": true
   },
-  "edge_endpoint": "http://127.0.0.1:26695/functions/v1",
+  "edge_endpoint": "http://127.0.0.1:24617/functions/v1",
   "edge_status_env_names": [
     "ANON_KEY",
     "API_URL",
@@ -565,30 +573,38 @@
       "QR attendance UI commits actual check-out",
       "Driver payroll confirmation modal commits actual request",
       "Company payroll approval modal commits actual amount",
+      "Driver reload shows the actual approved total including transport",
+      "Monthly CSV downloads with the selected month",
+      "Monthly CSV exports the actual application exactly once",
+      "Monthly CSV matches the actual approved total",
+      "Every exported row belongs to the selected work month",
+      "Company month total reconciles downloaded CSV: 基本報酬",
+      "Company month total reconciles downloaded CSV: 交通費",
+      "Company month total reconciles downloaded CSV: 確認合計",
       "All browser external requests blocked"
     ],
     "source_sha256": {
       "driver-register.html": "adb20d3b3c0d7ab9a3859da395979e63cd03fc66d55831f48f68317515183824",
-      "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
       "assets/name-kana.js": "a897399e068a134df6c214106fb1151a6859c91650ffb098db2bceddaa582b2c",
-      "assets/account-auth.js": "c105f9737661ca1b5400731968209fc785102b6168393993f970a487e13c085e",
-      "assets/supodora-logo-final.png": "7773929be8a776bb582e89233169a0cd899f8456c927d7f017d68d0347f1df63",
       "assets/auth-session.js": "04a591c89d63d28ac3e1e8bb94d0cd3479bbff3e8b35eb17b9c449aa22daa34d",
+      "assets/account-auth.js": "c105f9737661ca1b5400731968209fc785102b6168393993f970a487e13c085e",
+      "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
+      "assets/supodora-logo-final.png": "7773929be8a776bb582e89233169a0cd899f8456c927d7f017d68d0347f1df63",
       "job-create.html": "3dce1322d7d0060d89acab7161591351c31bce743b1315acb10abfdc64777e85",
       "assets/job-draft.js": "47a90f3ef965d4de37d53da7c5ce34e493eb0bf0535d3965b5295ea8c486877c",
       "assets/attendance-summary.js": "7c5eb61f7aefb96c35c889e7cfef51498bc0b27ca9510efb70d9a35d9bbb9dfc",
-      "assets/job-copy.js": "d83b7fc20ad642cd5dde8191006699827cc3e4e678086eac2192ffc0b3ea1696",
       "assets/job-preview.js": "f4fb3c0bf6075770633cab363ef4a09e98182bd5a0d51b9459f0630ded928405",
+      "assets/job-copy.js": "d83b7fc20ad642cd5dde8191006699827cc3e4e678086eac2192ffc0b3ea1696",
       "company.html": "4cb9bb3b66af7068cb0951348c10e9ba2702a2df9dc9b4a5de1fc8884ee494d3",
       "assets/page-state.js": "4707217e94fd9bdf1eec5ba9f2425aad7bbd51a23b8a23b2eb22ec3f0c360290",
       "apply-confirm.html": "8e6ce7a00dc8b3fca8cc489ae4db034906f5cd740455b9975910eef91903163b",
       "driver.html": "4fc3cd30cf4beaf62e745bd4ef496e3884b00a08b2df32f5233f4e4d8f370b7c",
       "assets/attendance-review.js": "1b9c6b60e700d9de28f84184a4a15bfe927f7a237fa1c021375a61aa8f18ca42",
-      "assets/job-preferences.js": "766f204f29215196407e5272f8b846539f09b1de1418875f13324563333ab1d2",
       "assets/job-browse.js": "bed125183ed2c7ce298a900efdbdd3caa938162e3636b18bfdff87bc7df55981",
       "assets/work-rating.js": "4ba265a643ee6e492896e83e8312458850e3711cbef617ed8675d2e4ade98b9f",
       "assets/driver-work-view.js": "a6e50a245d2b2a33f23c1150de95ca99ecf8d61c01e5ddb29d6f1dcf200ddd1e",
       "assets/work-rating.css": "f52fa19ac022b5b885722c160111a0affc5207e46edbcb9fc4814d3413f7221f",
+      "assets/job-preferences.js": "766f204f29215196407e5272f8b846539f09b1de1418875f13324563333ab1d2",
       "assets/login-autofill.js": "9b607a01f4dd242d21595bbcacfc45598525e4c9ff0bfe6ee7bbf38c8a4ec81d",
       "company-applicants.html": "b0fc317ea4a76bc84769f9decc8489041a808d22e01adf7f5b718714ca08f25d",
       "assets/applicant-summary.js": "ac3e378b90f345f7a89c56e0530b3fe358b32309ba65de82d0ec216ba4d07deb",
@@ -608,8 +624,8 @@
     "browser": "153.0.8010.0",
     "external_requests_blocked": 0
   },
-  "dump_bytes": 533154,
-  "dump_sha256": "b08def2ea756bcd20abd2bdff7ee81388d7ab5d5dae037ea666bb92a55d0fa3d",
+  "dump_bytes": 533159,
+  "dump_sha256": "42fd6e7b9136ce09831d0adb352d2a84dbe1f8854552d2403c7fb47486caebc9",
   "native_auth_storage_api_tested": true,
-  "completed_at": "2026-11-03T23:17:19.654174+00:00"
+  "completed_at": "2026-11-05T14:07:35.376199+00:00"
 }
