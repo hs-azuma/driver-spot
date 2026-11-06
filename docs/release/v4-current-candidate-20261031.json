@@ -429,7 +429,7 @@
   },
   "runtime_metadata_snapshot": "docs/release/function-metadata-20261106.json",
   "runtime_version_or_jwt_differences": [],
-  "cleanroom_reverified": true,
+  "cleanroom_reverified": false,
   "region_proposal": {
     "patch": "docs/review/regions/areas-preserve-selection.patch",
     "patch_sha256": "b8841f603933a52c320a41324df0d24d7cc10a2002edc72703631383019bdd9b",
@@ -446,7 +446,12 @@
     "status": "PASS_SOURCE_REPRODUCTION_ONLY",
     "run_url": "https://github.com/hs-azuma/driver-spot/actions/runs/42191937568",
     "independent_human_acceptance": false,
-    "separate_physical_restore": false
+    "separate_physical_restore": false,
+    "documentation_changes_after_reproduction": {
+      "reason": "F27 owner policy approval and checklist documentation updated after the recorded source-copy run",
+      "application_runtime_changed": false,
+      "full_source_copy_rerun": false
+    }
   },
   "workflow_patch_checks": {
     "status": "PASS_APPLY_CHECK_ONLY",
@@ -455,5 +460,11 @@
       "docs/review/workflows/update-driver-experience.patch"
     ],
     "applied": false
+  },
+  "f27_policy": {
+    "status": "APPROVED_PROPOSAL_A",
+    "date_jst": "2026-11-06",
+    "reference": "docs/handover/absence-decision-proposal-20261106.md",
+    "application_runtime_changed": false
   }
 }

@@ -1,0 +1,53 @@
+{
+  "date_jst": "2026-11-06",
+  "status": "PASS_EXISTING_ATTENDANCE_STATE_BRANCHES",
+  "source_commit": "fe7252e92ba159ef4da21f243022aa36babb2f28",
+  "source_path": "assets/applicant-summary.js",
+  "method": "Actual repository JavaScript evaluated in isolated V8 scope with fixed JST timestamps",
+  "production_access": false,
+  "application_code_changed": false,
+  "checks": [
+    {
+      "name": "Before start remains waiting",
+      "status": "PASS"
+    },
+    {
+      "name": "At start missing check-in requires review",
+      "status": "PASS"
+    },
+    {
+      "name": "At end missing attendance remains unconfirmed",
+      "status": "PASS"
+    },
+    {
+      "name": "Missing check-out requires review",
+      "status": "PASS"
+    },
+    {
+      "name": "Completed attendance keeps completed phase",
+      "status": "PASS"
+    },
+    {
+      "name": "Cancelled job keeps cancellation label",
+      "status": "PASS"
+    },
+    {
+      "name": "Overnight check-in stays in work before next-day end",
+      "status": "PASS"
+    },
+    {
+      "name": "Overnight missing check-out is reviewed at next-day end",
+      "status": "PASS"
+    },
+    {
+      "name": "Missing schedule does not invent confirmed absence",
+      "status": "PASS"
+    },
+    {
+      "name": "Read-only classification preserves application fields",
+      "status": "PASS"
+    }
+  ],
+  "scope": "Existing attendance classification only; business-policy acceptance recorded separately",
+  "decision": "Owner instructed F27 after presentation of proposal A"
+}
