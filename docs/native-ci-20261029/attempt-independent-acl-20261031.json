@@ -1,0 +1,185 @@
+{
+  "status": "FAIL",
+  "production_access": false,
+  "real_data_used": false,
+  "started_at": "2026-10-31T12:02:49.381258+00:00",
+  "checks": [
+    "Native API and PostgreSQL target loopback addresses only",
+    "Native PostgreSQL major 17",
+    "Fresh fixture grants Auth ownership role to migration role only",
+    "Fresh target has no application tables",
+    "22 application tables built",
+    "All six local hardening proposals applied on native PG17",
+    "GoTrue admin creates confirmed synthetic company",
+    "Real password sign-in company",
+    "GoTrue admin creates confirmed synthetic driver",
+    "Real password sign-in driver",
+    "GoTrue admin creates confirmed synthetic other",
+    "Real password sign-in other",
+    "GoTrue admin creates confirmed synthetic empty",
+    "Real password sign-in empty",
+    "GoTrue admin creates confirmed synthetic storage",
+    "Real password sign-in storage",
+    "PostgREST RLS returns only own driver",
+    "PostgREST denies other driver visibility",
+    "Real company JWT creates own job",
+    "Anonymous job INSERT refused",
+    "Real JWT and RLS allow own application",
+    "Native preflight retains account with business records",
+    "GoTrue deletion refused by business-history trigger",
+    "Refused Auth delete retains driver profile",
+    "Empty-account preflight ready",
+    "Real GoTrue deletes empty account atomically",
+    "Auth BEFORE DELETE removed empty profile",
+    "Real Storage creates private synthetic bucket",
+    "Real Storage uploads synthetic owned bytes",
+    "Native preflight blocks Storage ownership",
+    "Owned Storage prevents Auth user deletion",
+    "Storage ownership refusal retains driver profile",
+    "Storage bytes remain readable after refused deletion",
+    "Storage creates nested/binary.bin fixture",
+    "Storage creates zero.bin fixture",
+    "Storage exports bytes fixture.txt",
+    "Storage exports bytes nested/binary.bin",
+    "Storage exports bytes zero.bin",
+    "Storage archive refuses wrong key",
+    "Storage archive refuses tampering",
+    "Storage decrypted manifest hashes validated",
+    "Synthetic source objects removed after encrypted backup",
+    "Source object absent fixture.txt",
+    "Source object absent nested/binary.bin",
+    "Source object absent zero.bin",
+    "Separate restore bucket created private",
+    "Storage restores fixture.txt",
+    "Owner reads restored fixture.txt",
+    "Restored byte hash and length fixture.txt",
+    "Restored content type fixture.txt",
+    "Other user denied restored fixture.txt",
+    "Anonymous denied restored fixture.txt",
+    "Storage restores nested/binary.bin",
+    "Owner reads restored nested/binary.bin",
+    "Restored byte hash and length nested/binary.bin",
+    "Restored content type nested/binary.bin",
+    "Other user denied restored nested/binary.bin",
+    "Anonymous denied restored nested/binary.bin",
+    "Storage restores zero.bin",
+    "Owner reads restored zero.bin",
+    "Restored byte hash and length zero.bin",
+    "Restored content type zero.bin",
+    "Other user denied restored zero.bin",
+    "Anonymous denied restored zero.bin",
+    "Restored bucket remains private",
+    "Restored owned files still block withdrawal",
+    "Native pg_dump encrypted, decrypted, wrong-key and tamper checked",
+    "Restored application catalog equals source",
+    "Auth and application and Storage metadata rows restored",
+    "Source stack stopped before independent restore",
+    "Independent target starts without application data",
+    "Independent PostgreSQL cluster identifier differs"
+  ],
+  "limitations": [
+    "Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export",
+    "Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested",
+    "Native API tests do not deploy Edge Functions or send email/LINE",
+    "Native processes share the isolated runner host; there is no container egress network guard",
+    "Ephemeral synthetic fixtures only; not a production backup"
+  ],
+  "source_commit": "453685e9508f7ed86b8fe3eeeca60ea5bce3ed1c",
+  "runner": "standard ubuntu-24.04",
+  "cli_version": "2.122.0",
+  "source_sha256": {
+    "scripts/ci-native-restore.py": "0d7a0b60b8651566d1fd6884ff9fcb2b2d29f9c2673de4630694a585f547af57",
+    "tools/native-runner/native-api.mjs": "dcb1f51ecbe05a141745ccd88c31f0cdfabef8785c065f359ab1a58d134fec2a",
+    "tools/native-runner/roundtrip.mjs": "85903b2eec54045202e105ae788018054acfe2bc4a0d256e2411c9a1ecf1c4e9",
+    "tools/native-runner/storage-roundtrip.mjs": "9f05f83cf84f1fe838b5425854b73b85c3cafdd807dfb74986575ab501a74d4e",
+    "tools/native-runner/independent-api.mjs": "f46828bd82e064a686c2d4f6b77cd5aa4ac8da7028ca222e9f8890edc9e02b69",
+    "tools/restore-lab/backup-envelope.mjs": "d8de0360cc7f990935ce83dccb8381a8e0badc1ac3b4dadca6b4a9468fb0f374",
+    "tools/native-runner/package-lock.json": "d30e28d162c34aa1844322366a8869f1bc0b6e283a19135b9d012a56a1f4aee9",
+    "docs/database/restore-candidate/application-review.sql": "cd1708d9d22e8177b58aa502831c1997fa5757152d23c5add6f2d4fe69e8ecd5",
+    "sql/review-v4-application-delete-guard.sql": "1ae919cd76b2cbf95f23e43a671f8ddbf3691350998b11c04d284b209d82e285",
+    "sql/review-v4-application-entry-access.sql": "0617668b72d632382cc0684a3bdc3bdb31e274e2154193bf1eb30880518423bb",
+    "sql/review-v4-application-entry-rollback.sql": "8c1be297da2fa87977d56ece830ce9a221c83d8e819bb2ace0c0f78c97c0d4af",
+    "sql/review-v4-hardening-rollback.sql": "588c522b60f86770c0d6ab2e00324a2851e01ca32b9f197296184e76e6269376",
+    "sql/review-v4-job-insert-hardening.sql": "0ce0c0dbb3c7f0c4b26910be8549e98c1f789880e893cfca34dc93060162d889",
+    "sql/review-v4-legacy-and-rounding-access.sql": "5da24b4333e68ce1ed4af9f6eb258f47733540c836ff9b427898d2b8657582e5",
+    "sql/review-v4-legacy-and-rounding-rollback.sql": "9e6acde8100285de73ee6e6b522ab59a7de01ef63542e13e63edbe2c7bad38c1",
+    "sql/review-v4-overnight-overlap-rollback.sql": "1fc84ad1a55d9c07d27828824be55676efa28b8f45067ddc3a91b45ad148028c",
+    "sql/review-v4-overnight-overlap.sql": "c306d4fd157cc43699c3a9100a5da470193aa58b4a014c671bd63cc60706baa7",
+    "sql/review-v4-withdrawal-retention-rollback.sql": "5c721520986958ee3c53dd120dfd326e93dd6b5c69ace4b4607f36490a6c25a6",
+    "sql/review-v4-withdrawal-retention.sql": "f656f89bf235b047cdc09600b55d22fbb1f43d1ecb937a6ba4b590a024b6c79e"
+  },
+  "runtime": "official native processes",
+  "isolation": "Fresh runner and dedicated SUPABASE_HOME; API/DB URLs verified loopback; synthetic users only",
+  "postgres_version": "17.11",
+  "fixture_roles": [
+    {
+      "role": "supabase_admin",
+      "superuser": true,
+      "member": false
+    },
+    {
+      "role": "postgres",
+      "superuser": false,
+      "member": true
+    },
+    {
+      "role": "supabase_auth_admin",
+      "superuser": false,
+      "member": false
+    }
+  ],
+  "storage_restore": {
+    "status": "PASS_SYNTHETIC_STORAGE_BUCKET_RESTORE",
+    "files": [
+      {
+        "path": "fixture.txt",
+        "type": "text/plain",
+        "bytes": 29,
+        "sha256": "022b1274f41a1fd4565c3f5671916c2f490f7d917568e05b681f219992d09d92"
+      },
+      {
+        "path": "nested/binary.bin",
+        "type": "application/octet-stream",
+        "bytes": 7,
+        "sha256": "1df694db3e44b4b4f0d61f2e2191b19a96ee3e02e90ac41524d92fd30dd1c65d"
+      },
+      {
+        "path": "zero.bin",
+        "type": "application/octet-stream",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ],
+    "ciphertext_sha256": "f8ebce6d8b8a7962743b9bde18a076ce76dbfd61afdfc8297b049b58f379ee08",
+    "key_stored": false,
+    "archive_stored": false,
+    "independent_host": false,
+    "owner_mapping": "original synthetic user JWT re-upload; original object UUIDs not preserved"
+  },
+  "independent_catalog_diff": {
+    "table_grants": {
+      "source_only": [],
+      "target_only": [
+        "{\"privilege\": \"DELETE\", \"role\": \"anon\", \"table\": \"account_auth_limits\"}",
+        "{\"privilege\": \"DELETE\", \"role\": \"anon\", \"table\": \"account_login_ids\"}",
+        "{\"privilege\": \"DELETE\", \"role\": \"anon\", \"table\": \"applications\"}"
+      ]
+    },
+    "function_grants": {
+      "source_only": [
+        "{\"anon\": false, \"arguments\": \"\", \"authenticated\": false, \"name\": \"claim_company_application_emails\", \"service_role\": true}",
+        "{\"anon\": false, \"arguments\": \"\", \"authenticated\": false, \"name\": \"claim_line_notifications\", \"service_role\": true}",
+        "{\"anon\": false, \"arguments\": \"\", \"authenticated\": false, \"name\": \"preserve_job_pay_guarantee\", \"service_role\": false}"
+      ],
+      "target_only": [
+        "{\"anon\": true, \"arguments\": \"\", \"authenticated\": true, \"name\": \"claim_company_application_emails\", \"service_role\": true}",
+        "{\"anon\": true, \"arguments\": \"\", \"authenticated\": true, \"name\": \"claim_line_notifications\", \"service_role\": true}",
+        "{\"anon\": true, \"arguments\": \"\", \"authenticated\": true, \"name\": \"get_job_hiring_counts\", \"service_role\": true}"
+      ]
+    }
+  },
+  "failed_stage": "independent_pg_restore",
+  "error_type": "RuntimeError",
+  "error": "Independent application catalog restored",
+  "completed_at": "2026-10-31T12:03:18.441668+00:00"
+}

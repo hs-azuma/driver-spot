@@ -1,0 +1,84 @@
+{
+  "date_jst": "2026-11-06",
+  "status": "PARTIAL_READ_ONLY_CONFIRMATION",
+  "production_changed": false,
+  "private_references_included": false,
+  "services": [
+    {
+      "service": "GitHub",
+      "repository": "hs-azuma/driver-spot",
+      "confirmed": [
+        "Repository read completed",
+        "Connected account permissions report admin/maintain/push"
+      ],
+      "pending": [
+        "Actual personal administrator and backup administrator",
+        "MFA and account recovery",
+        "Branch protection API unavailable to this integration"
+      ]
+    },
+    {
+      "service": "Supabase",
+      "project_ref": "wyxuekjikvflpcmlliwn",
+      "organization_name": "DRIVER SPOT",
+      "plan": "free",
+      "confirmed": [
+        "Existing organization subscription metadata read"
+      ],
+      "pending": [
+        "Named account owner",
+        "Recovery and MFA",
+        "Billing and administrative continuity"
+      ]
+    },
+    {
+      "service": "Google Drive",
+      "confirmed": [
+        "Previously prepared backup folder exists",
+        "Not shared; owner-only permission",
+        "Folder child search returned no files"
+      ],
+      "pending": [
+        "Available storage capacity",
+        "Named custodian and independent key custody",
+        "Billing and recovery ownership"
+      ]
+    },
+    {
+      "service": "Resend",
+      "domain": "spodora.com",
+      "confirmed": [
+        "Domain verified",
+        "Sending enabled",
+        "Receiving disabled"
+      ],
+      "pending": [
+        "Plan and remaining sending allowance",
+        "Named owner and recovery access",
+        "Explicit test recipients"
+      ]
+    },
+    {
+      "service": "DNS and GitHub Pages",
+      "confirmed": [
+        "Existing repository and production domain identified"
+      ],
+      "pending": [
+        "Registrar and account owner",
+        "Renewal date and payer",
+        "Deployment settings could not be read through allowed connector endpoints"
+      ]
+    },
+    {
+      "service": "LINE",
+      "confirmed": [
+        "Historical integration test evidence exists in handover records"
+      ],
+      "pending": [
+        "Current provider and channel account owner",
+        "Recovery administrator",
+        "Approved linked test recipient and current delivery allowance"
+      ]
+    }
+  ]
+}

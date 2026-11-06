@@ -1,0 +1,50 @@
+--- a/.github/workflows/rebrand-spodora.yml
++++ b/.github/workflows/rebrand-spodora.yml
+@@ -1,32 +1,21 @@
+-name: Apply driver application confirmation
++name: Legacy mutator retired - read-only review
+ on:
+-  push:
+-    paths:
+-      - '.github/workflows/rebrand-spodora.yml'
++  workflow_dispatch:
+ permissions:
+-  contents: write
++  contents: read
+ jobs:
+-  update:
+-    runs-on: ubuntu-latest
++  review:
++    if: github.repository == 'hs-azuma/driver-spot' && github.event.repository.private == false
++    runs-on: ubuntu-24.04
++    timeout-minutes: 3
+     steps:
+-      - uses: actions/checkout@v4
+-      - name: Add profile edit link and application confirmation
++      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
++        with:
++          persist-credentials: false
++      - name: Confirm this legacy operation requires a reviewed source change
+         run: |
+-          python - <<'PY'
++          python3 - <<'PYCODE'
+           from pathlib import Path
+-          p=Path('driver.html')
+-          s=p.read_text(encoding='utf-8')
+-          old="""$('content').innerHTML=`<div class=\"card\"><h2>プロフィール</h2><p><b>氏名</b> ${e(currentDriver.name)}</p><p><b>電話</b> ${e(currentDriver.phone||'')}</p><p><b>希望エリア</b> ${e(currentDriver.preferred_area||'')}</p><p><b>免許</b> ${e(currentDriver.license_type||'')}</p><p><b>経験</b> ${e(currentDriver.experience||'')}</p></div>`"""
+-          new="""$('content').innerHTML=`<div class=\"card\"><h2>プロフィール</h2><p><b>氏名</b> ${e(currentDriver.name)}</p><p><b>電話</b> ${e(currentDriver.phone||'')}</p><p><b>希望エリア</b> ${e(currentDriver.preferred_area||'')}</p><p><b>免許</b> ${e(currentDriver.license_type||'')}</p><p><b>経験</b> ${e(currentDriver.experience||'')}</p><p style=\"margin-top:20px\"><button class=\"primary\" onclick=\"location.href='./driver-profile-setup.html'\">プロフィール情報を変更</button></p></div>`"""
+-          if old in s:s=s.replace(old,new,1)
+-          s=s.replace('onclick="apply(${j.id})"','onclick="location.href=\'./apply-confirm.html?job=${j.id}\'"')
+-          p.write_text(s,encoding='utf-8')
+-          PY
+-      - name: Commit change
+-        run: |
+-          git config user.name "github-actions[bot]"
+-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+-          git add driver.html
+-          if git diff --cached --quiet; then exit 0; fi
+-          git commit -m "Require confirmation before driver application"
+-          git push
++          assert Path('driver.html').is_file() and Path('index.html').is_file()
++          print('Read-only check complete. Use a reviewed source commit for changes.')
++          PYCODE

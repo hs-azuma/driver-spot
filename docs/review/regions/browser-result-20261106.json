@@ -1,0 +1,56 @@
+{
+  "status": "PASS_REGION_SELECTOR_REVIEW_CANDIDATE",
+  "production_access": false,
+  "external_requests": 0,
+  "checks": [
+    {
+      "name": "Baseline reproduces saved ward becoming prefecture-wide",
+      "status": "PASS"
+    },
+    {
+      "name": "Candidate preserves saved ward",
+      "status": "PASS"
+    },
+    {
+      "name": "Candidate preserves existing grouped region",
+      "status": "PASS"
+    },
+    {
+      "name": "Candidate preserves existing municipality",
+      "status": "PASS"
+    },
+    {
+      "name": "Candidate preserves prefecture-wide",
+      "status": "PASS"
+    },
+    {
+      "name": "Candidate preserves saved town outside choices",
+      "status": "PASS"
+    },
+    {
+      "name": "Candidate preserves untrusted text",
+      "status": "PASS"
+    },
+    {
+      "name": "Empty preference keeps selection disabled",
+      "status": "PASS"
+    },
+    {
+      "name": "New selection defaults to prefecture-wide",
+      "status": "PASS"
+    },
+    {
+      "name": "No external requests",
+      "status": "PASS"
+    }
+  ],
+  "source_sha256": {
+    "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
+    "docs/review/regions/fill-municipality-candidate.js": "93b183c862a740d81426c411357f64d85215d005c63a25837d8fdb9595ff2349"
+  },
+  "limitations": [
+    "Candidate is injected into an isolated page; areas.js remains the existing runtime source",
+    "No profile write, production data conversion or notification delivery"
+  ],
+  "browser": "153.0.8010.0"
+}

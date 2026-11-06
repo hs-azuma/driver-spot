@@ -15,8 +15,8 @@ import time
 
 ROOT=Path(__file__).resolve().parents[1]
 REPORT=ROOT/'docs/handover-cleanroom-20261029.json'
-OUTPUTS={'docs/handover-cleanroom-20261029.json','docs/database/restore-candidate/lab-result.json','docs/dependency-inventory-20261029.json','docs/native-preflight-20261029.json','docs/third-party-readiness-20261029.json'}
-GENERATED_PREFIXES=('docs/browser-lab-20261029/','docs/sdk-lab-20261029/','docs/business-lab-20261029/')
+OUTPUTS={'docs/review/regions/browser-result-20261106.json','docs/v4-eight/attempts.json','docs/v4-eight/status.json','docs/v4-eight/local-verification.json','docs/v4-eight/edge-typecheck.json','docs/v4-sixteen/status.json','docs/release/v4-current-candidate-20261031.json','docs/functions-runtime-inventory-20261031.json','docs/handover-cleanroom-20261029.json','docs/database/restore-candidate/lab-result.json','docs/dependency-inventory-20261029.json','docs/native-preflight-20261029.json','docs/third-party-readiness-20261029.json'}
+GENERATED_PREFIXES=('docs/browser-lab-20261029/','docs/sdk-lab-20261029/','docs/business-lab-20261029/','docs/native-ci-20261029/')
 
 
 def main():
@@ -59,7 +59,9 @@ def main():
                       ('offline_regression',[npm,'test']),('synthetic_db_encryption_restore',[npm,'--prefix','tools/restore-lab','test']),
                       ('chromium_synthetic_ui',[npm,'--prefix','tools/browser-lab','test']),
                       ('real_sdk_synthetic_http',[npm,'--prefix','tools/sdk-lab','test']),
-                      ('business_actions_and_modal_qr',[npm,'--prefix','tools/business-lab','test'])]
+                      ('business_actions_and_modal_qr',[npm,'--prefix','tools/business-lab','test']),
+                      ('applicant_invitation_block_rating_ui',['node','tools/business-lab/applicant-browser.mjs']),
+                      ('saved_region_selection_review',['node','tools/business-lab/region-browser.mjs'])]
             for name,command in commands:
                 started=time.monotonic()
                 result=subprocess.run(command,cwd=target,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,timeout=300)
@@ -94,6 +96,14 @@ def main():
             if business['status']!='PASS_BUSINESS_ACTIONS_WITH_SYNTHETIC_BACKEND' or len(business['checks'])!=51 or any(c['status']!='PASS' for c in business['checks']):
                 raise RuntimeError('missing_business_evidence')
             report['business']={'status':business['status'],'checks':len(business['checks']),'real_backend':False}
+            applicant=json.loads((target/'docs/business-lab-20261029/applicant-ui-result.json').read_text())
+            region=json.loads((target/'docs/review/regions/browser-result-20261106.json').read_text())
+            if applicant['status']!='PASS_APPLICANT_UI_WITH_SYNTHETIC_SDK' or len(applicant['checks'])!=28:
+                raise RuntimeError('missing_applicant_ui_evidence')
+            if region['status']!='PASS_REGION_SELECTOR_REVIEW_CANDIDATE' or len(region['checks'])!=10:
+                raise RuntimeError('missing_region_review_evidence')
+            report['applicant_ui']={'status':applicant['status'],'checks':len(applicant['checks'])}
+            report['region_review']={'status':region['status'],'checks':len(region['checks']),'applied':False}
             report['status']='PASS_SOURCE_REPRODUCTION_ONLY'
     except (subprocess.SubprocessError,OSError,ValueError,KeyError,RuntimeError) as error:
         report['error']=str(error)

@@ -1,0 +1,38 @@
+{
+  "production_access": false,
+  "attempts": [
+    {
+      "source_commit": "d7574070c60510ae8ae319f66bdeaf161db1d434",
+      "status": "FAIL",
+      "native_checks_passed_before_failure": 184,
+      "finding": "Driver registration UI passed; company session setup, form controls and strict types needed further work."
+    },
+    {
+      "source_commit": "48ea143f81883ad0f5369009dd7dd8310c677594",
+      "status": "FAIL",
+      "native_checks_passed_before_failure": 187,
+      "finding": "Read-only SQL, registration and empty job validation passed; break field is a select, and upstream declaration compatibility requires separate reporting."
+    },
+    {
+      "source_commit": "43bfd3cf038c035cfb425444c42edc6f0c38babe",
+      "status": "FAIL",
+      "finding": "All ten strict application typechecks passed with resolved locks. Browser publication needs actual service diagnostics; not counted as a passing workflow."
+    },
+    {
+      "source_commit": "c76d0c058843dc1a7c94a36aa088a4f636bf724f",
+      "status": "FAIL",
+      "finding": "Publication reached company.html successfully. Verification incorrectly queried jobs/applications through service_role, which deliberately lacks those read grants. The fixture is not granted more privileges; verification now uses the real company RLS client."
+    },
+    {
+      "source_commit": "8ab49e8fbc64e064bcae5445e29ebab0e43a0364",
+      "status": "FAIL",
+      "finding": "Registration, publication and application passed. Duplicate insert was correctly refused by the existing overlap trigger (P0001) before the unique constraint; test now checks actual refusal and one persisted row rather than assuming constraint order."
+    },
+    {
+      "source_commit": "ac46c705dcd72562a4ef8d04eb294615ce949ac0",
+      "status": "FAIL",
+      "finding": "Real UI flow passed through hiring and QR checkout. Payroll UI correctly refuses before scheduled start. The synthetic schedule and actual history tab navigation are adjusted, without changing application rules or mocking clocks."
+    }
+  ],
+  "full_reports": "Git history of ci/v4-native-results-20261029 preserves each actual failed result; failures are not replaced by successful evidence."
+}

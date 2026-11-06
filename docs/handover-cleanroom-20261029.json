@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-10-29T11:52:04.107106+00:00",
+  "started_at": "2026-11-03T23:12:09.345362+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.507,
-      "output_sha256": "7a8a7c7ee1edfcf4a2200d5650aa573b90d6a0bfb220d9bbfa7144c689f7163d"
+      "seconds": 0.469,
+      "output_sha256": "cef986528d1821ea26a475139c5433189a3009ef8849681ffabfae669acd0e7b"
     },
     {
       "name": "install_browser_pinned_offline",
@@ -33,8 +33,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 1.5,
-      "output_sha256": "b46a4a0ce7a9dd40cb132fd3a21e3e4c9cfb05eef85026e18395c76cdc956294"
+      "seconds": 1.652,
+      "output_sha256": "9de28642a2f7030e46fe92aa2c04ce90db49412add2c5561f01b797048000950"
     },
     {
       "name": "install_sdk_pinned_offline",
@@ -49,8 +49,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.467,
-      "output_sha256": "5f7120f2e84e97d1d203b5fd5fee007492bbfc39a874deaefdad8c85e90af3f7"
+      "seconds": 0.499,
+      "output_sha256": "73e48d0d12660bb793c96e4f8e0a5b211fb1c56baa6c35da37f24fddea0a44ea"
     },
     {
       "name": "offline_regression",
@@ -59,13 +59,15 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 1.634,
-      "output_sha256": "1c7122feb81031f97655e89eddee6e72f63564b380f513fd62a328961800a78f",
-      "node_tests": 160,
+      "seconds": 4.538,
+      "output_sha256": "48e773668c6d22f6238b1566ae4f4c350af7d8ddafc2a5ae5ec9bbc0a081d8c3",
+      "node_tests": 189,
       "python_suites": [
         6,
         16,
-        7
+        7,
+        4,
+        5
       ]
     },
     {
@@ -77,8 +79,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 3.888,
-      "output_sha256": "128bf19a3c60a9166f3359b852932debf308eb38de7ada396385785648ce2d73"
+      "seconds": 3.783,
+      "output_sha256": "b8945e672adb9150c513b0ad1f5ebd557dec249138d1ff6ac1472587efb79294"
     },
     {
       "name": "chromium_synthetic_ui",
@@ -89,7 +91,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 34.122,
+      "seconds": 33.014,
       "output_sha256": "420050d8328bd9e573c5ab270de948510f5393c2952cd2cb1db55d35a199df4d"
     },
     {
@@ -101,8 +103,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 7.725,
-      "output_sha256": "c0ea5b9596962e07c81996a045a375007d3e4db445d44e88a6bd38f4e8b59dd4"
+      "seconds": 7.313,
+      "output_sha256": "79ef681ce997aacfb5c1bd8e601af32d3747ffb6b6876095dd683011a82aef14"
     },
     {
       "name": "business_actions_and_modal_qr",
@@ -113,7 +115,7 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 7.527,
+      "seconds": 7.365,
       "output_sha256": "b94f8848948c5073ef1877213839390d52e31bf061eea220947113424fbd6c97"
     }
   ],
@@ -127,15 +129,15 @@
     "node": "v24.22.1",
     "npm": "11.9.0"
   },
-  "source_files": 245,
-  "source_sha256": "6739d589956e43480aff056d7facf16574d258152fe69eec5394cdcc7e4c3b98",
-  "base_commit": "0fdd80b889ac960e72b45c32bb7a06ee2cd4769e",
+  "source_files": 320,
+  "source_sha256": "b5fc44a418ac1f4d9cc1c36da458e8a761003aed64b0d32ce4e7a13341534825",
+  "base_commit": "ed93b76d44b78db3c3fb71668cadb29944ef6503",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
   "lab": {
     "status": "PASS_APPLICATION_DDL_AND_LIMITED_RLS_TESTS_WITH_KNOWN_FINDINGS",
-    "checks": 260,
+    "checks": 264,
     "encrypted_fixture_restored": true,
     "real_data_used": false,
     "known_findings": 6
@@ -159,7 +161,7 @@
     "checks": 51,
     "real_backend": false
   },
-  "completed_at": "2026-10-29T11:53:01.687937+00:00",
+  "completed_at": "2026-11-03T23:13:08.217384+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",

@@ -1,5 +1,7 @@
 # 第三者への引き継ぎ受け入れ手順
 
+2026-10-31 最新の技術準備: [16項目の実行台帳](v4-sixteen/README.md)。native181項目成功。実バックアップ/独立した第三者本人の受け入れ/本番承認は未完了。以下の過去記録とは区別する。
+
 最新版: [4項目の到達点](v4-four-stage-progress-20261029.md)と[自動点検](third-party-readiness-20261029.json)。
 自動点検と独立した第三者本人の合格は別。signed_byは未記入、production_readyもfalse。
 GitHub/Supabase/DNS/Resend/LINEの個別権限、MFA、予備管理者、保持/バックアップ、実機・実復元を確認してから署名する。

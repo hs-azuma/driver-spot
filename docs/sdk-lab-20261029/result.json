@@ -1,6 +1,6 @@
 {
   "status": "PASS_REAL_SDK_WITH_SYNTHETIC_HTTP_ONLY",
-  "started_at": "2026-10-29T11:07:30.027Z",
+  "started_at": "2026-11-03T23:12:38.038Z",
   "scope": "Real supabase-js SDK; HTTP, Auth server, database and Edge runtime remain fixtures",
   "sdk": "2.105.0",
   "production_access": false,
@@ -143,7 +143,7 @@
     "apply-confirm.html": "8e6ce7a00dc8b3fca8cc489ae4db034906f5cd740455b9975910eef91903163b",
     "driver.html": "4fc3cd30cf4beaf62e745bd4ef496e3884b00a08b2df32f5233f4e4d8f370b7c",
     "company.html": "4cb9bb3b66af7068cb0951348c10e9ba2702a2df9dc9b4a5de1fc8884ee494d3",
-    "supabase/functions/delete-account/index.ts": "9a5853250424033c17827a934fcb4e924cdf20ffa49e955bbe1ad99b694490eb",
+    "supabase/functions/delete-account/index.ts": "67d74fcb89549c60d60522b9e3525350be1c58198d3797cc8f04c4cce33ed902",
     "supabase/functions/delete-account/handler.ts": "6166fde61cdc1d5026988e36da0d08b58e82e314ae0f0cc7a173a287dbedefcb",
     "tools/sdk-lab/package-lock.json": "ef0c3f4e7b076e793701f17fed7dee42d3ac8831a087131700aa8c5dcf85d489",
     "tools/sdk-lab/http-fixture.mjs": "55dcd9fc757021d87302abc671e0181cb98106b273674bedd04e46e18f948aba",
@@ -157,7 +157,7 @@
     "Browser client URL and publishable key are replaced with synthetic values; external traffic blocked",
     "JWT is synthetic; no server-side cryptographic token validation performed"
   ],
-  "base_commit": "0bfcae268d3a1df91d2939925a904dda518e8002",
+  "base_commit": "ed93b76d44b78db3c3fb71668cadb29944ef6503",
   "browser": "153.0.8010.0",
-  "completed_at": "2026-10-29T11:07:38.287Z"
+  "completed_at": "2026-11-03T23:12:45.320Z"
 }

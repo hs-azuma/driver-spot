@@ -65,3 +65,7 @@ WebAuthn、SMTP/LINE、Supabase標準イベントトリガー、拡張、cron、
 rollback-checks.mjsは現行候補6組の非空部分集合63通りについて、適用後に逆順で切り戻し、関数定義・有効権限・ポリシー・トリガー等を元のカタログと比較する。
 通常の `npm test --prefix tools/restore-lab` で実行する。各パターンはメモリー上の架空DBのSAVEPOINT内で検証する。
 [2026-11-06の確認記録](../../docs/handover/production-diagnostic-20261106.md)と[残作業の実施条件](../../docs/handover/completion-gates-20261106.md)を参照。
+
+## 復元後の配信停止依頼の再適用
+
+lifecycle-replay-checks.mjsを通常のverify.mjsから実行する。取得後の架空配信停止を復元先へ再適用し、再試行での重複と業務記録の保持を7確認で照合する。[固定コミットとCI結果](../../docs/handover/lifecycle-replay-evidence-20261106.json)を参照。

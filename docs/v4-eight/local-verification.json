@@ -1,0 +1,29 @@
+{
+  "status": "PASS_LOCAL_PREPARATION_CHECKS",
+  "completed_at": "2026-11-03T23:13:08.217384+00:00",
+  "source_sha256": "b5fc44a418ac1f4d9cc1c36da458e8a761003aed64b0d32ce4e7a13341534825",
+  "node_tests": 189,
+  "python_tests": 38,
+  "python_suites": [
+    6,
+    16,
+    7,
+    4,
+    5
+  ],
+  "synthetic_restore_checks": 264,
+  "browser_checks": 38,
+  "sdk_checks": 33,
+  "business_checks": 51,
+  "backup_kit_boundary_and_cli_tests": 18,
+  "read_only_predeploy_evaluator_tests": 5,
+  "production_access": false,
+  "real_data_used": false,
+  "cleanroom_evidence": "docs/handover-cleanroom-20261029.json",
+  "tool_source_sha256": {
+    "tools/backup-kit/backup.mjs": "86f73fe06089c99c864608703e53695635c424b09ce904d2b32590584429ca38",
+    "tests/backup-kit.test.cjs": "a6e36025a285ebd20497c2285ab3ccacc62ec51a6bb297c4d72e80c7d20ad35a",
+    "scripts/check-predeploy.py": "47ded7d8e89b2ef3e69f1f1aa65ff5551c4a0e408895d768f0fcf162197d0413",
+    "tests/test_predeploy.py": "d37971a117a0e77b68c26628e8d785548ad272ff8c1483f57be9f533039fb337"
+  }
+}

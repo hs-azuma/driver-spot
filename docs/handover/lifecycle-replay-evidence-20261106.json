@@ -1,0 +1,34 @@
+{
+  "date_jst": "2026-11-06",
+  "status": "PASS_SYNTHETIC_POST_BACKUP_OPTOUT_REPLAY",
+  "source_commit": "cb6786e4dd530385cd9a979f05972f81a894f295",
+  "run_url": "https://github.com/hs-azuma/driver-spot/actions/runs/42189281080",
+  "production_access": false,
+  "real_data_used": false,
+  "real_backup_executed": false,
+  "restore_lab": {
+    "status": "PASS_APPLICATION_DDL_AND_LIMITED_RLS_TESTS_WITH_KNOWN_FINDINGS",
+    "checks": 372,
+    "known_findings": 6,
+    "new_checks": 7
+  },
+  "native": {
+    "status": "PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE",
+    "checks": 207
+  },
+  "new_checks": [
+    "Notifications enabled in source and captured snapshot",
+    "Source opt-out written after backup",
+    "Restored snapshot still needs post-backup journal",
+    "Journal replay disables restored job notifications",
+    "Retry creates only one preference row",
+    "Preference remains disabled after retry",
+    "Restored business record retained"
+  ],
+  "limitations": [
+    "PGlite lifecycle replay uses synthetic local Auth and an in-memory event journal",
+    "Native suite is separate from the new lifecycle fixture",
+    "No legal retention decision, real user deletion, actual export or external notification",
+    "Two database instances in the same runner do not prove restoration on a separate physical host"
+  ]
+}

@@ -1,0 +1,21 @@
+name: Legacy mutator retired - read-only review
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  review:
+    if: github.repository == 'hs-azuma/driver-spot' && github.event.repository.private == false
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Confirm this legacy operation requires a reviewed source change
+        run: |
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          assert Path('driver.html').is_file() and Path('index.html').is_file()
+          print('Read-only check complete. Use a reviewed source commit for changes.')
+          PYCODE

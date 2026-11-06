@@ -1,7 +1,9 @@
 {
   "status": "PASS_PREPARATION_AUDIT_WITH_BLOCKERS",
-  "date_jst": "2026-10-29",
-  "checked_at": "2026-10-29T11:53:23.766983+00:00",
+  "date_jst": "2026-11-04",
+  "checked_at": "2026-11-03T23:18:20.437838+00:00",
+  "source_sha256": "b5fc44a418ac1f4d9cc1c36da458e8a761003aed64b0d32ce4e7a13341534825",
+  "native_test_commit": "dd3957dad3455f8a4671945046e55ba40624e2e4",
   "production_modified": false,
   "production_ready": false,
   "independent_human_acceptance": false,
@@ -11,8 +13,8 @@
       "name": "local_document_links",
       "pass": true,
       "detail": {
-        "files": 36,
-        "links": 98,
+        "files": 52,
+        "links": 168,
         "missing": []
       }
     },
@@ -22,7 +24,7 @@
       "detail": {
         "imports": 29,
         "floating_runtime_imports": 0,
-        "floating_type_imports": 4,
+        "floating_type_imports": 0,
         "unfixed_action_refs": 2
       }
     },
@@ -60,23 +62,90 @@
       "name": "clean_source_reproduction_current",
       "pass": true,
       "detail": null
+    },
+    {
+      "name": "native_synthetic_restore",
+      "pass": true,
+      "detail": {
+        "source_commit": "dd3957dad3455f8a4671945046e55ba40624e2e4",
+        "checks": 199
+      }
+    },
+    {
+      "name": "native_source_hashes",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_storage_bytes_restore",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_independent_cluster_restore",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_concurrency",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_business_flow",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_crash_recovery",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_http_response_loss",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_edge_runtime",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "strict_edge_application_typecheck",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "name": "native_browser_registration_to_payroll",
+      "pass": true,
+      "detail": null
     }
   ],
   "remaining_gates": [
     {
-      "id": "native_restore",
+      "id": "native_synthetic_database_restore",
+      "complete": true,
+      "evidence": "docs/native-ci-20261029/result.json"
+    },
+    {
+      "id": "full_service_restore",
       "complete": false,
-      "evidence": "docs/native-preflight-20261029.json",
       "blockers": [
-        "native_postgres_nonroot_execution_unavailable",
-        "supabase_cli_missing"
+        "Separate physical host/cloud migration and old Storage object UUID/URL mapping",
+        "Managed global roles and secret custody",
+        "Exact production service builds and platform-managed configuration",
+        "Real provider delivery and external configuration"
+      ],
+      "local_host_blockers": [
+        "native_postgres_nonroot_execution_unavailable"
       ]
     },
     {
       "id": "real_backup_custody_and_restore",
       "complete": false,
       "evidence": "docs/backup-recovery-plan.json",
-      "status": "REAL_BACKUP_NOT_CONFIGURED"
+      "status": "PRIVATE_DESTINATION_PREPARED_AWAITING_CUSTODY"
     },
     {
       "id": "ownership_MFA_backup_admin_external_contracts",
@@ -87,7 +156,7 @@
       "complete": false
     },
     {
-      "id": "real_device_notifications_Deno_and_native_concurrency",
+      "id": "real_device_and_real_notification_delivery",
       "complete": false
     },
     {

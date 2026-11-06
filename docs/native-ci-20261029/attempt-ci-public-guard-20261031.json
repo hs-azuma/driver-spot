@@ -1,0 +1,18 @@
+{
+  "status": "FAIL",
+  "production_access": false,
+  "real_data_used": false,
+  "started_at": "2026-10-31T12:23:20.237754+00:00",
+  "checks": [],
+  "limitations": [
+    "Independent cluster on the same runner; platform-managed global roles are bootstrapped, not a production global-role export",
+    "Storage restored to a separate cluster and state; separate host, arbitrary settings and original object UUID restore remain untested",
+    "Native Edge smoke does not verify real email/LINE delivery, webhooks or production deployment",
+    "Native processes share the isolated runner host; there is no container egress network guard",
+    "Ephemeral synthetic fixtures only; not a production backup"
+  ],
+  "failed_stage": "public_repository_guard",
+  "error_type": "HTTPError",
+  "error": "HTTP Error 403: rate limit exceeded",
+  "completed_at": "2026-10-31T12:23:20.316583+00:00"
+}
