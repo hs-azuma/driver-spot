@@ -1,6 +1,6 @@
 {
   "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-  "started_at": "2026-11-03T23:12:09.345362+00:00",
+  "started_at": "2026-11-06T09:02:07.402206+00:00",
   "scope": "clean source copy, cached offline dependencies, synthetic/mocked tests only",
   "production_access": false,
   "steps": [
@@ -17,8 +17,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.469,
-      "output_sha256": "cef986528d1821ea26a475139c5433189a3009ef8849681ffabfae669acd0e7b"
+      "seconds": 0.506,
+      "output_sha256": "d7a1fcde6102ee45ad75216f7bc6db4d2d5d70ab89fa172a7d9b0e2ebffeb876"
     },
     {
       "name": "install_browser_pinned_offline",
@@ -33,8 +33,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 1.652,
-      "output_sha256": "9de28642a2f7030e46fe92aa2c04ce90db49412add2c5561f01b797048000950"
+      "seconds": 1.761,
+      "output_sha256": "df9a5f74f9c6f0091535a38eebca1116d6f116e043e5d52197da72f3a121bf8d"
     },
     {
       "name": "install_sdk_pinned_offline",
@@ -49,8 +49,8 @@
         "--no-fund"
       ],
       "exit_code": 0,
-      "seconds": 0.499,
-      "output_sha256": "73e48d0d12660bb793c96e4f8e0a5b211fb1c56baa6c35da37f24fddea0a44ea"
+      "seconds": 0.509,
+      "output_sha256": "108cfc309f76f78a6dbf7e0eebbc589bcc2d8ca68308af3aaa1ac1cca63194cd"
     },
     {
       "name": "offline_regression",
@@ -59,9 +59,9 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 4.538,
-      "output_sha256": "48e773668c6d22f6238b1566ae4f4c350af7d8ddafc2a5ae5ec9bbc0a081d8c3",
-      "node_tests": 189,
+      "seconds": 5.69,
+      "output_sha256": "71d8c73af3c648d9afa285ad246c9e1099d6c92110ccf74d122d2c1dbdad6ec6",
+      "node_tests": 194,
       "python_suites": [
         6,
         16,
@@ -79,8 +79,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 3.783,
-      "output_sha256": "b8945e672adb9150c513b0ad1f5ebd557dec249138d1ff6ac1472587efb79294"
+      "seconds": 7.076,
+      "output_sha256": "8a1eee96e14fbe5a577a28ca8e9e444457fe02a1c7664fc7a8f545f792104173"
     },
     {
       "name": "chromium_synthetic_ui",
@@ -91,8 +91,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 33.014,
-      "output_sha256": "420050d8328bd9e573c5ab270de948510f5393c2952cd2cb1db55d35a199df4d"
+      "seconds": 29.262,
+      "output_sha256": "3eea40d7524e7b4169d5a73bb22d3bc8e228caeb40dbb23b388da6de677fbbc0"
     },
     {
       "name": "real_sdk_synthetic_http",
@@ -103,8 +103,8 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 7.313,
-      "output_sha256": "79ef681ce997aacfb5c1bd8e601af32d3747ffb6b6876095dd683011a82aef14"
+      "seconds": 6.839,
+      "output_sha256": "7f0306ca5207dd09de3c24b3d1650f640fa78e1a5421af2092cd787fe2513414"
     },
     {
       "name": "business_actions_and_modal_qr",
@@ -115,29 +115,49 @@
         "test"
       ],
       "exit_code": 0,
-      "seconds": 7.365,
-      "output_sha256": "b94f8848948c5073ef1877213839390d52e31bf061eea220947113424fbd6c97"
+      "seconds": 7.097,
+      "output_sha256": "5f3d915a06f2a78aedae8e5e6f54770f19291170c89efc4de0709a6248c26cc5"
+    },
+    {
+      "name": "applicant_invitation_block_rating_ui",
+      "command": [
+        "node",
+        "tools/business-lab/applicant-browser.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 5.135,
+      "output_sha256": "2819d3efcb292cbd08672625017052456cd83395c09d6eca8be360e9fdc83636"
+    },
+    {
+      "name": "saved_region_selection_review",
+      "command": [
+        "node",
+        "tools/business-lab/region-browser.mjs"
+      ],
+      "exit_code": 0,
+      "seconds": 2.488,
+      "output_sha256": "246104a17c84144d349d7f10c551d1b26b855cded4cc5358dd0d3f8a191c9ca9"
     }
   ],
   "runtime": {
-    "python": "3.12.14",
+    "python": "3.12.16",
     "native_tools_present": {
-      "docker": false,
-      "psql": false,
+      "docker": true,
+      "psql": true,
       "supabase": false
     },
     "node": "v24.22.1",
-    "npm": "11.9.0"
+    "npm": "11.19.1"
   },
-  "source_files": 320,
-  "source_sha256": "b5fc44a418ac1f4d9cc1c36da458e8a761003aed64b0d32ce4e7a13341534825",
-  "base_commit": "ed93b76d44b78db3c3fb71668cadb29944ef6503",
+  "source_files": 342,
+  "source_sha256": "fb0f7b9c431a0dd95b9a1af3088953892cdff84a158e8d62bf762edf3c7687da",
+  "base_commit": "b47411c7c2c45ffe89db1703b04622dd170d7c83",
   "includes_working_tree": true,
   "git_directory_copied": false,
   "existing_node_modules_copied": false,
   "lab": {
     "status": "PASS_APPLICATION_DDL_AND_LIMITED_RLS_TESTS_WITH_KNOWN_FINDINGS",
-    "checks": 264,
+    "checks": 372,
     "encrypted_fixture_restored": true,
     "real_data_used": false,
     "known_findings": 6
@@ -161,11 +181,29 @@
     "checks": 51,
     "real_backend": false
   },
-  "completed_at": "2026-11-03T23:13:08.217384+00:00",
+  "applicant_ui": {
+    "status": "PASS_APPLICANT_UI_WITH_SYNTHETIC_SDK",
+    "checks": 28
+  },
+  "region_review": {
+    "status": "PASS_REGION_SELECTOR_REVIEW_CANDIDATE",
+    "checks": 10,
+    "applied": false
+  },
+  "completed_at": "2026-11-06T09:03:14.391548+00:00",
   "limitations": [
     "Existing npm cache was used; fresh offline machines need a pre-populated cache",
     "Not an independent human handover or native Supabase/Auth/Storage restore",
     "No real backup, keys, external storage or external delivery tested",
     "Browser lab uses Linux x64 Chromium; SDK lab uses the real SDK with a synthetic HTTP backend, not native Auth integration"
-  ]
+  ],
+  "ci_run_url": "https://github.com/hs-azuma/driver-spot/actions/runs/42191937568",
+  "workflow_patch_checks": {
+    "status": "PASS_APPLY_CHECK_ONLY",
+    "files": [
+      "docs/review/workflows/rebrand-spodora.patch",
+      "docs/review/workflows/update-driver-experience.patch"
+    ],
+    "applied": false
+  }
 }

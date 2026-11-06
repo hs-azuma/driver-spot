@@ -429,12 +429,31 @@
   },
   "runtime_metadata_snapshot": "docs/release/function-metadata-20261106.json",
   "runtime_version_or_jwt_differences": [],
-  "cleanroom_reverified": false,
+  "cleanroom_reverified": true,
   "region_proposal": {
     "patch": "docs/review/regions/areas-preserve-selection.patch",
     "patch_sha256": "b8841f603933a52c320a41324df0d24d7cc10a2002edc72703631383019bdd9b",
     "applied": false,
     "approved": false,
-    "browser_evidence": "docs/review/regions/browser-result-20261106.json"
+    "browser_evidence": "docs/handover-cleanroom-20261029.json",
+    "cleanroom_checks": 10
+  },
+  "cleanroom_evidence": {
+    "path": "docs/handover-cleanroom-20261029.json",
+    "source_commit": "b47411c7c2c45ffe89db1703b04622dd170d7c83",
+    "source_sha256": "fb0f7b9c431a0dd95b9a1af3088953892cdff84a158e8d62bf762edf3c7687da",
+    "source_files": 342,
+    "status": "PASS_SOURCE_REPRODUCTION_ONLY",
+    "run_url": "https://github.com/hs-azuma/driver-spot/actions/runs/42191937568",
+    "independent_human_acceptance": false,
+    "separate_physical_restore": false
+  },
+  "workflow_patch_checks": {
+    "status": "PASS_APPLY_CHECK_ONLY",
+    "files": [
+      "docs/review/workflows/rebrand-spodora.patch",
+      "docs/review/workflows/update-driver-experience.patch"
+    ],
+    "applied": false
   }
 }
