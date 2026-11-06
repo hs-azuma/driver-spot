@@ -13,6 +13,8 @@ import {accessChecks} from './access-checks.mjs';
 import {edgeStateChecks} from './edge-state-checks.mjs';
 import {withdrawalChecks} from './withdrawal-checks.mjs';
 import {overnightChecks} from './overnight-checks.mjs';
+import {rollbackChecks} from './rollback-checks.mjs';
+import {lifecycleReplayChecks} from './lifecycle-replay-checks.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const db = new PGlite(); // no path: volatile memory; no production credentials accepted
@@ -149,6 +151,7 @@ try {
     companyUid, otherCompanyUid, driverUid, otherDriverUid}));
   await scenario('withdrawal_retention_and_atomic_profile_cleanup', () => withdrawalChecks({db,root,check,one,role,rejects,findings,company,companyUid,driver,driverUid,application}));
   await scenario('overnight_overlap_and_boundary_checks', () => overnightChecks({db,root,check,one,role,rejects,findings,company,companyUid,driver,driverUid}));
+  await scenario('current_candidate_rollback_combinations', () => rollbackChecks({db,root,check,one,role}));
   await role('anon');
   check('Anonymous visitor can browse jobs', (await db.query('SELECT id FROM public.jobs')).rows.length, 2);
   await rejects('Anonymous driver-profile read denied', 'SELECT * FROM public.drivers', []);
@@ -224,6 +227,7 @@ try {
     check('Synthetic restore identity advances without collision (sequence gaps allowed)', next.rows[0].id > backupJob.id, true);
     check('Synthetic restore preserves anonymous job INSERT privilege for baseline comparison',
       (await clone.query("SELECT has_table_privilege('anon','public.jobs','INSERT') AS allowed")).rows[0].allowed, true);
+    await lifecycleReplayChecks({source:db,restored:clone,userId:companyUid,companyId:backupCompany.id,check});
   } finally { await clone.close(); }
   const summary = {
     status: 'PASS_APPLICATION_DDL_AND_LIMITED_RLS_TESTS_WITH_KNOWN_FINDINGS',
@@ -245,7 +249,8 @@ try {
       'tools/restore-lab/withdrawal-checks.mjs','tools/restore-lab/overnight-checks.mjs',
       'sql/review-v4-withdrawal-retention.sql','sql/review-v4-withdrawal-retention-rollback.sql',
       'sql/review-v4-overnight-overlap.sql','sql/review-v4-overnight-overlap-rollback.sql',
-      'tools/restore-lab/backup-envelope.mjs'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
+      'tools/restore-lab/backup-envelope.mjs','tools/restore-lab/rollback-checks.mjs','tools/restore-lab/lifecycle-replay-checks.mjs','tools/native-runner/read-security-catalog.sql',
+      'sql/review-v4-hiring-capacity.sql','sql/review-v4-hiring-capacity-rollback.sql'].map(path => [path, createHash('sha256').update(readFileSync(resolve(root,path))).digest('hex')])),
     limitations: ['Auth is mocked; no HTTP login, token verification or password recovery tested',
       'No Supabase extensions, cron, event triggers, service settings or Storage files restored',
       'Synthetic PGlite data-directory export/reload is not encrypted production backup or pg_dump/pg_restore proof',

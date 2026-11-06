@@ -32,6 +32,9 @@ jobs:
           npm ci --prefix tools/sdk-lab --ignore-scripts --no-audit --no-fund
           npm ci --prefix tools/browser-lab --ignore-scripts --no-audit --no-fund
           npm ci --prefix tools/edge-check --ignore-scripts --no-audit --no-fund
+          npm ci --prefix tools/restore-lab --ignore-scripts --no-audit --no-fund
+      - name: Verify synthetic restore and post-backup opt-out replay
+        run: node tools/restore-lab/verify.mjs
       - name: Native synthetic Auth Storage RLS and encrypted database restore
         id: native
         env:

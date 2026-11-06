@@ -48,6 +48,32 @@ export async function businessChecks(ctx) {
     await role('authenticated', companyUid);
     await db.query('DELETE FROM public.company_driver_blocks WHERE company_id=$1 AND driver_id=$2', [company.id, driver.id]);
 
+    await role('postgres');
+    check('Unblocking restores LINE eligibility', await matches('line'), true);
+    await db.query("UPDATE public.drivers SET preferred_line_enabled_1=false,preferred_email_enabled_1=false,preferred_prefecture_2='東京都',preferred_municipality_2='東京都全域',preferred_line_enabled_2=true,preferred_email_enabled_2=false,preferred_prefecture_3='東京都',preferred_municipality_3='新宿区',preferred_email_enabled_3=true,preferred_line_enabled_3=false WHERE id=$1", [driver.id]);
+    check('LINE enabled in prefecture-wide second preference', await matches('line'), true);
+    check('Email enabled in exact third preference', await matches('email'), true);
+    await db.query('UPDATE public.drivers SET preferred_email_enabled_3=false WHERE id=$1', [driver.id]);
+    check('An area match with email disabled cannot notify', await matches('email'), false);
+
+    const inviteSql = 'INSERT INTO public.company_job_invitations(company_id,job_id,driver_id,company_name) VALUES($1,$2,$3,$4)';
+    const inviteParams = [company.id, job.id, driver.id, 'Synthetic company'];
+    await db.query(inviteSql, inviteParams);
+    await rejects('Duplicate invitation for the same job and driver is refused', inviteSql, inviteParams,
+      e => e.code === '23505');
+    await role('authenticated', otherDriverUid);
+    check('Unrelated driver cannot read the invitation',
+      (await db.query('SELECT job_id FROM public.company_job_invitations WHERE job_id=$1', [job.id])).rows, []);
+    await role('authenticated', companyUid);
+    await db.query("UPDATE public.jobs SET status='募集終了' WHERE id=$1", [job.id]);
+    await role('authenticated', driverUid);
+    check('Closing a listing preserves the existing invitation for its recipient',
+      (await db.query('SELECT job_id FROM public.company_job_invitations WHERE job_id=$1', [job.id])).rows, [{job_id: job.id}]);
+    check('Closing a listing preserves existing application history for its driver',
+      (await db.query('SELECT id FROM public.applications WHERE id=$1', [application.id])).rows, [{id: application.id}]);
+    await role('authenticated', companyUid);
+    await db.query("UPDATE public.jobs SET status='募集中' WHERE id=$1", [job.id]);
+
     await role('authenticated', otherCompanyUid);
     await rejects('Review other company work: rejected', "SELECT public.submit_work_review($1,'company',5,'not-authorized')", [application.id]);
     await role('authenticated', otherDriverUid);
