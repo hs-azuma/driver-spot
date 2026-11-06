@@ -59,3 +59,9 @@ WebAuthn、SMTP/LINE、Supabase標準イベントトリガー、拡張、cron、
 新しいアクセス制限/切り戻しSQLは`python3 -B scripts/build-access-review.py`で保存定義から再生成する。
 夜間の制限/切り戻しは`python3 -B scripts/build-integrity-review.py`で再生成する。
 ソースだけを別フォルダに移した再現試験は`python3 -B scripts/verify-handover.py`。依存導入に既存npmキャッシュを使う。
+
+## 現行候補の切り戻し組合せ
+
+rollback-checks.mjsは現行候補6組の非空部分集合63通りについて、適用後に逆順で切り戻し、関数定義・有効権限・ポリシー・トリガー等を元のカタログと比較する。
+通常の `npm test --prefix tools/restore-lab` で実行する。各パターンはメモリー上の架空DBのSAVEPOINT内で検証する。
+[2026-11-06の確認記録](../../docs/handover/production-diagnostic-20261106.md)と[残作業の実施条件](../../docs/handover/completion-gates-20261106.md)を参照。
