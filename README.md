@@ -10,7 +10,7 @@
 [以前の8項目の台帳](docs/v4-eight/README.md)と[再開手順](docs/v4-eight/resume.md)に検証経路を記録しています。
 現在の結果と検証したソースは[8項目の状態](docs/v4-eight/status.json)で確認できます。
 画面と実DBの結合、10 Functionsのstrict型検査、依存固定、バックアップ用ツール、読み取り診断、運用案を対象にしています。
-旧自動更新の改善案と保存・退会・匿名化の運用案は、レビュー用の準備で本番未適用です。
+旧自動書き換え2件は承認範囲でmainへ適用済みです。[適用記録](docs/handover/workflow-retirement-applied-20261106.json)を参照してください。保存・退会・匿名化の運用案はレビュー用の準備です。
 外部SDK型宣言の互換性制限は[型検査のREADME](tools/edge-check/README.md)に記録しています。
 
 [2026-10-31の16項目](docs/v4-sixteen/README.md)は前回の検証履歴です。

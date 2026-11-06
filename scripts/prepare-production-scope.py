@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
-MAIN = '41d6223854a780713686d02ae73d028eb17aa2c4'
+MAIN = '37074c2e6355c2ddc563fe2698ca591c9ca8dc6f'
 
 
 def git(*args):

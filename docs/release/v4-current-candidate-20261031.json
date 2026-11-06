@@ -1,10 +1,10 @@
 {
   "status": "PREPARED_APPROVAL_REQUIRED",
   "date_jst": "2026-11-06",
-  "observed_main_commit": "41d6223854a780713686d02ae73d028eb17aa2c4",
+  "observed_main_commit": "37074c2e6355c2ddc563fe2698ca591c9ca8dc6f",
   "native_test_commit": "f721c0626add75d6a265635c850785d42a5216da",
   "native_sources_current": true,
-  "production_changed": false,
+  "production_changed": true,
   "production_ready": false,
   "approval": null,
   "real_backup_verified": false,
@@ -415,7 +415,7 @@
     "Current-source native and cleanroom checks",
     "Real backup custody, retention, recovery objectives and restore verification",
     "Scoped owner approval and named operator",
-    "Production delta and legacy mutating workflow review",
+    "Final production delta for remaining candidate scope; F19 legacy workflow retirement applied",
     "Real device, notification and external configuration checks"
   ],
   "native_source_files_checked": 100,
@@ -440,31 +440,32 @@
   },
   "cleanroom_evidence": {
     "path": "docs/handover-cleanroom-20261029.json",
-    "source_commit": "b47411c7c2c45ffe89db1703b04622dd170d7c83",
-    "source_sha256": "fb0f7b9c431a0dd95b9a1af3088953892cdff84a158e8d62bf762edf3c7687da",
-    "source_files": 342,
+    "source_commit": "cbb45d394584ee70667a2d2301a1c14bc3ebed07",
     "status": "PASS_SOURCE_REPRODUCTION_ONLY",
-    "run_url": "https://github.com/hs-azuma/driver-spot/actions/runs/42191937568",
+    "source_sha256": "e9748a589228056ebb5e260067c68d3770c2b29c62e949021e8ba653bc3a9224",
+    "source_files": 343,
+    "run_url": "https://github.com/hs-azuma/driver-spot/actions/runs/42195192121",
+    "follow_up_scope": "Progress documentation and main-baseline metadata updated after the source-copy run; application runtime unchanged",
     "independent_human_acceptance": false,
-    "separate_physical_restore": false,
-    "documentation_changes_after_reproduction": {
-      "reason": "F27 owner policy approval and checklist documentation updated after the recorded source-copy run",
-      "application_runtime_changed": false,
-      "full_source_copy_rerun": false
-    }
+    "separate_physical_restore": false
   },
   "workflow_patch_checks": {
-    "status": "PASS_APPLY_CHECK_ONLY",
-    "files": [
-      "docs/review/workflows/rebrand-spodora.patch",
-      "docs/review/workflows/update-driver-experience.patch"
-    ],
-    "applied": false
+    "status": "APPLIED_CANDIDATES_MATCH_READBACK",
+    "record": "docs/handover/workflow-retirement-applied-20261106.json"
   },
   "f27_policy": {
     "status": "APPROVED_PROPOSAL_A",
     "date_jst": "2026-11-06",
     "reference": "docs/handover/absence-decision-proposal-20261106.md",
     "application_runtime_changed": false
-  }
+  },
+  "production_change_scope": "Approved F19 workflow retirement only",
+  "broader_candidate_deployed": false,
+  "applied_review_units": [
+    {
+      "id": "F19",
+      "main_commit": "37074c2e6355c2ddc563fe2698ca591c9ca8dc6f",
+      "record": "docs/handover/workflow-retirement-applied-20261106.json"
+    }
+  ]
 }

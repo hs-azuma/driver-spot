@@ -1,0 +1,69 @@
+{
+  "date_jst": "2026-11-06",
+  "status": "APPLIED_APPROVED_F19",
+  "approval": "Owner instructed proceeding after the two legacy workflow changes were presented",
+  "before_main_commit": "41d6223854a780713686d02ae73d028eb17aa2c4",
+  "applied_main_commit": "37074c2e6355c2ddc563fe2698ca591c9ca8dc6f",
+  "scope": "Only the two approved legacy workflow files on main",
+  "files": [
+    {
+      "path": ".github/workflows/rebrand-spodora.yml",
+      "blob_sha": "93eab02628a2d93535f89b377a6b2b43b73015e7"
+    },
+    {
+      "path": ".github/workflows/update-driver-experience.yml",
+      "blob_sha": "93eab02628a2d93535f89b377a6b2b43b73015e7"
+    }
+  ],
+  "configuration": {
+    "trigger": "workflow_dispatch",
+    "contents_permission": "read",
+    "persist_credentials": false,
+    "checkout_commit": "11d5960a326750d5838078e36cf38b85af677262",
+    "runner": "ubuntu-24.04",
+    "timeout_minutes": 3,
+    "source_write_commands": false
+  },
+  "preflight": {
+    "in_progress": 0,
+    "queued": 0,
+    "waiting": 0,
+    "requested": 0,
+    "pending": 0
+  },
+  "readback_matches_review_candidates": true,
+  "main_runs": [
+    {
+      "id": 42194804895,
+      "name": "Offline checks",
+      "status": "completed",
+      "conclusion": "success",
+      "path": ".github/workflows/offline-checks.yml"
+    },
+    {
+      "id": 42194804362,
+      "name": "pages build and deployment",
+      "status": "completed",
+      "conclusion": "success",
+      "path": "dynamic/pages/pages-build-deployment"
+    }
+  ],
+  "legacy_mutator_runs_for_change": 0,
+  "main_head_after_checks": "37074c2e6355c2ddc563fe2698ca591c9ca8dc6f",
+  "unexpected_followup_commits": 0,
+  "application_html_js_changed": false,
+  "database_changed": false,
+  "broader_v4_candidate_deployed": false,
+  "manual_review_jobs_executed": false,
+  "reproduction_validation": {
+    "source_commit": "cbb45d394584ee70667a2d2301a1c14bc3ebed07",
+    "run_url": "https://github.com/hs-azuma/driver-spot/actions/runs/42195192121",
+    "status": "PASS_SOURCE_REPRODUCTION_ONLY",
+    "steps": 10,
+    "synthetic_db_checks": 372
+  },
+  "limits": [
+    "Manual review job dispatch was not executed; configuration was read back and current source reproduction passed",
+    "This approval covers F19 only; broader application/DB/Functions deployment remains F20"
+  ]
+}

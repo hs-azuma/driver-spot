@@ -34,8 +34,12 @@ jobs:
           npm ci --prefix tools/sdk-lab --ignore-scripts --no-audit --no-fund
       - name: Validate legacy workflow patches without applying them
         run: |
-          git apply --check docs/review/workflows/rebrand-spodora.patch
-          git apply --check docs/review/workflows/update-driver-experience.patch
+          if ! cmp -s .github/workflows/rebrand-spodora.yml docs/review/workflows/rebrand-spodora.candidate.yml; then
+            git apply --check docs/review/workflows/rebrand-spodora.patch
+          fi
+          if ! cmp -s .github/workflows/update-driver-experience.yml docs/review/workflows/update-driver-experience.candidate.yml; then
+            git apply --check docs/review/workflows/update-driver-experience.patch
+          fi
       - name: Rebuild fresh source directory and run isolated checks
         run: python3 -B scripts/verify-handover.py
       - name: Print synthetic reproduction evidence
