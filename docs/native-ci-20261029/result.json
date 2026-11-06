@@ -2,7 +2,7 @@
   "status": "PASS_NATIVE_SUPABASE_SYNTHETIC_DB_RESTORE",
   "production_access": false,
   "real_data_used": false,
-  "started_at": "2026-11-05T14:04:33.549053+00:00",
+  "started_at": "2026-11-06T08:40:11.462172+00:00",
   "checks": [
     "Native API and PostgreSQL target loopback addresses only",
     "Native PostgreSQL major 17",
@@ -219,7 +219,7 @@
     "Native processes share the isolated runner host; there is no container egress network guard",
     "Ephemeral synthetic fixtures only; not a production backup"
   ],
-  "source_commit": "f721c0626add75d6a265635c850785d42a5216da",
+  "source_commit": "cb6786e4dd530385cd9a979f05972f81a894f295",
   "runner": "standard ubuntu-24.04",
   "cli_version": "2.122.0",
   "edge_typecheck": {
@@ -469,7 +469,7 @@
         "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
       }
     ],
-    "ciphertext_sha256": "4d5e09caf4c42ca74f41115e6361c3e31cbc2935d0d15f0bc8de04f6be618baa",
+    "ciphertext_sha256": "83a144ecd5d282ac14acd67a2150362048c49b8ea90251aaa351ae9383192d14",
     "key_stored": false,
     "archive_stored": false,
     "independent_host": false,
@@ -512,7 +512,7 @@
     "original_object_uuids_preserved": false,
     "same_runner_host": true
   },
-  "edge_endpoint": "http://127.0.0.1:24617/functions/v1",
+  "edge_endpoint": "http://127.0.0.1:26492/functions/v1",
   "edge_status_env_names": [
     "ANON_KEY",
     "API_URL",
@@ -585,24 +585,24 @@
     ],
     "source_sha256": {
       "driver-register.html": "adb20d3b3c0d7ab9a3859da395979e63cd03fc66d55831f48f68317515183824",
+      "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
       "assets/name-kana.js": "a897399e068a134df6c214106fb1151a6859c91650ffb098db2bceddaa582b2c",
       "assets/auth-session.js": "04a591c89d63d28ac3e1e8bb94d0cd3479bbff3e8b35eb17b9c449aa22daa34d",
       "assets/account-auth.js": "c105f9737661ca1b5400731968209fc785102b6168393993f970a487e13c085e",
-      "areas.js": "13def0db73b46e495223e5f34181e8b358a65970816e7ae6bf2604f28ed53764",
       "assets/supodora-logo-final.png": "7773929be8a776bb582e89233169a0cd899f8456c927d7f017d68d0347f1df63",
       "job-create.html": "3dce1322d7d0060d89acab7161591351c31bce743b1315acb10abfdc64777e85",
       "assets/job-draft.js": "47a90f3ef965d4de37d53da7c5ce34e493eb0bf0535d3965b5295ea8c486877c",
-      "assets/attendance-summary.js": "7c5eb61f7aefb96c35c889e7cfef51498bc0b27ca9510efb70d9a35d9bbb9dfc",
       "assets/job-preview.js": "f4fb3c0bf6075770633cab363ef4a09e98182bd5a0d51b9459f0630ded928405",
       "assets/job-copy.js": "d83b7fc20ad642cd5dde8191006699827cc3e4e678086eac2192ffc0b3ea1696",
+      "assets/attendance-summary.js": "7c5eb61f7aefb96c35c889e7cfef51498bc0b27ca9510efb70d9a35d9bbb9dfc",
       "company.html": "4cb9bb3b66af7068cb0951348c10e9ba2702a2df9dc9b4a5de1fc8884ee494d3",
       "assets/page-state.js": "4707217e94fd9bdf1eec5ba9f2425aad7bbd51a23b8a23b2eb22ec3f0c360290",
       "apply-confirm.html": "8e6ce7a00dc8b3fca8cc489ae4db034906f5cd740455b9975910eef91903163b",
       "driver.html": "4fc3cd30cf4beaf62e745bd4ef496e3884b00a08b2df32f5233f4e4d8f370b7c",
       "assets/attendance-review.js": "1b9c6b60e700d9de28f84184a4a15bfe927f7a237fa1c021375a61aa8f18ca42",
       "assets/job-browse.js": "bed125183ed2c7ce298a900efdbdd3caa938162e3636b18bfdff87bc7df55981",
-      "assets/work-rating.js": "4ba265a643ee6e492896e83e8312458850e3711cbef617ed8675d2e4ade98b9f",
       "assets/driver-work-view.js": "a6e50a245d2b2a33f23c1150de95ca99ecf8d61c01e5ddb29d6f1dcf200ddd1e",
+      "assets/work-rating.js": "4ba265a643ee6e492896e83e8312458850e3711cbef617ed8675d2e4ade98b9f",
       "assets/work-rating.css": "f52fa19ac022b5b885722c160111a0affc5207e46edbcb9fc4814d3413f7221f",
       "assets/job-preferences.js": "766f204f29215196407e5272f8b846539f09b1de1418875f13324563333ab1d2",
       "assets/login-autofill.js": "9b607a01f4dd242d21595bbcacfc45598525e4c9ff0bfe6ee7bbf38c8a4ec81d",
@@ -624,8 +624,8 @@
     "browser": "153.0.8010.0",
     "external_requests_blocked": 0
   },
-  "dump_bytes": 533159,
-  "dump_sha256": "42fd6e7b9136ce09831d0adb352d2a84dbe1f8854552d2403c7fb47486caebc9",
+  "dump_bytes": 533155,
+  "dump_sha256": "de72af36e28ce6ac238499a19529fbe085cf8d3d802e587299efef4708bd3ae0",
   "native_auth_storage_api_tested": true,
-  "completed_at": "2026-11-05T14:07:35.376199+00:00"
+  "completed_at": "2026-11-06T08:41:50.877429+00:00"
 }
