@@ -1,6 +1,6 @@
 # 次の担当者・別AIの再開手順
 
-1. GitHubの`docs/v4-restore-readiness-20261029`の最新SHAと、[8項目の状態](status.json)を読む。
+1. GitHubの`docs/v4-restore-readiness-20261029`の最新SHAと、[総合チェックリスト](../handover/transfer-checklist-20261105.md)と[残項目の実施条件](../handover/completion-gates-20261106.md)を読む。
 2. mainの最新SHAを取得し、本番反映されていない候補であることを確認する。作業ブランチはPages公開先ではない。
 3. Node `.nvmrc`（24.22.1）とPython3.12を用意し、`npm test`を実行する。DBや通知には接続しない。
 4. [各ラボの再現手順](../../tools/native-runner/README.md)を読む。静的画面をそのまま開くと本番へ接続するため、必ず隔離ハーネスでテストする。
@@ -16,6 +16,6 @@
 未成功ならstatus.jsonの項目とnative結果のfailed_stageを先に確認します。失敗も記録し、成功と混ぜません。
 ネットワーク取得失敗を型の成功扱いにしません。型検査ではハンドラーを起動する必要はありません。
 修正後は関係する検査だけを再実行し、成功したソースのSHAと結果を同時に保存します。
-最終整合点検は`python3 -B scripts/audit-dependencies.py`、`python3 -B scripts/verify-handover.py`、`python3 -B scripts/audit-handover.py`、`python3 -B scripts/v4-progress.py`、`python3 -B scripts/check-eight.py`の順に実施します。失敗を無視しないでください。
+現在の反映候補は`python3 -B scripts/prepare-production-scope.py`、履歴の検査は`python3 -B scripts/audit-source-history.py`で再生成します。対象mainと保存済みnative証跡を先に照合してください。以前の8項目・16項目の状態を再生成する場合は、旧ツールが参照するnative結果の版を確認してから各監査スクリプトを実行します。
 文書の「準備完了」は、本番適用・実バックアップ・第三者本人の受け入れを意味しません。
 特定のAIアカウント・個人のローカルファイル・チャットだけに依存する秘密保管を作りません。

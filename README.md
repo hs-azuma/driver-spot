@@ -5,7 +5,9 @@
 
 ## 第4版の最新引き継ぎ地点
 
-[無料で進める8項目の台帳](docs/v4-eight/README.md)と[再開手順](docs/v4-eight/resume.md)から再開してください。
+[63項目の総合チェックリスト](docs/handover/transfer-checklist-20261105.md)、[残項目の実施条件](docs/handover/completion-gates-20261106.md)、[追加調査と地域の修正候補](docs/handover/free-preparation-20261106.md)から再開してください。
+
+[以前の8項目の台帳](docs/v4-eight/README.md)と[再開手順](docs/v4-eight/resume.md)に検証経路を記録しています。
 現在の結果と検証したソースは[8項目の状態](docs/v4-eight/status.json)で確認できます。
 画面と実DBの結合、10 Functionsのstrict型検査、依存固定、バックアップ用ツール、読み取り診断、運用案を対象にしています。
 旧自動更新の改善案と保存・退会・匿名化の運用案は、レビュー用の準備で本番未適用です。

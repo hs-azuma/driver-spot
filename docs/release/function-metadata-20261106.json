@@ -1,0 +1,67 @@
+{
+  "date_jst": "2026-11-06",
+  "project_ref": "wyxuekjikvflpcmlliwn",
+  "functions": [
+    {
+      "name": "account-auth",
+      "version": 6,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "application-result-email",
+      "version": 19,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "company-job-invite",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "delete-account",
+      "version": 4,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "email-unsubscribe",
+      "version": 1,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "line-account",
+      "version": 5,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "line-notifications",
+      "version": 2,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "line-setup-once",
+      "version": 4,
+      "status": "ACTIVE",
+      "verify_jwt": true
+    },
+    {
+      "name": "line-webhook",
+      "version": 3,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    },
+    {
+      "name": "share-driver-spot-email",
+      "version": 5,
+      "status": "ACTIVE",
+      "verify_jwt": false
+    }
+  ],
+  "scope": "Runtime metadata only; no source, configuration values or secrets exported"
+}
